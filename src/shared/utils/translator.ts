@@ -155,19 +155,57 @@ class TranslatorManager {
     targetLanguage: string
   ): AsyncGenerator<string> {
     const translator = await this.getTranslator(sourceLanguage, targetLanguage);
-    const stream = translator.translateStreaming(text);
-    const reader = stream.getReader();
 
-    try {
-      let accumulated = "";
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        accumulated += value;
-        yield accumulated;
+    // Split by paragraph breaks to preserve structure
+    const paragraphs = text.split(/\n\n+/);
+
+    if (paragraphs.length === 1) {
+      // Single paragraph - stream normally
+      const stream = translator.translateStreaming(text);
+      const reader = stream.getReader();
+      try {
+        let accumulated = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          accumulated += value;
+          yield accumulated;
+        }
+      } finally {
+        reader.releaseLock();
       }
-    } finally {
-      reader.releaseLock();
+    } else {
+      // Multiple paragraphs - translate each and join with line breaks
+      const translatedParagraphs: string[] = [];
+
+      for (let i = 0; i < paragraphs.length; i++) {
+        const paragraph = paragraphs[i].trim();
+        if (!paragraph) {
+          translatedParagraphs.push("");
+          continue;
+        }
+
+        const stream = translator.translateStreaming(paragraph);
+        const reader = stream.getReader();
+
+        try {
+          let paragraphResult = "";
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            paragraphResult += value;
+            // Yield current progress: completed paragraphs + current paragraph
+            const currentResult = [
+              ...translatedParagraphs,
+              paragraphResult,
+            ].join("\n\n");
+            yield currentResult;
+          }
+          translatedParagraphs.push(paragraphResult);
+        } finally {
+          reader.releaseLock();
+        }
+      }
     }
   }
 
