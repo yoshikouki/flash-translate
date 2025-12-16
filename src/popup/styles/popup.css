@@ -23,7 +23,7 @@ body {
 }
 
 .language-select {
-  @apply flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  @apply flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer;
 }
 
 .swap-button {
@@ -42,10 +42,22 @@ body {
   @apply w-full py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium rounded-lg cursor-pointer transition-colors;
 }
 
+.error-message {
+  @apply text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg;
+}
+
 .output-area {
   @apply min-h-20 p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-800;
 }
 
 .output-area .placeholder {
   @apply text-gray-400 italic;
+}
+
+.popup-footer {
+  @apply mt-4 pt-3 border-t border-gray-200;
+}
+
+.footer-hint {
+  @apply text-xs text-gray-500;
 }
