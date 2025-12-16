@@ -1,73 +1,74 @@
-# React + TypeScript + Vite
+# Flash Translate
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Chrome拡張機能 - ブラウザ内蔵のTranslator APIを使った即座翻訳
 
-Currently, two official plugins are available:
+## 機能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **テキスト選択で即座翻訳**: ページ上のテキストを選択すると、選択箇所の近くにポップアップで翻訳結果を表示
+- **ストリーミング翻訳**: 翻訳結果をリアルタイムで表示
+- **多言語対応**: 14言語をサポート（英語、日本語、中国語、韓国語、スペイン語など）
+- **設定の同期**: 言語設定はchrome.storage.syncで同期
 
-## React Compiler
+## 必要条件
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Chrome 138以上** (Translator APIサポート)
+- **Translator APIの有効化**:
+  1. `chrome://flags` を開く
+  2. 「Translator API」を検索
+  3. 「Enabled」に設定
+  4. Chromeを再起動
 
-## Expanding the ESLint configuration
+## 開発
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# 依存関係のインストール
+bun install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# 開発サーバー起動（HMR対応）
+bun run dev
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# ビルド
+bun run build
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 型チェック
+bun run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 拡張機能のインストール（開発用）
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. `bun run dev` または `bun run build` を実行
+2. `chrome://extensions/` を開く
+3. 「デベロッパーモード」を有効化
+4. 「パッケージ化されていない拡張機能を読み込む」をクリック
+5. `dist` フォルダを選択
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 技術スタック
+
+- **Vite** + **@crxjs/vite-plugin** - Chrome拡張機能のビルド（HMR対応）
+- **React 19** + **TypeScript** - UI
+- **Tailwind CSS v4** - スタイリング
+- **Chrome Translator API** - ブラウザ内蔵AI翻訳
+
+## プロジェクト構造
+
 ```
+src/
+├── manifest.ts              # Chrome拡張機能マニフェスト
+├── background/              # Service Worker
+├── content/                 # Content Script（テキスト選択→翻訳ポップアップ）
+│   ├── components/          # TranslationPopup等
+│   ├── hooks/               # useTextSelection, useTranslator等
+│   └── styles/
+├── popup/                   # Popup UI（設定・手動翻訳）
+│   ├── components/
+│   └── styles/
+└── shared/                  # 共有コード
+    ├── constants/           # 言語リスト
+    ├── storage/             # chrome.storage操作
+    ├── types/               # 型定義
+    └── utils/               # Translator APIラッパー
+```
+
+## ライセンス
+
+MIT
