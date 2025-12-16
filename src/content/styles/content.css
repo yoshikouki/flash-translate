@@ -23,6 +23,14 @@
   @apply font-semibold text-blue-700 text-xs tracking-wide;
 }
 
+.popup-actions {
+  @apply flex items-center gap-1;
+}
+
+.popup-copy {
+  @apply text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1 disabled:opacity-30 disabled:cursor-not-allowed;
+}
+
 .popup-close {
   @apply text-gray-400 hover:text-gray-600 text-xl leading-none cursor-pointer bg-transparent border-none transition-colors p-1 -mr-1;
 }

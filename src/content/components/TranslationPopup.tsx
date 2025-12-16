@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslator } from "../hooks/useTranslator";
 import { usePopupPosition } from "../hooks/usePopupPosition";
 import type { SelectionInfo } from "../hooks/useTextSelection";
@@ -21,6 +21,19 @@ export function TranslationPopup({
     targetLanguage,
     streaming: true,
   });
+
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = useCallback(async () => {
+    if (!result) return;
+    try {
+      await navigator.clipboard.writeText(result);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  }, [result]);
 
   const position = usePopupPosition({
     selectionRect: selection.rect,
@@ -94,14 +107,25 @@ export function TranslationPopup({
           <span className="popup-title">
             {sourceLanguage.toUpperCase()} → {targetLanguage.toUpperCase()}
           </span>
-          <button
-            className="popup-close"
-            onClick={onClose}
-            aria-label="Close"
-            type="button"
-          >
-            ×
-          </button>
+          <div className="popup-actions">
+            <button
+              className="popup-copy"
+              onClick={handleCopy}
+              disabled={!result}
+              aria-label="Copy translation"
+              type="button"
+            >
+              {copied ? "✓" : "⧉"}
+            </button>
+            <button
+              className="popup-close"
+              onClick={onClose}
+              aria-label="Close"
+              type="button"
+            >
+              ×
+            </button>
+          </div>
         </div>
 
         <div className="popup-translation">{renderContent()}</div>
