@@ -4,6 +4,7 @@ interface Position {
   x: number;
   y: number;
   placement: "bottom" | "top";
+  maxHeight: number;
 }
 
 interface UsePopupPositionOptions {
@@ -38,21 +39,32 @@ export function usePopupPosition({
     // Calculate vertical position
     let y: number;
     let placement: "bottom" | "top";
+    let maxHeight: number;
+
+    // Calculate available space below and above the selection
+    const spaceBelow = viewportHeight - selectionRect.bottom - margin * 2;
+    const spaceAbove = selectionRect.top - margin * 2;
 
     // Prefer showing below the selection
     if (selectionRect.bottom + margin + popupHeight <= viewportHeight) {
       y = selectionRect.bottom + margin;
       placement = "bottom";
+      maxHeight = spaceBelow;
     } else if (selectionRect.top - margin - popupHeight >= 0) {
       // Show above if not enough space below
       y = selectionRect.top - margin - popupHeight;
       placement = "top";
+      maxHeight = spaceAbove;
     } else {
-      // Fallback: show below anyway
+      // Fallback: show below anyway, limit height to available space
       y = selectionRect.bottom + margin;
       placement = "bottom";
+      maxHeight = spaceBelow;
     }
 
-    return { x, y, placement };
+    // Ensure minimum height
+    maxHeight = Math.max(maxHeight, 100);
+
+    return { x, y, placement, maxHeight };
   }, [selectionRect, popupWidth, popupHeight, margin]);
 }

@@ -50,6 +50,11 @@ export function TranslationPopup({
 
   if (!position) return null;
 
+  // Header height (~36px) + padding (12px top + 12px bottom)
+  const headerHeight = 36;
+  const contentPadding = 24;
+  const maxContentHeight = Math.max(position.maxHeight - headerHeight - contentPadding, 64);
+
   const style: React.CSSProperties = {
     position: "fixed",
     left: `${position.x}px`,
@@ -111,7 +116,7 @@ export function TranslationPopup({
       style={style}
       className="font-sans text-sm leading-normal text-gray-800"
     >
-      <div className="bg-white rounded-xl shadow-2xl border border-gray-200 min-w-80 max-w-md overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-2xl min-w-80 max-w-md overflow-hidden">
         <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
           <span className="font-semibold text-blue-700 text-xs tracking-wide">
             {sourceLanguage.toUpperCase()} → {targetLanguage.toUpperCase()}
@@ -137,7 +142,12 @@ export function TranslationPopup({
           </div>
         </div>
 
-        <div className="px-4 py-3 min-h-16">{renderContent()}</div>
+        <div
+          className="px-4 py-3 min-h-16 overflow-y-auto"
+          style={{ maxHeight: `${maxContentHeight}px` }}
+        >
+          {renderContent()}
+        </div>
       </div>
     </div>
   );
