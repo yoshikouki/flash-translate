@@ -104,10 +104,6 @@ export function TranslationPopup({
           </button>
         </div>
 
-        <div className="popup-original">
-          <div className="original-text">{selection.text}</div>
-        </div>
-
         <div className="popup-translation">{renderContent()}</div>
       </div>
     </div>
