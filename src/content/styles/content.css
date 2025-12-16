@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+.popup-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.popup-content {
+  @apply bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-64 max-w-96;
+}
+
+.popup-header {
+  @apply flex items-center justify-between mb-2 pb-2 border-b border-gray-100;
+}
+
+.popup-title {
+  @apply font-semibold text-gray-700 text-sm;
+}
+
+.popup-close {
+  @apply text-gray-400 hover:text-gray-600 text-lg leading-none cursor-pointer bg-transparent border-none;
+}
+
+.popup-original,
+.popup-translation {
+  @apply mb-2;
+}
+
+.popup-original .label,
+.popup-translation .label {
+  @apply block text-xs text-gray-500 mb-1;
+}
+
+.popup-original .text {
+  @apply block text-gray-700;
+}
+
+.popup-translation .text {
+  @apply block text-blue-600;
+}
+
+.popup-translation .text.placeholder {
+  @apply text-gray-400 italic;
+}
