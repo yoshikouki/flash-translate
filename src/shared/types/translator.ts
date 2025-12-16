@@ -15,8 +15,8 @@ export interface TranslatorMonitor {
 }
 
 export interface DownloadProgressEvent {
+  // loaded is a fraction between 0 and 1 representing download progress
   loaded: number;
-  total: number;
 }
 
 export interface TranslatorInstance {
@@ -29,9 +29,8 @@ export interface TranslatorInstance {
   readonly inputQuota: number;
 }
 
-export interface TranslatorAvailability {
-  available: "no" | "after-download" | "readily";
-}
+// Chrome Translator API availability returns a string directly
+export type TranslatorAvailability = "available" | "downloadable" | "unsupported";
 
 export interface TranslatorStatic {
   availability(options?: {

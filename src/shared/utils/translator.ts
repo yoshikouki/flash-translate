@@ -31,12 +31,13 @@ class TranslatorManager {
         targetLanguage,
       });
 
-      switch (result.available) {
-        case "readily":
+      // Chrome Translator API returns: 'available', 'downloadable', or 'unsupported'
+      switch (result) {
+        case "available":
           return "available";
-        case "after-download":
+        case "downloadable":
           return "after-download";
-        case "no":
+        case "unsupported":
           return "unavailable";
         default:
           return "unavailable";
@@ -101,7 +102,8 @@ class TranslatorManager {
         targetLanguage,
         monitor(m) {
           m.addEventListener("downloadprogress", (e) => {
-            const progress = (e.loaded / e.total) * 100;
+            // e.loaded is already a fraction (0-1) in Chrome's API
+            const progress = e.loaded * 100;
             console.log(`Translation model download: ${progress.toFixed(1)}%`);
           });
         },
