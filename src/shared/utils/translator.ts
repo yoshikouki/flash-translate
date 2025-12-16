@@ -1,43 +1,48 @@
-import type {
-  TranslatorInstance,
-  TranslationAvailabilityStatus,
-} from "../types/translator";
+// Using official @types/dom-chromium-ai types
 
 interface CachedTranslator {
-  translator: TranslatorInstance;
+  translator: Translator;
   sourceLanguage: string;
   targetLanguage: string;
 }
+
+// Our internal availability status (maps from Availability type)
+export type TranslationAvailabilityStatus =
+  | "available"
+  | "after-download"
+  | "unavailable"
+  | "unsupported";
 
 class TranslatorManager {
   private instance: CachedTranslator | null = null;
   private isCreating = false;
   private pendingRequests: Array<{
-    resolve: (translator: TranslatorInstance) => void;
+    resolve: (translator: Translator) => void;
     reject: (error: Error) => void;
   }> = [];
 
   async checkAvailability(
-    sourceLanguage?: string,
-    targetLanguage?: string
+    sourceLanguage: string,
+    targetLanguage: string
   ): Promise<TranslationAvailabilityStatus> {
-    if (!window.Translator) {
+    if (typeof Translator === "undefined") {
       return "unsupported";
     }
 
     try {
-      const result = await window.Translator.availability({
+      const result = await Translator.availability({
         sourceLanguage,
         targetLanguage,
       });
 
-      // Chrome Translator API returns: 'available', 'downloadable', or 'unsupported'
+      // Availability type: "unavailable" | "downloadable" | "downloading" | "available"
       switch (result) {
         case "available":
           return "available";
         case "downloadable":
+        case "downloading":
           return "after-download";
-        case "unsupported":
+        case "unavailable":
           return "unavailable";
         default:
           return "unavailable";
@@ -50,7 +55,7 @@ class TranslatorManager {
   async getTranslator(
     sourceLanguage: string,
     targetLanguage: string
-  ): Promise<TranslatorInstance> {
+  ): Promise<Translator> {
     // Reuse existing instance if same language pair
     if (
       this.instance &&
@@ -76,7 +81,7 @@ class TranslatorManager {
     this.isCreating = true;
 
     try {
-      if (!window.Translator) {
+      if (typeof Translator === "undefined") {
         throw new Error("Translator API is not available in this browser");
       }
 
@@ -97,14 +102,15 @@ class TranslatorManager {
       }
 
       // Create translator instance with download progress monitoring
-      const translator = await window.Translator.create({
+      const translator = await Translator.create({
         sourceLanguage,
         targetLanguage,
         monitor(m) {
-          m.addEventListener("downloadprogress", (e) => {
-            // e.loaded is already a fraction (0-1) in Chrome's API
-            const progress = e.loaded * 100;
-            console.log(`Translation model download: ${progress.toFixed(1)}%`);
+          m.addEventListener("downloadprogress", (e: ProgressEvent) => {
+            if (e.lengthComputable) {
+              const progress = (e.loaded / e.total) * 100;
+              console.log(`Translation model download: ${progress.toFixed(1)}%`);
+            }
           });
         },
       });

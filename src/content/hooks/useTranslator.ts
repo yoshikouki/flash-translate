@@ -1,6 +1,8 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-import { translatorManager } from "@/shared/utils/translator";
-import type { TranslationAvailabilityStatus } from "@/shared/types/translator";
+import {
+  translatorManager,
+  type TranslationAvailabilityStatus,
+} from "@/shared/utils/translator";
 
 interface UseTranslatorOptions {
   sourceLanguage: string;
