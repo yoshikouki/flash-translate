@@ -159,10 +159,12 @@ class TranslatorManager {
     const reader = stream.getReader();
 
     try {
+      let accumulated = "";
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        yield value;
+        accumulated += value;
+        yield accumulated;
       }
     } finally {
       reader.releaseLock();
