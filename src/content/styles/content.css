@@ -41,7 +41,7 @@
 }
 
 .translation-result {
-  @apply text-gray-800 text-base leading-relaxed;
+  @apply text-gray-800 text-base leading-relaxed whitespace-pre-wrap;
   word-break: break-word;
 }
 
