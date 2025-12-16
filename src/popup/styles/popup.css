@@ -3,61 +3,6 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-}
-
-.popup-wrapper {
-  @apply w-80 p-4 bg-white;
-}
-
-.popup-header {
-  @apply mb-4 pb-2 border-b border-gray-200;
-}
-
-.popup-title {
-  @apply text-lg font-bold text-gray-800 m-0;
-}
-
-.language-selector {
-  @apply flex items-center gap-2 mb-4;
-}
-
-.language-select {
-  @apply flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer;
-}
-
-.swap-button {
-  @apply px-3 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg cursor-pointer text-lg transition-colors;
-}
-
-.translation-area {
-  @apply flex flex-col gap-3;
-}
-
-.input-textarea {
-  @apply w-full px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
-}
-
-.translate-button {
-  @apply w-full py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium rounded-lg cursor-pointer transition-colors;
-}
-
-.error-message {
-  @apply text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg;
-}
-
-.output-area {
-  @apply min-h-20 p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-800;
-}
-
-.output-area .placeholder {
-  @apply text-gray-400 italic;
-}
-
-.popup-footer {
-  @apply mt-4 pt-3 border-t border-gray-200;
-}
-
-.footer-hint {
-  @apply text-xs text-gray-500;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 }

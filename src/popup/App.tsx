@@ -111,16 +111,16 @@ export default function App() {
   };
 
   return (
-    <div className="popup-wrapper">
-      <header className="popup-header">
-        <h1 className="popup-title">Flash Translate</h1>
+    <div className="w-80 p-4 bg-white">
+      <header className="mb-4 pb-2 border-b border-gray-200">
+        <h1 className="text-lg font-bold text-gray-800 m-0">Flash Translate</h1>
       </header>
 
-      <div className="language-selector">
+      <div className="flex items-center gap-2 mb-4">
         <select
           value={sourceLanguage}
           onChange={(e) => handleSourceLanguageChange(e.target.value)}
-          className="language-select"
+          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
         >
           {SUPPORTED_LANGUAGES.map((lang) => (
             <option key={lang.code} value={lang.code}>
@@ -131,7 +131,7 @@ export default function App() {
 
         <button
           onClick={swapLanguages}
-          className="swap-button"
+          className="px-3 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg cursor-pointer text-lg transition-colors"
           aria-label="Swap languages"
           type="button"
         >
@@ -141,7 +141,7 @@ export default function App() {
         <select
           value={targetLanguage}
           onChange={(e) => handleTargetLanguageChange(e.target.value)}
-          className="language-select"
+          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
         >
           {SUPPORTED_LANGUAGES.map((lang) => (
             <option key={lang.code} value={lang.code}>
@@ -151,36 +151,42 @@ export default function App() {
         </select>
       </div>
 
-      <div className="translation-area">
+      <div className="flex flex-col gap-3">
         <textarea
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Enter text to translate... (⌘/Ctrl + Enter to translate)"
-          className="input-textarea"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           rows={4}
         />
 
         <button
           onClick={handleTranslate}
           disabled={isLoading || !inputText.trim()}
-          className="translate-button"
+          className="w-full py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium rounded-lg cursor-pointer transition-colors"
           type="button"
         >
           {isLoading ? "Translating..." : "Translate"}
         </button>
 
-        {error && <div className="error-message">{error}</div>}
+        {error && (
+          <div className="text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg">
+            {error}
+          </div>
+        )}
 
-        <div className="output-area">
+        <div className="min-h-20 p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-800">
           {translatedText || (
-            <span className="placeholder">Translation will appear here</span>
+            <span className="text-gray-400 italic">
+              Translation will appear here
+            </span>
           )}
         </div>
       </div>
 
-      <footer className="popup-footer">
-        <span className="footer-hint">
+      <footer className="mt-4 pt-3 border-t border-gray-200">
+        <span className="text-xs text-gray-500">
           Select text on any page to translate instantly
         </span>
       </footer>

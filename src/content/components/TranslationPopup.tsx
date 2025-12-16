@@ -60,7 +60,7 @@ export function TranslationPopup({
   const renderContent = () => {
     if (availability === "unsupported") {
       return (
-        <div className="error-message">
+        <div className="text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg">
           Translator API is not supported in this browser. Please use Chrome
           138+ with the API enabled.
         </div>
@@ -69,7 +69,7 @@ export function TranslationPopup({
 
     if (availability === "unavailable") {
       return (
-        <div className="error-message">
+        <div className="text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg">
           Translation from {sourceLanguage} to {targetLanguage} is not
           available.
         </div>
@@ -77,14 +77,18 @@ export function TranslationPopup({
     }
 
     if (error) {
-      return <div className="error-message">{error.message}</div>;
+      return (
+        <div className="text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg">
+          {error.message}
+        </div>
+      );
     }
 
     if (isLoading && !result) {
       return (
-        <div className="loading-container">
-          <div className="loading-spinner" />
-          <span className="loading-text">
+        <div className="flex items-center gap-3">
+          <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+          <span className="text-gray-500 text-sm">
             {availability === "after-download"
               ? "Downloading translation model..."
               : "Translating..."}
@@ -94,22 +98,27 @@ export function TranslationPopup({
     }
 
     return (
-      <div className="translation-result">
-        {result || <span className="placeholder">Translation...</span>}
+      <div className="text-gray-800 text-base leading-relaxed whitespace-pre-wrap break-words">
+        {result || (
+          <span className="text-gray-400 italic">Translation...</span>
+        )}
       </div>
     );
   };
 
   return (
-    <div style={style} className="popup-container">
-      <div className="popup-content">
-        <div className="popup-header">
-          <span className="popup-title">
+    <div
+      style={style}
+      className="font-sans text-sm leading-normal text-gray-800"
+    >
+      <div className="bg-white rounded-xl shadow-2xl border border-gray-200 min-w-80 max-w-md overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
+          <span className="font-semibold text-blue-700 text-xs tracking-wide">
             {sourceLanguage.toUpperCase()} → {targetLanguage.toUpperCase()}
           </span>
-          <div className="popup-actions">
+          <div className="flex items-center gap-1">
             <button
-              className="popup-copy"
+              className="text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1 disabled:opacity-30 disabled:cursor-not-allowed"
               onClick={handleCopy}
               disabled={!result}
               aria-label="Copy translation"
@@ -118,7 +127,7 @@ export function TranslationPopup({
               {copied ? "✓" : "⧉"}
             </button>
             <button
-              className="popup-close"
+              className="text-gray-400 hover:text-gray-600 text-xl leading-none cursor-pointer bg-transparent border-none transition-colors p-1 -mr-1"
               onClick={onClose}
               aria-label="Close"
               type="button"
@@ -128,7 +137,7 @@ export function TranslationPopup({
           </div>
         </div>
 
-        <div className="popup-translation">{renderContent()}</div>
+        <div className="px-4 py-3 min-h-16">{renderContent()}</div>
       </div>
     </div>
   );
