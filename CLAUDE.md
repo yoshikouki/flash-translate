@@ -48,6 +48,7 @@ To test the extension: Load `dist/` folder as unpacked extension in `chrome://ex
 ## Tech Stack
 - Vite + @crxjs/vite-plugin (HMR-enabled Chrome extension builds)
 - React 19 + TypeScript
+- **React Compiler** enabled via `babel-plugin-react-compiler` (automatic memoization - no manual `useMemo`/`useCallback`/`memo` needed)
 - Tailwind CSS v4
 - `@types/dom-chromium-ai` for Translator API types
 - Path alias: `@/` → `src/`

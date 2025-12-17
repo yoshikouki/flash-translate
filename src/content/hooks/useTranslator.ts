@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   translatorManager,
   type TranslationAvailabilityStatus,
@@ -44,65 +44,62 @@ export function useTranslator({
     checkAvailability();
   }, [sourceLanguage, targetLanguage]);
 
-  const translate = useCallback(
-    async (text: string) => {
-      if (!text.trim()) return;
+  const translate = async (text: string) => {
+    if (!text.trim()) return;
 
-      // Cancel previous translation if still running
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
+    // Cancel previous translation if still running
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
+
+    setState((prev) => ({
+      ...prev,
+      result: "",
+      isLoading: true,
+      error: null,
+    }));
+
+    try {
+      if (streaming) {
+        // Streaming translation
+        let result = "";
+        for await (const chunk of translatorManager.translateStreaming(
+          text,
+          sourceLanguage,
+          targetLanguage
+        )) {
+          // Check if aborted
+          if (abortControllerRef.current?.signal.aborted) {
+            return;
+          }
+          result = chunk; // API returns cumulative result
+          setState((prev) => ({ ...prev, result }));
+        }
+        setState((prev) => ({ ...prev, isLoading: false }));
+      } else {
+        // Non-streaming translation
+        const result = await translatorManager.translate(
+          text,
+          sourceLanguage,
+          targetLanguage
+        );
+        setState((prev) => ({ ...prev, result, isLoading: false, error: null }));
       }
-      abortControllerRef.current = new AbortController();
-
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        return;
+      }
       setState((prev) => ({
         ...prev,
         result: "",
-        isLoading: true,
-        error: null,
+        isLoading: false,
+        error: error instanceof Error ? error : new Error("Unknown error"),
       }));
+    }
+  };
 
-      try {
-        if (streaming) {
-          // Streaming translation
-          let result = "";
-          for await (const chunk of translatorManager.translateStreaming(
-            text,
-            sourceLanguage,
-            targetLanguage
-          )) {
-            // Check if aborted
-            if (abortControllerRef.current?.signal.aborted) {
-              return;
-            }
-            result = chunk; // API returns cumulative result
-            setState((prev) => ({ ...prev, result }));
-          }
-          setState((prev) => ({ ...prev, isLoading: false }));
-        } else {
-          // Non-streaming translation
-          const result = await translatorManager.translate(
-            text,
-            sourceLanguage,
-            targetLanguage
-          );
-          setState((prev) => ({ ...prev, result, isLoading: false, error: null }));
-        }
-      } catch (error) {
-        if (error instanceof Error && error.name === "AbortError") {
-          return;
-        }
-        setState((prev) => ({
-          ...prev,
-          result: "",
-          isLoading: false,
-          error: error instanceof Error ? error : new Error("Unknown error"),
-        }));
-      }
-    },
-    [sourceLanguage, targetLanguage, streaming]
-  );
-
-  const reset = useCallback(() => {
+  const reset = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
@@ -112,7 +109,7 @@ export function useTranslator({
       isLoading: false,
       error: null,
     }));
-  }, []);
+  };
 
   // Cleanup on unmount
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useTranslator } from "../hooks/useTranslator";
 import { usePopupPosition } from "../hooks/usePopupPosition";
 import type { SelectionInfo } from "../hooks/useTextSelection";
@@ -29,7 +29,7 @@ export function TranslationPopup({
 
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = useCallback(async () => {
+  const handleCopy = async () => {
     if (!result) return;
     try {
       await navigator.clipboard.writeText(result);
@@ -38,24 +38,24 @@ export function TranslationPopup({
     } catch (err) {
       console.error("Failed to copy:", err);
     }
-  }, [result]);
+  };
 
-  const handleOpenSettings = useCallback(() => {
+  const handleOpenSettings = () => {
     const settingsUrl = chrome.runtime.getURL("src/popup/index.html");
     window.open(settingsUrl, "_blank");
-  }, []);
+  };
 
-  const handleSourceChange = useCallback(async (lang: string) => {
+  const handleSourceChange = async (lang: string) => {
     setSourceLanguage(lang);
     await saveSettings({ sourceLanguage: lang });
-  }, []);
+  };
 
-  const handleTargetChange = useCallback(async (lang: string) => {
+  const handleTargetChange = async (lang: string) => {
     setTargetLanguage(lang);
     await saveSettings({ targetLanguage: lang });
-  }, []);
+  };
 
-  const handleSwap = useCallback(async () => {
+  const handleSwap = async () => {
     const newSource = targetLanguage;
     const newTarget = sourceLanguage;
     setSourceLanguage(newSource);
@@ -64,7 +64,7 @@ export function TranslationPopup({
       sourceLanguage: newSource,
       targetLanguage: newTarget,
     });
-  }, [sourceLanguage, targetLanguage]);
+  };
 
   const position = usePopupPosition({
     selectionRect: selection.rect,

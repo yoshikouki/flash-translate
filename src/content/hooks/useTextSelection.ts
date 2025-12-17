@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 const MAX_SELECTION_LENGTH = 5000;
 const SELECTION_DELAY_MS = 10;
@@ -11,7 +11,7 @@ export interface SelectionInfo {
 export function useTextSelection() {
   const [selection, setSelection] = useState<SelectionInfo | null>(null);
 
-  const handleMouseUp = useCallback(() => {
+  const handleMouseUp = () => {
     // Delay to ensure selection is complete
     setTimeout(() => {
       const windowSelection = window.getSelection();
@@ -33,36 +33,33 @@ export function useTextSelection() {
         }
       }
     }, SELECTION_DELAY_MS);
-  }, []);
+  };
 
-  const handleMouseDown = useCallback(
-    (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      // Close popup when clicking outside
-      const shadowHost = document.getElementById("flash-translate-root");
-      if (shadowHost && !shadowHost.contains(target)) {
-        // Check if the click is inside our shadow DOM
-        const path = event.composedPath();
-        const isInsideOurUI = path.some(
-          (el) => el instanceof HTMLElement && el.id === "flash-translate-root"
-        );
-        if (!isInsideOurUI) {
-          setSelection(null);
-        }
+  const handleMouseDown = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    // Close popup when clicking outside
+    const shadowHost = document.getElementById("flash-translate-root");
+    if (shadowHost && !shadowHost.contains(target)) {
+      // Check if the click is inside our shadow DOM
+      const path = event.composedPath();
+      const isInsideOurUI = path.some(
+        (el) => el instanceof HTMLElement && el.id === "flash-translate-root"
+      );
+      if (!isInsideOurUI) {
+        setSelection(null);
       }
-    },
-    []
-  );
+    }
+  };
 
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       setSelection(null);
     }
-  }, []);
+  };
 
-  const clearSelection = useCallback(() => {
+  const clearSelection = () => {
     setSelection(null);
-  }, []);
+  };
 
   useEffect(() => {
     document.addEventListener("mouseup", handleMouseUp);
@@ -74,7 +71,7 @@ export function useTextSelection() {
       document.removeEventListener("mousedown", handleMouseDown);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [handleMouseUp, handleMouseDown, handleKeyDown]);
+  });
 
   return { selection, clearSelection };
 }
