@@ -29,7 +29,10 @@ export function useTextSelection() {
             });
           }
         } catch {
-          // getRangeAt can throw if there's no selection
+          setSelection({
+              text: selectedText,
+              rect: document.body.getBoundingClientRect(),
+            });
         }
       }
     }, SELECTION_DELAY_MS);
