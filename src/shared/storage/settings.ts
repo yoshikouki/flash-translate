@@ -14,10 +14,25 @@ const DEFAULT_SETTINGS: TranslationSettings = {
   popupPosition: "auto",
 };
 
+// Check if extension context is still valid
+function isContextValid(): boolean {
+  try {
+    return !!chrome.runtime?.id;
+  } catch {
+    return false;
+  }
+}
+
 export async function getSettings(): Promise<TranslationSettings> {
+  if (!isContextValid()) {
+    return DEFAULT_SETTINGS;
+  }
+
   try {
     const result = await chrome.storage.sync.get([STORAGE_KEY]);
-    const settings = result[STORAGE_KEY] as Partial<TranslationSettings> | undefined;
+    const settings = result[STORAGE_KEY] as
+      | Partial<TranslationSettings>
+      | undefined;
     return { ...DEFAULT_SETTINGS, ...settings };
   } catch {
     return DEFAULT_SETTINGS;
@@ -27,26 +42,46 @@ export async function getSettings(): Promise<TranslationSettings> {
 export async function saveSettings(
   settings: Partial<TranslationSettings>
 ): Promise<void> {
-  const current = await getSettings();
-  const updated = { ...current, ...settings };
+  if (!isContextValid()) {
+    return;
+  }
 
-  await chrome.storage.sync.set({ [STORAGE_KEY]: updated });
+  try {
+    const current = await getSettings();
+    const updated = { ...current, ...settings };
+    await chrome.storage.sync.set({ [STORAGE_KEY]: updated });
+  } catch {
+    // Silently fail if context is invalid
+  }
 }
 
 export function subscribeToSettings(
   callback: (settings: TranslationSettings) => void
 ): () => void {
+  if (!isContextValid()) {
+    return () => {};
+  }
+
   const listener = (
     changes: { [key: string]: chrome.storage.StorageChange },
     areaName: string
   ) => {
+    if (!isContextValid()) return;
     if (areaName === "sync" && changes[STORAGE_KEY]) {
       callback(changes[STORAGE_KEY].newValue as TranslationSettings);
     }
   };
 
-  chrome.storage.onChanged.addListener(listener);
-  return () => chrome.storage.onChanged.removeListener(listener);
+  try {
+    chrome.storage.onChanged.addListener(listener);
+    return () => {
+      if (isContextValid()) {
+        chrome.storage.onChanged.removeListener(listener);
+      }
+    };
+  } catch {
+    return () => {};
+  }
 }
 
 export { STORAGE_KEY, DEFAULT_SETTINGS };
