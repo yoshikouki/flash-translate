@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 
+const MAX_SELECTION_LENGTH = 5000;
+const SELECTION_DELAY_MS = 10;
+
 export interface SelectionInfo {
   text: string;
   rect: DOMRect;
@@ -14,7 +17,7 @@ export function useTextSelection() {
       const windowSelection = window.getSelection();
       const selectedText = windowSelection?.toString().trim();
 
-      if (selectedText && selectedText.length > 0 && selectedText.length < 5000) {
+      if (selectedText && selectedText.length > 0 && selectedText.length < MAX_SELECTION_LENGTH) {
         try {
           const range = windowSelection?.getRangeAt(0);
           const rect = range?.getBoundingClientRect();
@@ -29,7 +32,7 @@ export function useTextSelection() {
           // getRangeAt can throw if there's no selection
         }
       }
-    }, 10);
+    }, SELECTION_DELAY_MS);
   }, []);
 
   const handleMouseDown = useCallback(

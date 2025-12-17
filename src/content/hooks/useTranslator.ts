@@ -85,7 +85,7 @@ export function useTranslator({
             sourceLanguage,
             targetLanguage
           );
-          setState({ result, isLoading: false, error: null, availability: state.availability });
+          setState((prev) => ({ ...prev, result, isLoading: false, error: null }));
         }
       } catch (error) {
         if (error instanceof Error && error.name === "AbortError") {
@@ -99,7 +99,7 @@ export function useTranslator({
         }));
       }
     },
-    [sourceLanguage, targetLanguage, streaming, state.availability]
+    [sourceLanguage, targetLanguage, streaming]
   );
 
   const reset = useCallback(() => {

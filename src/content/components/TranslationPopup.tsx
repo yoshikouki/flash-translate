@@ -45,23 +45,15 @@ export function TranslationPopup({
     window.open(settingsUrl, "_blank");
   }, []);
 
-  const handleSourceChange = useCallback(
-    async (lang: string) => {
-      setSourceLanguage(lang);
-      await saveSettings({ sourceLanguage: lang });
-      translate(selection.text);
-    },
-    [selection.text, translate]
-  );
+  const handleSourceChange = useCallback(async (lang: string) => {
+    setSourceLanguage(lang);
+    await saveSettings({ sourceLanguage: lang });
+  }, []);
 
-  const handleTargetChange = useCallback(
-    async (lang: string) => {
-      setTargetLanguage(lang);
-      await saveSettings({ targetLanguage: lang });
-      translate(selection.text);
-    },
-    [selection.text, translate]
-  );
+  const handleTargetChange = useCallback(async (lang: string) => {
+    setTargetLanguage(lang);
+    await saveSettings({ targetLanguage: lang });
+  }, []);
 
   const handleSwap = useCallback(async () => {
     const newSource = targetLanguage;
@@ -72,8 +64,7 @@ export function TranslationPopup({
       sourceLanguage: newSource,
       targetLanguage: newTarget,
     });
-    translate(selection.text);
-  }, [sourceLanguage, targetLanguage, selection.text, translate]);
+  }, [sourceLanguage, targetLanguage]);
 
   const position = usePopupPosition({
     selectionRect: selection.rect,
