@@ -71,7 +71,7 @@ export function useTextSelection() {
       document.removeEventListener("mousedown", handleMouseDown);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  });
+  }, []);
 
   return { selection, clearSelection };
 }

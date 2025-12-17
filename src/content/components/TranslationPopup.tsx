@@ -72,12 +72,15 @@ export function TranslationPopup({
     popupHeight: 180,
   });
 
-  // Translate when selection changes
+  // Translate when selection or language changes
+  // Note: translate is intentionally excluded from deps to avoid infinite loops
+  // (React Compiler handles memoization, but useEffect deps need explicit values)
   useEffect(() => {
     if (selection.text) {
       translate(selection.text);
     }
-  }, [selection.text, translate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selection.text, sourceLanguage, targetLanguage]);
 
   // Sync with props when they change (from settings)
   useEffect(() => {
