@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import { crx } from "@crxjs/vite-plugin";
 import manifest from "./src/manifest";
 import path from "path";
+import babel from 'vite-plugin-babel';
 
 function contentScriptHmr(): Plugin {
   return {
@@ -17,7 +18,16 @@ function contentScriptHmr(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), crx({ manifest }), contentScriptHmr()],
+  plugins: [
+    react(),
+    crx({ manifest }),
+    contentScriptHmr(),
+    babel({
+      babelConfig: {
+        plugins: ['babel-plugin-react-compiler'],
+      },
+    })
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
