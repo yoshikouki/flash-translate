@@ -3,7 +3,11 @@ import { useTranslator } from "../hooks/useTranslator";
 import { usePopupPosition } from "../hooks/usePopupPosition";
 import type { SelectionInfo } from "../hooks/useTextSelection";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
-import { saveSettings } from "@/shared/storage/settings";
+import {
+  saveSettings,
+  getSettings,
+  generatePatternId,
+} from "@/shared/storage/settings";
 
 interface TranslationPopupProps {
   selection: SelectionInfo;
@@ -28,6 +32,29 @@ export function TranslationPopup({
   });
 
   const [copied, setCopied] = useState(false);
+  const [excludeConfirm, setExcludeConfirm] = useState(false);
+
+  const handleExcludeSite = async () => {
+    if (!excludeConfirm) {
+      setExcludeConfirm(true);
+      // Auto-reset after 3 seconds
+      setTimeout(() => setExcludeConfirm(false), 3000);
+      return;
+    }
+
+    // Second click - actually exclude the site
+    const currentOrigin = window.location.origin;
+    const settings = await getSettings();
+    const newPattern = {
+      id: generatePatternId(),
+      pattern: currentOrigin,
+      enabled: true,
+    };
+    await saveSettings({
+      exclusionPatterns: [newPattern, ...settings.exclusionPatterns],
+    });
+    onClose();
+  };
 
   const handleCopy = async () => {
     if (!result) return;
@@ -204,6 +231,19 @@ export function TranslationPopup({
               type="button"
             >
               {copied ? "✓" : "⧉"}
+            </button>
+            <button
+              className={`text-sm leading-none cursor-pointer border-none transition-colors p-1 ${
+                excludeConfirm
+                  ? "bg-red-100 text-red-600 rounded"
+                  : "bg-transparent text-gray-400 hover:text-red-500"
+              }`}
+              onClick={handleExcludeSite}
+              aria-label={excludeConfirm ? "Confirm exclude this site" : "Exclude this site"}
+              title={excludeConfirm ? "クリックで除外を確定" : "このサイトを除外"}
+              type="button"
+            >
+              {excludeConfirm ? "⊘?" : "⊘"}
             </button>
             <button
               className="text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1"
