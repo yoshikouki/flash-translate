@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 import { useTranslator } from "../hooks/useTranslator";
 import { usePopupPosition } from "../hooks/usePopupPosition";
 import type { SelectionInfo } from "../hooks/useTextSelection";
+import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
+import { saveSettings } from "@/shared/storage/settings";
 
 interface TranslationPopupProps {
   selection: SelectionInfo;
@@ -12,10 +14,13 @@ interface TranslationPopupProps {
 
 export function TranslationPopup({
   selection,
-  sourceLanguage,
-  targetLanguage,
+  sourceLanguage: initialSource,
+  targetLanguage: initialTarget,
   onClose,
 }: TranslationPopupProps) {
+  const [sourceLanguage, setSourceLanguage] = useState(initialSource);
+  const [targetLanguage, setTargetLanguage] = useState(initialTarget);
+
   const { result, isLoading, error, translate, availability } = useTranslator({
     sourceLanguage,
     targetLanguage,
@@ -40,6 +45,36 @@ export function TranslationPopup({
     window.open(settingsUrl, "_blank");
   }, []);
 
+  const handleSourceChange = useCallback(
+    async (lang: string) => {
+      setSourceLanguage(lang);
+      await saveSettings({ sourceLanguage: lang });
+      translate(selection.text);
+    },
+    [selection.text, translate]
+  );
+
+  const handleTargetChange = useCallback(
+    async (lang: string) => {
+      setTargetLanguage(lang);
+      await saveSettings({ targetLanguage: lang });
+      translate(selection.text);
+    },
+    [selection.text, translate]
+  );
+
+  const handleSwap = useCallback(async () => {
+    const newSource = targetLanguage;
+    const newTarget = sourceLanguage;
+    setSourceLanguage(newSource);
+    setTargetLanguage(newTarget);
+    await saveSettings({
+      sourceLanguage: newSource,
+      targetLanguage: newTarget,
+    });
+    translate(selection.text);
+  }, [sourceLanguage, targetLanguage, selection.text, translate]);
+
   const position = usePopupPosition({
     selectionRect: selection.rect,
     popupWidth: 320,
@@ -53,12 +88,23 @@ export function TranslationPopup({
     }
   }, [selection.text, translate]);
 
+  // Sync with props when they change (from settings)
+  useEffect(() => {
+    setSourceLanguage(initialSource);
+  }, [initialSource]);
+
+  useEffect(() => {
+    setTargetLanguage(initialTarget);
+  }, [initialTarget]);
+
   if (!position) return null;
 
-  // Header height (~36px) + padding (12px top + 12px bottom)
-  const headerHeight = 36;
+  const headerHeight = 40;
   const contentPadding = 24;
-  const maxContentHeight = Math.max(position.maxHeight - headerHeight - contentPadding, 64);
+  const maxContentHeight = Math.max(
+    position.maxHeight - headerHeight - contentPadding,
+    64
+  );
 
   const style: React.CSSProperties = {
     position: "fixed",
@@ -122,10 +168,39 @@ export function TranslationPopup({
       className="font-sans text-sm leading-normal text-gray-800"
     >
       <div className="bg-white rounded-xl border border-gray-200 shadow-2xl min-w-80 max-w-md">
-        <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
-          <span className="font-semibold text-blue-700 text-xs tracking-wide">
-            {sourceLanguage.toUpperCase()} → {targetLanguage.toUpperCase()}
-          </span>
+        <div className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
+          <div className="flex items-center gap-1">
+            <select
+              value={sourceLanguage}
+              onChange={(e) => handleSourceChange(e.target.value)}
+              className="text-xs text-blue-700 font-medium bg-transparent border-none cursor-pointer focus:outline-none hover:text-blue-900 pr-1"
+            >
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.code.toUpperCase()}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={handleSwap}
+              className="text-blue-400 hover:text-blue-600 text-xs cursor-pointer bg-transparent border-none px-1"
+              type="button"
+              aria-label="Swap languages"
+            >
+              ⇄
+            </button>
+            <select
+              value={targetLanguage}
+              onChange={(e) => handleTargetChange(e.target.value)}
+              className="text-xs text-blue-700 font-medium bg-transparent border-none cursor-pointer focus:outline-none hover:text-blue-900 pr-1"
+            >
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.code.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="flex items-center gap-1">
             <button
               className="text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1 disabled:opacity-30 disabled:cursor-not-allowed"
