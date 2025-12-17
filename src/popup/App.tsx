@@ -1,8 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   getSettings,
   saveSettings,
-  subscribeToSettings,
 } from "@/shared/storage/settings";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import {
@@ -13,53 +12,66 @@ import {
 } from "@/shared/utils/translator";
 
 export default function App() {
-  const [targetLanguage, setTargetLanguage] = useState("ja");
+  const [openTarget, setOpenTarget] = useState<string | null>(null);
   const [pairs, setPairs] = useState<LanguagePairStatus[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingPairs, setIsLoadingPairs] = useState(false);
   const [downloadingPairs, setDownloadingPairs] = useState<Set<string>>(
     new Set()
   );
+  const detailsRefs = useRef<Map<string, HTMLDetailsElement>>(new Map());
 
-  const loadPairStatuses = useCallback(async (target: string) => {
-    setIsLoading(true);
-    const sourceCodes = SUPPORTED_LANGUAGES.map((l) => l.code);
-    const statuses = await checkAllPairsToTarget(target, sourceCodes);
-    setPairs(statuses);
-    setIsLoading(false);
-  }, []);
-
-  // Load settings and pair statuses
+  // Load initial target language from settings
   useEffect(() => {
     const init = async () => {
       const settings = await getSettings();
-      setTargetLanguage(settings.targetLanguage);
-      await loadPairStatuses(settings.targetLanguage);
+      setOpenTarget(settings.targetLanguage);
     };
-
     init();
+  }, []);
 
-    const unsubscribe = subscribeToSettings((settings) => {
-      setTargetLanguage(settings.targetLanguage);
-    });
+  // Load pairs when open target changes
+  useEffect(() => {
+    if (!openTarget) {
+      setPairs([]);
+      return;
+    }
 
-    return unsubscribe;
-  }, [loadPairStatuses]);
+    const loadPairs = async () => {
+      setIsLoadingPairs(true);
+      const sourceCodes = SUPPORTED_LANGUAGES.map((l) => l.code);
+      const statuses = await checkAllPairsToTarget(openTarget, sourceCodes);
+      setPairs(statuses);
+      setIsLoadingPairs(false);
+    };
+    loadPairs();
+  }, [openTarget]);
 
-  const handleTargetLanguageChange = async (lang: string) => {
-    setTargetLanguage(lang);
-    await saveSettings({ targetLanguage: lang });
-    await loadPairStatuses(lang);
+  const handleToggle = async (targetCode: string, isOpen: boolean) => {
+    if (isOpen) {
+      // Close other details
+      detailsRefs.current.forEach((el, code) => {
+        if (code !== targetCode && el.open) {
+          el.open = false;
+        }
+      });
+      setOpenTarget(targetCode);
+      await saveSettings({ targetLanguage: targetCode });
+    } else {
+      setOpenTarget(null);
+    }
   };
 
   const handleDownload = async (sourceLanguage: string) => {
-    const pairKey = `${sourceLanguage}-${targetLanguage}`;
+    if (!openTarget) return;
+
+    const pairKey = `${sourceLanguage}-${openTarget}`;
     setDownloadingPairs((prev) => new Set(prev).add(pairKey));
 
     try {
-      // Creating a translator triggers the download
-      await translatorManager.getTranslator(sourceLanguage, targetLanguage);
-      // Refresh the status
-      await loadPairStatuses(targetLanguage);
+      await translatorManager.getTranslator(sourceLanguage, openTarget);
+      const sourceCodes = SUPPORTED_LANGUAGES.map((l) => l.code);
+      const statuses = await checkAllPairsToTarget(openTarget, sourceCodes);
+      setPairs(statuses);
     } catch (error) {
       console.error("Download failed:", error);
     } finally {
@@ -72,89 +84,92 @@ export default function App() {
   };
 
   const getLanguageName = (code: string) => {
-    return (
-      SUPPORTED_LANGUAGES.find((l) => l.code === code)?.nativeName || code
-    );
+    return SUPPORTED_LANGUAGES.find((l) => l.code === code)?.nativeName || code;
   };
 
   const getStatusDisplay = (
     status: TranslationAvailabilityStatus,
     sourceLanguage: string
   ) => {
-    const pairKey = `${sourceLanguage}-${targetLanguage}`;
+    if (!openTarget) return null;
+
+    const pairKey = `${sourceLanguage}-${openTarget}`;
     const isDownloading = downloadingPairs.has(pairKey);
 
     if (isDownloading) {
       return (
-        <span className="text-blue-600 text-xs flex items-center gap-1">
+        <span className="text-blue-600 text-xs">
           <span className="inline-block w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-          Downloading
         </span>
       );
     }
 
     switch (status) {
       case "available":
-        return <span className="text-green-600 text-xs">● Ready</span>;
+        return <span className="text-green-600 text-xs">●</span>;
       case "after-download":
         return (
           <button
             onClick={() => handleDownload(sourceLanguage)}
-            className="text-blue-600 hover:text-blue-800 text-xs underline cursor-pointer"
+            className="text-gray-400 hover:text-blue-600 text-xs cursor-pointer"
             type="button"
+            title="Download model"
           >
-            ○ Download
+            ○
           </button>
         );
       case "unavailable":
-        return <span className="text-gray-400 text-xs">— Unavailable</span>;
       case "unsupported":
-        return <span className="text-gray-400 text-xs">— Unsupported</span>;
+        return <span className="text-gray-300 text-xs">—</span>;
       default:
         return null;
     }
   };
 
   return (
-    <div className="w-72 p-3 bg-white">
-      <div className="flex items-center gap-2 mb-3">
-        <label className="text-sm text-gray-600 whitespace-nowrap">
-          Translate to:
-        </label>
-        <select
-          value={targetLanguage}
-          onChange={(e) => handleTargetLanguageChange(e.target.value)}
-          className="flex-1 px-2 py-1.5 border border-gray-300 rounded text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+    <div className="w-64 bg-white max-h-96 overflow-y-auto">
+      {SUPPORTED_LANGUAGES.map((lang) => (
+        <details
+          key={lang.code}
+          ref={(el) => {
+            if (el) detailsRefs.current.set(lang.code, el);
+          }}
+          open={openTarget === lang.code}
+          onToggle={(e) =>
+            handleToggle(lang.code, (e.target as HTMLDetailsElement).open)
+          }
+          className="border-b border-gray-100 last:border-b-0"
         >
-          {SUPPORTED_LANGUAGES.map((lang) => (
-            <option key={lang.code} value={lang.code}>
-              {lang.nativeName}
-            </option>
-          ))}
-        </select>
-      </div>
+          <summary className="px-3 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-50 list-none flex items-center gap-2">
+            <span className="text-gray-400 text-xs">
+              {openTarget === lang.code ? "▼" : "▶"}
+            </span>
+            {lang.nativeName}
+          </summary>
 
-      <div className="border-t border-gray-200 pt-2">
-        {isLoading ? (
-          <div className="text-center text-gray-400 text-sm py-4">
-            Checking models...
+          <div className="bg-gray-50">
+            {isLoadingPairs ? (
+              <div className="px-3 py-2 text-xs text-gray-400 text-center">
+                Loading...
+              </div>
+            ) : (
+              <ul>
+                {pairs.map((pair) => (
+                  <li
+                    key={pair.sourceLanguage}
+                    className="flex items-center justify-between px-3 py-1.5 pl-9 hover:bg-gray-100"
+                  >
+                    <span className="text-xs text-gray-600">
+                      {getLanguageName(pair.sourceLanguage)}
+                    </span>
+                    {getStatusDisplay(pair.status, pair.sourceLanguage)}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-        ) : (
-          <ul className="space-y-1">
-            {pairs.map((pair) => (
-              <li
-                key={pair.sourceLanguage}
-                className="flex items-center justify-between py-1 px-1 hover:bg-gray-50 rounded"
-              >
-                <span className="text-sm text-gray-700">
-                  {getLanguageName(pair.sourceLanguage)}
-                </span>
-                {getStatusDisplay(pair.status, pair.sourceLanguage)}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+        </details>
+      ))}
     </div>
   );
 }
