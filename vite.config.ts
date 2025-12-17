@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import { crx } from "@crxjs/vite-plugin";
+import tailwindcss from "@tailwindcss/vite";
 import manifest from "./src/manifest";
 import path from "path";
 import babel from 'vite-plugin-babel';
@@ -19,6 +20,7 @@ function contentScriptHmr(): Plugin {
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     react(),
     crx({ manifest }),
     contentScriptHmr(),
