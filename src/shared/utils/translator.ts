@@ -219,3 +219,29 @@ class TranslatorManager {
 
 // Singleton instance
 export const translatorManager = new TranslatorManager();
+
+// Language pair availability info
+export interface LanguagePairStatus {
+  sourceLanguage: string;
+  targetLanguage: string;
+  status: TranslationAvailabilityStatus;
+}
+
+// Check availability for all source languages to a specific target
+export async function checkAllPairsToTarget(
+  targetLanguage: string,
+  sourceLanguages: string[]
+): Promise<LanguagePairStatus[]> {
+  const results = await Promise.all(
+    sourceLanguages
+      .filter((source) => source !== targetLanguage)
+      .map(async (sourceLanguage) => {
+        const status = await translatorManager.checkAvailability(
+          sourceLanguage,
+          targetLanguage
+        );
+        return { sourceLanguage, targetLanguage, status };
+      })
+  );
+  return results;
+}
