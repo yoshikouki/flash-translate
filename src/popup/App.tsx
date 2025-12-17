@@ -7,19 +7,15 @@ import {
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import {
   checkAllPairsToTarget,
-  translatorManager,
   type LanguagePairStatus,
-  type TranslationAvailabilityStatus,
 } from "@/shared/utils/translator";
-import { TargetLanguageSelector } from "./components/TargetLanguageSelector";
+import { TargetLanguageChips } from "./components/TargetLanguageChips";
 import { SourceLanguageChips } from "./components/SourceLanguageChips";
 import { ExclusionSettings } from "./components/ExclusionSettings";
 import { useCurrentTabUrl } from "./hooks/useCurrentTabUrl";
 
 export default function App() {
   const [targetLanguage, setTargetLanguage] = useState<string>("ja");
-  const [targetDownloadStatus, setTargetDownloadStatus] =
-    useState<TranslationAvailabilityStatus>("available");
   const [pairs, setPairs] = useState<LanguagePairStatus[]>([]);
   const [isLoadingPairs, setIsLoadingPairs] = useState(false);
   const [exclusionPatterns, setExclusionPatterns] = useState<
@@ -50,18 +46,6 @@ export default function App() {
     loadPairs();
   }, [targetLanguage]);
 
-  // Check target language download status
-  useEffect(() => {
-    const checkTargetStatus = async () => {
-      // Check if we can translate from English to target
-      const status = await translatorManager.checkAvailability(
-        "en",
-        targetLanguage
-      );
-      setTargetDownloadStatus(status);
-    };
-    checkTargetStatus();
-  }, [targetLanguage]);
 
   const handleTargetLanguageChange = async (code: string) => {
     setTargetLanguage(code);
@@ -77,10 +61,9 @@ export default function App() {
 
   return (
     <div className="w-72 bg-white max-h-[400px] overflow-y-auto">
-      {/* Target language selector */}
-      <TargetLanguageSelector
+      {/* Target language chips */}
+      <TargetLanguageChips
         targetLanguage={targetLanguage}
-        downloadStatus={targetDownloadStatus}
         onChangeTargetLanguage={handleTargetLanguageChange}
       />
 
