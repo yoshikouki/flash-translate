@@ -35,6 +35,11 @@ export function TranslationPopup({
     }
   }, [result]);
 
+  const handleOpenSettings = useCallback(() => {
+    const settingsUrl = chrome.runtime.getURL("src/popup/index.html");
+    window.open(settingsUrl, "_blank");
+  }, []);
+
   const position = usePopupPosition({
     selectionRect: selection.rect,
     popupWidth: 320,
@@ -130,6 +135,14 @@ export function TranslationPopup({
               type="button"
             >
               {copied ? "✓" : "⧉"}
+            </button>
+            <button
+              className="text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1"
+              onClick={handleOpenSettings}
+              aria-label="Open settings"
+              type="button"
+            >
+              ⚙
             </button>
             <button
               className="text-gray-400 hover:text-gray-600 text-xl leading-none cursor-pointer bg-transparent border-none transition-colors p-1 -mr-1"
