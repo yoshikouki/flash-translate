@@ -7,22 +7,26 @@ import {
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import {
   checkAllPairsToTarget,
+  translatorManager,
   type LanguagePairStatus,
+  type TranslationAvailabilityStatus,
 } from "@/shared/utils/translator";
 import { TargetLanguageSelector } from "./components/TargetLanguageSelector";
-import { SourceLanguageList } from "./components/SourceLanguageList";
+import { SourceLanguageChips } from "./components/SourceLanguageChips";
 import { ExclusionSettings } from "./components/ExclusionSettings";
-
-type TabType = "languages" | "exclusions";
+import { useCurrentTabUrl } from "./hooks/useCurrentTabUrl";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabType>("languages");
   const [targetLanguage, setTargetLanguage] = useState<string>("ja");
+  const [targetDownloadStatus, setTargetDownloadStatus] =
+    useState<TranslationAvailabilityStatus>("available");
   const [pairs, setPairs] = useState<LanguagePairStatus[]>([]);
   const [isLoadingPairs, setIsLoadingPairs] = useState(false);
   const [exclusionPatterns, setExclusionPatterns] = useState<
     ExclusionPattern[]
   >([]);
+
+  const currentTabUrl = useCurrentTabUrl();
 
   // Load initial settings
   useEffect(() => {
@@ -46,6 +50,19 @@ export default function App() {
     loadPairs();
   }, [targetLanguage]);
 
+  // Check target language download status
+  useEffect(() => {
+    const checkTargetStatus = async () => {
+      // Check if we can translate from English to target
+      const status = await translatorManager.checkAvailability(
+        "en",
+        targetLanguage
+      );
+      setTargetDownloadStatus(status);
+    };
+    checkTargetStatus();
+  }, [targetLanguage]);
+
   const handleTargetLanguageChange = async (code: string) => {
     setTargetLanguage(code);
     await saveSettings({ targetLanguage: code });
@@ -63,49 +80,24 @@ export default function App() {
       {/* Target language selector */}
       <TargetLanguageSelector
         targetLanguage={targetLanguage}
+        downloadStatus={targetDownloadStatus}
         onChangeTargetLanguage={handleTargetLanguageChange}
       />
 
-      {/* Tab navigation */}
-      <div className="flex border-b border-gray-200">
-        <button
-          onClick={() => setActiveTab("languages")}
-          className={`flex-1 px-3 py-2 text-xs font-medium ${
-            activeTab === "languages"
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-          type="button"
-        >
-          翻訳元言語
-        </button>
-        <button
-          onClick={() => setActiveTab("exclusions")}
-          className={`flex-1 px-3 py-2 text-xs font-medium ${
-            activeTab === "exclusions"
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-          type="button"
-        >
-          除外設定
-        </button>
-      </div>
+      {/* Source language chips */}
+      <SourceLanguageChips
+        targetLanguage={targetLanguage}
+        pairs={pairs}
+        isLoading={isLoadingPairs}
+        onPairsChange={setPairs}
+      />
 
-      {/* Tab content */}
-      {activeTab === "languages" ? (
-        <SourceLanguageList
-          targetLanguage={targetLanguage}
-          pairs={pairs}
-          isLoadingPairs={isLoadingPairs}
-          onPairsChange={setPairs}
-        />
-      ) : (
-        <ExclusionSettings
-          patterns={exclusionPatterns}
-          onPatternsChange={handleExclusionPatternsChange}
-        />
-      )}
+      {/* Exclusion settings */}
+      <ExclusionSettings
+        patterns={exclusionPatterns}
+        currentTabUrl={currentTabUrl}
+        onPatternsChange={handleExclusionPatternsChange}
+      />
     </div>
   );
 }

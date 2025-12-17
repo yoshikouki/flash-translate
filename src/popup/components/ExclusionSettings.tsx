@@ -6,33 +6,31 @@ import {
 
 interface ExclusionSettingsProps {
   patterns: ExclusionPattern[];
+  currentTabUrl: string | null;
   onPatternsChange: (patterns: ExclusionPattern[]) => void;
 }
 
 export function ExclusionSettings({
   patterns,
+  currentTabUrl,
   onPatternsChange,
 }: ExclusionSettingsProps) {
-  const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const editInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAdd = () => {
-    const pattern = inputRef.current?.value.trim();
-    if (!pattern) return;
+  const isCurrentSiteExcluded = currentTabUrl
+    ? patterns.some((p) => p.pattern === currentTabUrl && p.enabled)
+    : false;
+
+  const handleAddCurrentSite = () => {
+    if (!currentTabUrl || isCurrentSiteExcluded) return;
 
     const newPattern: ExclusionPattern = {
       id: generatePatternId(),
-      pattern,
+      pattern: currentTabUrl,
       enabled: true,
     };
-
-    onPatternsChange([...patterns, newPattern]);
-    setIsAdding(false);
-    if (inputRef.current) {
-      inputRef.current.value = "";
-    }
+    onPatternsChange([newPattern, ...patterns]);
   };
 
   const handleToggle = (id: string) => {
@@ -63,34 +61,57 @@ export function ExclusionSettings({
     setEditingId(null);
   };
 
+  const formatUrl = (url: string) => {
+    try {
+      const parsed = new URL(url);
+      return parsed.hostname + (parsed.pathname !== "/" ? parsed.pathname : "");
+    } catch {
+      return url;
+    }
+  };
+
   return (
-    <div className="bg-white">
-      <div className="px-3 py-2 border-b border-gray-100">
-        <span className="text-xs text-gray-500 font-medium">除外サイト:</span>
-        <p className="text-xs text-gray-400 mt-1">
-          URLの前方一致で翻訳を無効化
-        </p>
+    <div className="px-3 py-2.5">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs text-gray-500">除外サイト</span>
       </div>
 
+      {/* Add current site button */}
+      {currentTabUrl && (
+        <button
+          type="button"
+          onClick={handleAddCurrentSite}
+          disabled={isCurrentSiteExcluded}
+          className={`w-full mb-2 px-3 py-2 rounded border border-dashed text-sm text-left flex items-center gap-2 ${
+            isCurrentSiteExcluded
+              ? "border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50"
+              : "border-blue-300 text-blue-600 hover:bg-blue-50 hover:border-blue-400"
+          }`}
+        >
+          <span className="text-lg leading-none">+</span>
+          <span className="truncate flex-1">{formatUrl(currentTabUrl)}</span>
+          {isCurrentSiteExcluded && (
+            <span className="text-xs text-gray-400 shrink-0">除外中</span>
+          )}
+        </button>
+      )}
+
+      {/* Existing patterns */}
       {patterns.length === 0 ? (
-        <div className="px-3 py-3 text-xs text-gray-400 text-center">
-          除外設定がありません
-        </div>
+        <p className="text-xs text-gray-400 text-center py-2">
+          除外サイトなし
+        </p>
       ) : (
-        <ul>
+        <div className="space-y-1.5">
           {patterns.map((pattern) => (
-            <li
-              key={pattern.id}
-              className="px-3 py-2 border-b border-gray-50 last:border-b-0"
-            >
+            <div key={pattern.id}>
               {editingId === pattern.id ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <input
                     ref={editInputRef}
                     type="text"
                     defaultValue={pattern.pattern}
                     className="flex-1 text-sm bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    placeholder="https://example.com/path"
                     autoFocus
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleSaveEdit(pattern.id);
@@ -99,99 +120,85 @@ export function ExclusionSettings({
                   />
                   <button
                     onClick={() => handleSaveEdit(pattern.id)}
-                    className="text-xs text-blue-600 hover:text-blue-800"
+                    className="text-xs text-blue-600 hover:text-blue-800 px-1.5"
                     type="button"
                   >
-                    保存
+                    OK
                   </button>
                   <button
                     onClick={handleCancelEdit}
-                    className="text-xs text-gray-500 hover:text-gray-700"
+                    className="text-xs text-gray-500 hover:text-gray-700 px-1.5"
                     type="button"
                   >
-                    取消
+                    x
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
+                <div
+                  className={`flex items-center gap-2 px-2 py-1.5 rounded ${
+                    pattern.enabled ? "bg-gray-100" : "bg-gray-50"
+                  }`}
+                >
                   <input
                     type="checkbox"
                     checked={pattern.enabled}
                     onChange={() => handleToggle(pattern.id)}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    className="w-3.5 h-3.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <span
-                    className={`flex-1 text-sm truncate ${
+                    className={`flex-1 text-xs truncate ${
                       pattern.enabled ? "text-gray-700" : "text-gray-400"
                     }`}
                     title={pattern.pattern}
                   >
-                    {pattern.pattern}
+                    {formatUrl(pattern.pattern)}
                   </span>
                   <button
                     onClick={() => handleEdit(pattern.id)}
-                    className="text-xs text-gray-400 hover:text-blue-600"
+                    className="text-xs text-gray-400 hover:text-blue-600 p-0.5"
                     type="button"
                     title="編集"
                   >
-                    ✎
+                    <svg
+                      className="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                      />
+                    </svg>
                   </button>
                   <button
                     onClick={() => handleDelete(pattern.id)}
-                    className="text-xs text-gray-400 hover:text-red-600"
+                    className="text-xs text-gray-400 hover:text-red-600 p-0.5"
                     type="button"
                     title="削除"
                   >
-                    ✕
+                    <svg
+                      className="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
                   </button>
                 </div>
               )}
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
-
-      {/* Add pattern section */}
-      <div className="border-t border-gray-200 bg-gray-50">
-        {isAdding ? (
-          <div className="px-3 py-2 flex items-center gap-2">
-            <input
-              ref={inputRef}
-              type="text"
-              className="flex-1 text-sm bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              placeholder="https://example.com/path"
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleAdd();
-                if (e.key === "Escape") setIsAdding(false);
-              }}
-            />
-            <button
-              onClick={handleAdd}
-              className="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
-              type="button"
-            >
-              追加
-            </button>
-            <button
-              onClick={() => setIsAdding(false)}
-              className="px-2 py-1 text-xs text-gray-500 hover:text-gray-700"
-              type="button"
-            >
-              キャンセル
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => setIsAdding(true)}
-            className="w-full px-3 py-2 text-sm text-blue-600 hover:bg-gray-100 text-left flex items-center gap-1"
-            type="button"
-          >
-            <span className="text-lg leading-none">+</span>
-            <span>除外パターンを追加</span>
-          </button>
-        )}
-      </div>
     </div>
   );
 }
