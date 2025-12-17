@@ -116,7 +116,7 @@ export function TranslationPopup({
       style={style}
       className="font-sans text-sm leading-normal text-gray-800"
     >
-      <div className="bg-white rounded-xl border border-gray-200 shadow-2xl min-w-80 max-w-md overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-2xl min-w-80 max-w-md">
         <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
           <span className="font-semibold text-blue-700 text-xs tracking-wide">
             {sourceLanguage.toUpperCase()} → {targetLanguage.toUpperCase()}
@@ -143,8 +143,11 @@ export function TranslationPopup({
         </div>
 
         <div
-          className="px-4 py-3 min-h-16 overflow-y-auto"
-          style={{ maxHeight: `${maxContentHeight}px` }}
+          className="px-4 py-3 min-h-16"
+          style={{
+            maxHeight: `${maxContentHeight}px`,
+            overflowY: "auto",
+          }}
         >
           {renderContent()}
         </div>
