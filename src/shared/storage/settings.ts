@@ -1,8 +1,15 @@
+export interface ExclusionPattern {
+  id: string;
+  pattern: string; // origin + path prefix (e.g., "https://example.com/admin")
+  enabled: boolean;
+}
+
 export interface TranslationSettings {
   sourceLanguage: string;
   targetLanguage: string;
   enableStreaming: boolean;
   popupPosition: "auto" | "top" | "bottom";
+  exclusionPatterns: ExclusionPattern[];
 }
 
 const STORAGE_KEY = "flash-translate-settings";
@@ -12,7 +19,21 @@ const DEFAULT_SETTINGS: TranslationSettings = {
   targetLanguage: "ja",
   enableStreaming: true,
   popupPosition: "auto",
+  exclusionPatterns: [],
 };
+
+// Helper to check if a URL matches any enabled exclusion pattern
+export function isUrlExcluded(
+  url: string,
+  patterns: ExclusionPattern[]
+): boolean {
+  return patterns.some((p) => p.enabled && url.startsWith(p.pattern));
+}
+
+// Generate a unique ID for exclusion patterns
+export function generatePatternId(): string {
+  return `pattern_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+}
 
 // Check if extension context is still valid
 function isContextValid(): boolean {
