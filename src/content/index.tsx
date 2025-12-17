@@ -2,12 +2,21 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import contentStyles from "./styles/content.css?inline";
+import { getSettings, isUrlExcluded } from "@/shared/storage/settings";
 
 const HOST_ID = "flash-translate-root";
 
-function initializeContentScript() {
+async function initializeContentScript() {
   // Check if already initialized
   if (document.getElementById(HOST_ID)) {
+    return;
+  }
+
+  // Check if current URL is excluded
+  const settings = await getSettings();
+  const currentUrl = window.location.origin + window.location.pathname;
+  if (isUrlExcluded(currentUrl, settings.exclusionPatterns)) {
+    console.log("[Flash Translate] This page is excluded from translation");
     return;
   }
 
