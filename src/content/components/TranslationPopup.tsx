@@ -161,7 +161,7 @@ export function TranslationPopup({
       style={style}
       className="font-sans text-sm leading-normal text-gray-800"
     >
-      <div className="bg-white rounded-xl border border-gray-500 shadow-2xl min-w-80 max-w-md">
+      <div className="bg-white rounded-xl border border-solid border-gray-200 shadow-2xl min-w-80 max-w-md">
         <div className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
           <div className="flex items-center gap-1">
             <select
