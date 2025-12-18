@@ -3,7 +3,7 @@ import { ExclusionSettings } from "./components/ExclusionSettings";
 
 export default function App() {
   return (
-    <div className="w-72 bg-white max-h-[400px] overflow-y-auto">
+    <div className="min-w-72 bg-white max-h-[400px] overflow-y-auto">
       <LanguageSettings />
       <ExclusionSettings />
     </div>

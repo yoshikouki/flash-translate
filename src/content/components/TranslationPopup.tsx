@@ -2,25 +2,47 @@ import { useEffect, useState } from "react";
 import { useTranslator } from "../hooks/useTranslator";
 import { usePopupPosition } from "../hooks/usePopupPosition";
 import type { SelectionInfo } from "../hooks/useTextSelection";
-import { saveSettings } from "@/shared/storage/settings";
+import {
+  getSettings,
+  saveSettings,
+  subscribeToSettings,
+} from "@/shared/storage/settings";
+import {
+  DEFAULT_SOURCE_LANGUAGE,
+  DEFAULT_TARGET_LANGUAGE,
+} from "@/shared/constants/languages";
 import { PopupHeader } from "./PopupHeader";
 import { TranslationContent } from "./TranslationContent";
 
 interface TranslationPopupProps {
   selection: SelectionInfo;
-  sourceLanguage: string;
-  targetLanguage: string;
   onClose: () => void;
 }
 
 export function TranslationPopup({
   selection,
-  sourceLanguage: initialSource,
-  targetLanguage: initialTarget,
   onClose,
 }: TranslationPopupProps) {
-  const [sourceLanguage, setSourceLanguage] = useState(initialSource);
-  const [targetLanguage, setTargetLanguage] = useState(initialTarget);
+  const [sourceLanguage, setSourceLanguage] = useState(DEFAULT_SOURCE_LANGUAGE);
+  const [targetLanguage, setTargetLanguage] = useState(DEFAULT_TARGET_LANGUAGE);
+
+  // Load initial settings and subscribe to changes
+  useEffect(() => {
+    const loadSettings = async () => {
+      const settings = await getSettings();
+      setSourceLanguage(settings.sourceLanguage);
+      setTargetLanguage(settings.targetLanguage);
+    };
+
+    loadSettings();
+
+    const unsubscribe = subscribeToSettings((settings) => {
+      setSourceLanguage(settings.sourceLanguage);
+      setTargetLanguage(settings.targetLanguage);
+    });
+
+    return unsubscribe;
+  }, []);
 
   const { result, isLoading, error, translate, availability } = useTranslator({
     sourceLanguage,
@@ -69,15 +91,6 @@ export function TranslationPopup({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection.text, sourceLanguage, targetLanguage]);
-
-  // Sync with props when they change (from settings)
-  useEffect(() => {
-    setSourceLanguage(initialSource);
-  }, [initialSource]);
-
-  useEffect(() => {
-    setTargetLanguage(initialTarget);
-  }, [initialTarget]);
 
   if (!position) return null;
 
