@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslator } from "../hooks/useTranslator";
 import { usePopupPosition } from "../hooks/usePopupPosition";
 import type { SelectionInfo } from "../hooks/useTextSelection";
-import {
-  saveSettings,
-  getSettings,
-  generatePatternId,
-} from "@/shared/storage/settings";
+import { saveSettings } from "@/shared/storage/settings";
 import { PopupHeader } from "./PopupHeader";
 import { TranslationContent } from "./TranslationContent";
 
@@ -31,42 +27,6 @@ export function TranslationPopup({
     targetLanguage,
     streaming: true,
   });
-
-  const [copied, setCopied] = useState(false);
-  const [excludeConfirm, setExcludeConfirm] = useState(false);
-
-  const handleExcludeSite = async () => {
-    if (!excludeConfirm) {
-      setExcludeConfirm(true);
-      // Auto-reset after 3 seconds
-      setTimeout(() => setExcludeConfirm(false), 3000);
-      return;
-    }
-
-    // Second click - actually exclude the site
-    const currentOrigin = window.location.origin;
-    const settings = await getSettings();
-    const newPattern = {
-      id: generatePatternId(),
-      pattern: currentOrigin,
-      enabled: true,
-    };
-    await saveSettings({
-      exclusionPatterns: [newPattern, ...settings.exclusionPatterns],
-    });
-    onClose();
-  };
-
-  const handleCopy = async () => {
-    if (!result) return;
-    try {
-      await navigator.clipboard.writeText(result);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy:", err);
-    }
-  };
 
   const handleOpenSettings = () => {
     const settingsUrl = chrome.runtime.getURL("src/popup/index.html");
@@ -147,12 +107,7 @@ export function TranslationPopup({
           onSourceChange={handleSourceChange}
           onTargetChange={handleTargetChange}
           onSwap={handleSwap}
-          copied={copied}
-          hasResult={!!result}
-          onCopy={handleCopy}
-          excludeConfirm={excludeConfirm}
-          onExcludeSite={handleExcludeSite}
-          onCancelExclude={() => setExcludeConfirm(false)}
+          result={result}
           onOpenSettings={handleOpenSettings}
           onClose={onClose}
         />
