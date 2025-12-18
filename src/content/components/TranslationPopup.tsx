@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { useTranslator } from "../hooks/useTranslator";
 import { usePopupPosition } from "../hooks/usePopupPosition";
 import type { SelectionInfo } from "../hooks/useTextSelection";
-import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import {
   saveSettings,
   getSettings,
   generatePatternId,
 } from "@/shared/storage/settings";
+import { PopupHeader } from "./PopupHeader";
+import { TranslationContent } from "./TranslationContent";
 
 interface TranslationPopupProps {
   selection: SelectionInfo;
@@ -134,156 +135,27 @@ export function TranslationPopup({
     zIndex: 2147483647,
   };
 
-  const renderContent = () => {
-    if (availability === "unsupported") {
-      return (
-        <div className="text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg">
-          Translator API is not supported in this browser. Please use Chrome
-          138+ with the API enabled.
-        </div>
-      );
-    }
-
-    if (availability === "unavailable") {
-      return (
-        <div className="text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg">
-          Translation from {sourceLanguage} to {targetLanguage} is not
-          available.
-        </div>
-      );
-    }
-
-    if (error) {
-      return (
-        <div className="text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg">
-          {error.message}
-        </div>
-      );
-    }
-
-    if (isLoading && !result) {
-      return (
-        <div className="flex items-center gap-3">
-          <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
-          <span className="text-gray-500 text-sm">
-            {availability === "after-download"
-              ? "Downloading translation model..."
-              : "Translating..."}
-          </span>
-        </div>
-      );
-    }
-
-    return (
-      <div className="text-gray-800 text-base leading-relaxed whitespace-pre-wrap break-words">
-        {result || (
-          <span className="text-gray-400 italic">Translation...</span>
-        )}
-      </div>
-    );
-  };
-
   return (
     <div
       style={style}
       className="font-sans text-sm leading-normal text-gray-800"
     >
       <div className="bg-white rounded-xl border border-solid border-gray-200 shadow-2xl min-w-80 max-w-md">
-        <div className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
-          {excludeConfirm ? (
-            <>
-              <span className="text-xs text-gray-600">このサイトで無効にする？</span>
-              <div className="flex items-center gap-2">
-                <button
-                  className="text-xs px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors cursor-pointer border-none"
-                  onClick={handleExcludeSite}
-                  type="button"
-                >
-                  無効にする
-                </button>
-                <button
-                  className="text-gray-400 hover:text-gray-600 text-lg leading-none cursor-pointer bg-transparent border-none transition-colors p-1"
-                  onClick={() => setExcludeConfirm(false)}
-                  aria-label="Cancel"
-                  type="button"
-                >
-                  ×
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="flex items-center gap-1">
-                <select
-                  value={sourceLanguage}
-                  onChange={(e) => handleSourceChange(e.target.value)}
-                  className="text-xs text-blue-700 font-medium bg-transparent border-none cursor-pointer focus:outline-none hover:text-blue-900 pr-1"
-                >
-                  {SUPPORTED_LANGUAGES.map((lang) => (
-                    <option key={lang.code} value={lang.code}>
-                      {lang.code.toUpperCase()}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={handleSwap}
-                  className="text-blue-400 hover:text-blue-600 text-xs cursor-pointer bg-transparent border-none px-1"
-                  type="button"
-                  aria-label="Swap languages"
-                >
-                  ⇄
-                </button>
-                <select
-                  value={targetLanguage}
-                  onChange={(e) => handleTargetChange(e.target.value)}
-                  className="text-xs text-blue-700 font-medium bg-transparent border-none cursor-pointer focus:outline-none hover:text-blue-900 pr-1"
-                >
-                  {SUPPORTED_LANGUAGES.map((lang) => (
-                    <option key={lang.code} value={lang.code}>
-                      {lang.code.toUpperCase()}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center gap-1">
-                <button
-                  className="text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1 disabled:opacity-30 disabled:cursor-not-allowed"
-                  onClick={handleCopy}
-                  disabled={!result}
-                  aria-label="Copy translation"
-                  type="button"
-                >
-                  {copied ? "✓" : "⧉"}
-                </button>
-                <button
-                  className="text-sm leading-none cursor-pointer border-none transition-colors p-1 bg-transparent text-gray-400 hover:text-red-500"
-                  onClick={handleExcludeSite}
-                  aria-label="Exclude this site"
-                  title="このサイトを除外"
-                  type="button"
-                >
-                  ⊘
-                </button>
-                <button
-                  className="text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1"
-                  onClick={handleOpenSettings}
-                  aria-label="Open settings"
-                  type="button"
-                >
-                  ⚙
-                </button>
-                <button
-                  className="text-gray-400 hover:text-gray-600 text-xl leading-none cursor-pointer bg-transparent border-none transition-colors p-1 -mr-1"
-                  onClick={onClose}
-                  aria-label="Close"
-                  type="button"
-                >
-                  ×
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+        <PopupHeader
+          sourceLanguage={sourceLanguage}
+          targetLanguage={targetLanguage}
+          onSourceChange={handleSourceChange}
+          onTargetChange={handleTargetChange}
+          onSwap={handleSwap}
+          copied={copied}
+          hasResult={!!result}
+          onCopy={handleCopy}
+          excludeConfirm={excludeConfirm}
+          onExcludeSite={handleExcludeSite}
+          onCancelExclude={() => setExcludeConfirm(false)}
+          onOpenSettings={handleOpenSettings}
+          onClose={onClose}
+        />
 
         <div
           className="px-4 py-3 min-h-16"
@@ -292,7 +164,14 @@ export function TranslationPopup({
             overflowY: "auto",
           }}
         >
-          {renderContent()}
+          <TranslationContent
+            availability={availability}
+            sourceLanguage={sourceLanguage}
+            targetLanguage={targetLanguage}
+            isLoading={isLoading}
+            result={result}
+            error={error}
+          />
         </div>
       </div>
     </div>
