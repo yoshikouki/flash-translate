@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import {
   getSettings,
   saveSettings,
-  type ExclusionPattern,
 } from "@/shared/storage/settings";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import {
@@ -18,9 +17,6 @@ export default function App() {
   const [targetLanguage, setTargetLanguage] = useState<string>("ja");
   const [pairs, setPairs] = useState<LanguagePairStatus[]>([]);
   const [isLoadingPairs, setIsLoadingPairs] = useState(false);
-  const [exclusionPatterns, setExclusionPatterns] = useState<
-    ExclusionPattern[]
-  >([]);
 
   const currentTabUrl = useCurrentTabUrl();
 
@@ -29,7 +25,6 @@ export default function App() {
     const init = async () => {
       const settings = await getSettings();
       setTargetLanguage(settings.targetLanguage);
-      setExclusionPatterns(settings.exclusionPatterns || []);
     };
     init();
   }, []);
@@ -52,13 +47,6 @@ export default function App() {
     await saveSettings({ targetLanguage: code });
   };
 
-  const handleExclusionPatternsChange = async (
-    patterns: ExclusionPattern[]
-  ) => {
-    setExclusionPatterns(patterns);
-    await saveSettings({ exclusionPatterns: patterns });
-  };
-
   return (
     <div className="w-72 bg-white max-h-[400px] overflow-y-auto">
       {/* Target language chips */}
@@ -76,11 +64,7 @@ export default function App() {
       />
 
       {/* Exclusion settings */}
-      <ExclusionSettings
-        patterns={exclusionPatterns}
-        currentTabUrl={currentTabUrl}
-        onPatternsChange={handleExclusionPatternsChange}
-      />
+      <ExclusionSettings currentTabUrl={currentTabUrl} />
     </div>
   );
 }

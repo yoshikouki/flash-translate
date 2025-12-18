@@ -1,22 +1,32 @@
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   type ExclusionPattern,
   generatePatternId,
+  getSettings,
+  saveSettings,
 } from "@/shared/storage/settings";
+import { ExclusionPatternItem } from "./ExclusionPatternItem";
 
 interface ExclusionSettingsProps {
-  patterns: ExclusionPattern[];
   currentTabUrl: string | null;
-  onPatternsChange: (patterns: ExclusionPattern[]) => void;
 }
 
-export function ExclusionSettings({
-  patterns,
-  currentTabUrl,
-  onPatternsChange,
-}: ExclusionSettingsProps) {
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const editInputRef = useRef<HTMLInputElement>(null);
+export function ExclusionSettings({ currentTabUrl }: ExclusionSettingsProps) {
+  const [patterns, setPatterns] = useState<ExclusionPattern[]>([]);
+
+  // Load patterns from storage on mount
+  useEffect(() => {
+    const loadPatterns = async () => {
+      const settings = await getSettings();
+      setPatterns(settings.exclusionPatterns || []);
+    };
+    loadPatterns();
+  }, []);
+
+  const savePatterns = async (newPatterns: ExclusionPattern[]) => {
+    setPatterns(newPatterns);
+    await saveSettings({ exclusionPatterns: newPatterns });
+  };
 
   const isCurrentSiteExcluded = currentTabUrl
     ? patterns.some((p) => p.pattern === currentTabUrl && p.enabled)
@@ -30,35 +40,17 @@ export function ExclusionSettings({
       pattern: currentTabUrl,
       enabled: true,
     };
-    onPatternsChange([newPattern, ...patterns]);
+    savePatterns([newPattern, ...patterns]);
   };
 
-  const handleToggle = (id: string) => {
-    onPatternsChange(
-      patterns.map((p) => (p.id === id ? { ...p, enabled: !p.enabled } : p))
+  const handlePatternChange = (updated: ExclusionPattern) => {
+    savePatterns(
+      patterns.map((p) => (p.id === updated.id ? updated : p))
     );
   };
 
   const handleDelete = (id: string) => {
-    onPatternsChange(patterns.filter((p) => p.id !== id));
-  };
-
-  const handleEdit = (id: string) => {
-    setEditingId(id);
-  };
-
-  const handleSaveEdit = (id: string) => {
-    const newPattern = editInputRef.current?.value.trim();
-    if (!newPattern) return;
-
-    onPatternsChange(
-      patterns.map((p) => (p.id === id ? { ...p, pattern: newPattern } : p))
-    );
-    setEditingId(null);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingId(null);
+    savePatterns(patterns.filter((p) => p.id !== id));
   };
 
   const formatUrl = (url: string) => {
@@ -104,98 +96,12 @@ export function ExclusionSettings({
       ) : (
         <div className="space-y-1.5">
           {patterns.map((pattern) => (
-            <div key={pattern.id}>
-              {editingId === pattern.id ? (
-                <div className="flex items-center gap-1.5">
-                  <input
-                    ref={editInputRef}
-                    type="text"
-                    defaultValue={pattern.pattern}
-                    className="flex-1 text-sm bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    autoFocus
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleSaveEdit(pattern.id);
-                      if (e.key === "Escape") handleCancelEdit();
-                    }}
-                  />
-                  <button
-                    onClick={() => handleSaveEdit(pattern.id)}
-                    className="text-xs text-blue-600 hover:text-blue-800 px-1.5"
-                    type="button"
-                  >
-                    OK
-                  </button>
-                  <button
-                    onClick={handleCancelEdit}
-                    className="text-xs text-gray-500 hover:text-gray-700 px-1.5"
-                    type="button"
-                  >
-                    x
-                  </button>
-                </div>
-              ) : (
-                <div
-                  className={`flex items-center gap-2 px-2 py-1.5 rounded ${
-                    pattern.enabled ? "bg-gray-100" : "bg-gray-50"
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={pattern.enabled}
-                    onChange={() => handleToggle(pattern.id)}
-                    className="w-3.5 h-3.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  />
-                  <span
-                    className={`flex-1 text-xs truncate ${
-                      pattern.enabled ? "text-gray-700" : "text-gray-400"
-                    }`}
-                    title={pattern.pattern}
-                  >
-                    {formatUrl(pattern.pattern)}
-                  </span>
-                  <button
-                    onClick={() => handleEdit(pattern.id)}
-                    className="text-xs text-gray-400 hover:text-blue-600 p-0.5"
-                    type="button"
-                    title="編集"
-                  >
-                    <svg
-                      className="w-3 h-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => handleDelete(pattern.id)}
-                    className="text-xs text-gray-400 hover:text-red-600 p-0.5"
-                    type="button"
-                    title="削除"
-                  >
-                    <svg
-                      className="w-3 h-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              )}
-            </div>
+            <ExclusionPatternItem
+              key={pattern.id}
+              pattern={pattern}
+              onPatternChange={handlePatternChange}
+              onDelete={() => handleDelete(pattern.id)}
+            />
           ))}
         </div>
       )}
