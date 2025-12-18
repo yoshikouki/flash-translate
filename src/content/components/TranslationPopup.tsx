@@ -190,78 +190,99 @@ export function TranslationPopup({
     >
       <div className="bg-white rounded-xl border border-solid border-gray-200 shadow-2xl min-w-80 max-w-md">
         <div className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
-          <div className="flex items-center gap-1">
-            <select
-              value={sourceLanguage}
-              onChange={(e) => handleSourceChange(e.target.value)}
-              className="text-xs text-blue-700 font-medium bg-transparent border-none cursor-pointer focus:outline-none hover:text-blue-900 pr-1"
-            >
-              {SUPPORTED_LANGUAGES.map((lang) => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.code.toUpperCase()}
-                </option>
-              ))}
-            </select>
-            <button
-              onClick={handleSwap}
-              className="text-blue-400 hover:text-blue-600 text-xs cursor-pointer bg-transparent border-none px-1"
-              type="button"
-              aria-label="Swap languages"
-            >
-              ⇄
-            </button>
-            <select
-              value={targetLanguage}
-              onChange={(e) => handleTargetChange(e.target.value)}
-              className="text-xs text-blue-700 font-medium bg-transparent border-none cursor-pointer focus:outline-none hover:text-blue-900 pr-1"
-            >
-              {SUPPORTED_LANGUAGES.map((lang) => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.code.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="flex items-center gap-1">
-            <button
-              className="text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1 disabled:opacity-30 disabled:cursor-not-allowed"
-              onClick={handleCopy}
-              disabled={!result}
-              aria-label="Copy translation"
-              type="button"
-            >
-              {copied ? "✓" : "⧉"}
-            </button>
-            <button
-              className={`text-sm leading-none cursor-pointer border-none transition-colors p-1 ${
-                excludeConfirm
-                  ? "bg-red-100 text-red-600 rounded"
-                  : "bg-transparent text-gray-400 hover:text-red-500"
-              }`}
-              onClick={handleExcludeSite}
-              aria-label={excludeConfirm ? "Confirm exclude this site" : "Exclude this site"}
-              title={excludeConfirm ? "クリックで除外を確定" : "このサイトを除外"}
-              type="button"
-            >
-              {excludeConfirm ? "⊘?" : "⊘"}
-            </button>
-            <button
-              className="text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1"
-              onClick={handleOpenSettings}
-              aria-label="Open settings"
-              type="button"
-            >
-              ⚙
-            </button>
-            <button
-              className="text-gray-400 hover:text-gray-600 text-xl leading-none cursor-pointer bg-transparent border-none transition-colors p-1 -mr-1"
-              onClick={onClose}
-              aria-label="Close"
-              type="button"
-            >
-              ×
-            </button>
-          </div>
+          {excludeConfirm ? (
+            <>
+              <span className="text-xs text-gray-600">このサイトで無効にする？</span>
+              <div className="flex items-center gap-2">
+                <button
+                  className="text-xs px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors cursor-pointer border-none"
+                  onClick={handleExcludeSite}
+                  type="button"
+                >
+                  無効にする
+                </button>
+                <button
+                  className="text-gray-400 hover:text-gray-600 text-lg leading-none cursor-pointer bg-transparent border-none transition-colors p-1"
+                  onClick={() => setExcludeConfirm(false)}
+                  aria-label="Cancel"
+                  type="button"
+                >
+                  ×
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-1">
+                <select
+                  value={sourceLanguage}
+                  onChange={(e) => handleSourceChange(e.target.value)}
+                  className="text-xs text-blue-700 font-medium bg-transparent border-none cursor-pointer focus:outline-none hover:text-blue-900 pr-1"
+                >
+                  {SUPPORTED_LANGUAGES.map((lang) => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.code.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={handleSwap}
+                  className="text-blue-400 hover:text-blue-600 text-xs cursor-pointer bg-transparent border-none px-1"
+                  type="button"
+                  aria-label="Swap languages"
+                >
+                  ⇄
+                </button>
+                <select
+                  value={targetLanguage}
+                  onChange={(e) => handleTargetChange(e.target.value)}
+                  className="text-xs text-blue-700 font-medium bg-transparent border-none cursor-pointer focus:outline-none hover:text-blue-900 pr-1"
+                >
+                  {SUPPORTED_LANGUAGES.map((lang) => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.code.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  className="text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1 disabled:opacity-30 disabled:cursor-not-allowed"
+                  onClick={handleCopy}
+                  disabled={!result}
+                  aria-label="Copy translation"
+                  type="button"
+                >
+                  {copied ? "✓" : "⧉"}
+                </button>
+                <button
+                  className="text-sm leading-none cursor-pointer border-none transition-colors p-1 bg-transparent text-gray-400 hover:text-red-500"
+                  onClick={handleExcludeSite}
+                  aria-label="Exclude this site"
+                  title="このサイトを除外"
+                  type="button"
+                >
+                  ⊘
+                </button>
+                <button
+                  className="text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1"
+                  onClick={handleOpenSettings}
+                  aria-label="Open settings"
+                  type="button"
+                >
+                  ⚙
+                </button>
+                <button
+                  className="text-gray-400 hover:text-gray-600 text-xl leading-none cursor-pointer bg-transparent border-none transition-colors p-1 -mr-1"
+                  onClick={onClose}
+                  aria-label="Close"
+                  type="button"
+                >
+                  ×
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         <div
