@@ -11,14 +11,11 @@ import {
 import { TargetLanguageChips } from "./components/TargetLanguageChips";
 import { SourceLanguageChips } from "./components/SourceLanguageChips";
 import { ExclusionSettings } from "./components/ExclusionSettings";
-import { useCurrentTabUrl } from "./hooks/useCurrentTabUrl";
 
 export default function App() {
   const [targetLanguage, setTargetLanguage] = useState<string>("ja");
   const [pairs, setPairs] = useState<LanguagePairStatus[]>([]);
   const [isLoadingPairs, setIsLoadingPairs] = useState(false);
-
-  const currentTabUrl = useCurrentTabUrl();
 
   // Load initial settings
   useEffect(() => {
@@ -64,7 +61,7 @@ export default function App() {
       />
 
       {/* Exclusion settings */}
-      <ExclusionSettings currentTabUrl={currentTabUrl} />
+      <ExclusionSettings />
     </div>
   );
 }

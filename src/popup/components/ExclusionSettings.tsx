@@ -6,12 +6,10 @@ import {
   saveSettings,
 } from "@/shared/storage/settings";
 import { ExclusionPatternItem } from "./ExclusionPatternItem";
+import { useCurrentTabUrl } from "../hooks/useCurrentTabUrl";
 
-interface ExclusionSettingsProps {
-  currentTabUrl: string | null;
-}
-
-export function ExclusionSettings({ currentTabUrl }: ExclusionSettingsProps) {
+export function ExclusionSettings() {
+  const currentTabUrl = useCurrentTabUrl();
   const [patterns, setPatterns] = useState<ExclusionPattern[]>([]);
 
   // Load patterns from storage on mount
