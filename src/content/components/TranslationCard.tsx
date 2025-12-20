@@ -12,6 +12,7 @@ import {
   DEFAULT_TARGET_LANGUAGE,
 } from "@/shared/constants/languages";
 import { CardHeader } from "./CardHeader";
+import { CardFooter } from "./CardFooter";
 import { TranslationContent } from "./TranslationContent";
 
 interface TranslationCardProps {
@@ -120,7 +121,6 @@ export function TranslationCard({
           onSourceChange={handleSourceChange}
           onTargetChange={handleTargetChange}
           onSwap={handleSwap}
-          result={result}
           onOpenSettings={handleOpenSettings}
           onClose={onClose}
         />
@@ -141,6 +141,8 @@ export function TranslationCard({
             error={error}
           />
         </div>
+
+        <CardFooter result={result} />
       </div>
     </div>
   );
