@@ -7,7 +7,6 @@ export interface ExclusionPattern {
 export interface TranslationSettings {
   sourceLanguage: string;
   targetLanguage: string;
-  enableStreaming: boolean;
   popupPosition: "auto" | "top" | "bottom";
   popupWidth: number;
   exclusionPatterns: ExclusionPattern[];
@@ -18,7 +17,6 @@ const STORAGE_KEY = "flash-translate-settings";
 const DEFAULT_SETTINGS: TranslationSettings = {
   sourceLanguage: "en",
   targetLanguage: "ja",
-  enableStreaming: true,
   popupPosition: "auto",
   popupWidth: 320,
   exclusionPatterns: [],
@@ -57,7 +55,10 @@ export async function getSettings(): Promise<TranslationSettings> {
       | Partial<TranslationSettings>
       | undefined;
     return { ...DEFAULT_SETTINGS, ...settings };
-  } catch {
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.error("[Flash Translate] Failed to get settings:", error);
+    }
     return DEFAULT_SETTINGS;
   }
 }
@@ -73,8 +74,10 @@ export async function saveSettings(
     const current = await getSettings();
     const updated = { ...current, ...settings };
     await chrome.storage.sync.set({ [STORAGE_KEY]: updated });
-  } catch {
-    // Silently fail if context is invalid
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.error("[Flash Translate] Failed to save settings:", error);
+    }
   }
 }
 
@@ -102,7 +105,10 @@ export function subscribeToSettings(
         chrome.storage.onChanged.removeListener(listener);
       }
     };
-  } catch {
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.error("[Flash Translate] Failed to subscribe to settings:", error);
+    }
     return () => {};
   }
 }
