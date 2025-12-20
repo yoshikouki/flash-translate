@@ -31,9 +31,8 @@ Flash Translate uses Chrome's built-in Translator API (available in Chrome 138+)
 
 ## Permissions Explained
 
-- **`activeTab`**: Required to read selected text on the current page for translation
+- **`activeTab`**: Required to read selected text on the current page and display the translation popup
 - **`storage`**: Required to save your language preferences and sync them across your Chrome browsers
-- **`scripting`**: Required to inject the translation UI into web pages
 
 ## Data Retention
 
