@@ -62,6 +62,8 @@ export function useTextSelection() {
 
   const clearSelection = () => {
     setSelection(null);
+    // Also clear the browser's text selection to prevent re-triggering
+    window.getSelection()?.removeAllRanges();
   };
 
   useEffect(() => {
