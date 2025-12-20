@@ -137,24 +137,18 @@ export function TranslationCard({
   return (
     <div
       style={{
-        position: "fixed",
         left: `${position.x}px`,
         top: `${position.y}px`,
         zIndex: 2147483647,
       }}
-      className="font-sans text-sm leading-normal text-gray-800"
+      className="fixed font-sans text-sm leading-normal text-gray-800"
     >
       <div
-        className="relative rounded-xl border border-solid shadow-2xl"
+        className="relative rounded-xl bg-white/80 blur border-4 border-solid border-stone-400/60 max-w-dvw shadow-2xl overflow-visible"
         style={{
           width: `${width}px`,
           minWidth: `${MIN_POPUP_WIDTH}px`,
           maxWidth: `${maxPopupWidth}px`,
-          overflow: "visible",
-          backgroundColor: "rgba(255, 255, 255, 0.85)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          borderColor: "rgba(229, 231, 235, 0.7)",
         }}
       >
         <ResizeHandle onMouseDown={handleLeftMouseDown} isResizing={isResizing} side="left" />
