@@ -22,10 +22,6 @@ A Chrome extension for instant translation using the browser's built-in Translat
 
 ## Installation
 
-### From Chrome Web Store
-
-Coming soon.
-
 ### Manual Installation (Development)
 
 1. Run `bun run dev` or `bun run build`
