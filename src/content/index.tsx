@@ -17,7 +17,9 @@ async function initializeContentScript() {
   const settings = await getSettings();
   const currentUrl = window.location.origin + window.location.pathname;
   if (isUrlExcluded(currentUrl, settings.exclusionPatterns)) {
-    console.log("[Flash Translate] This page is excluded from translation");
+    if (import.meta.env.DEV) {
+      console.log("[Flash Translate] This page is excluded from translation");
+    }
     return;
   }
 
