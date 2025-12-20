@@ -1,13 +1,12 @@
 import { useState } from "react";
-
-type CopyState = "idle" | "copied" | "error";
+import { cn } from "@/lib/utils";
 
 interface CopyButtonProps {
   text: string | null;
 }
 
 export function CopyButton({ text }: CopyButtonProps) {
-  const [state, setState] = useState<CopyState>("idle");
+  const [state, setState] = useState<"idle" | "copied" | "error">("idle");
 
   const handleCopy = async () => {
     if (!text) return;
@@ -24,37 +23,22 @@ export function CopyButton({ text }: CopyButtonProps) {
     }
   };
 
-  const getIcon = () => {
-    switch (state) {
-      case "copied":
-        return "✓";
-      case "error":
-        return "✗";
-      default:
-        return "⧉";
-    }
-  };
-
-  const getColorClass = () => {
-    switch (state) {
-      case "copied":
-        return "text-green-600";
-      case "error":
-        return "text-red-500";
-      default:
-        return "text-gray-400 hover:text-blue-600";
-    }
-  };
-
   return (
     <button
-      className={`flex items-center hover:bg-blue-50 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors px-1 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent ${getColorClass()}`}
+      className={cn(
+        "flex items-center hover:bg-blue-50 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors px-1 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent",
+        state == "idle" && "text-gray-400 hover:text-blue-600",
+        state == "copied" && "text-green-600",
+        state == "error" && "text-red-500",
+      )}
       onClick={handleCopy}
       disabled={!text}
       aria-label={state === "error" ? "Copy failed" : "Copy translation"}
       type="button"
     >
-      {getIcon()}
+      {state == "idle" && "⧉"}
+      {state == "copied" && "✓"}
+      {state == "error" && "✗"}
     </button>
   );
 }
