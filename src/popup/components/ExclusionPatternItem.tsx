@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import type { ExclusionPattern } from "@/shared/storage/settings";
+import { cn } from "@/lib/utils";
 
 interface ExclusionPatternItemProps {
   pattern: ExclusionPattern;
@@ -74,9 +75,10 @@ export function ExclusionPatternItem({
 
   return (
     <div
-      className={`flex items-center gap-2 px-2 py-1.5 rounded ${
+      className={cn(
+        "flex items-center gap-2 px-2 py-1.5 rounded",
         pattern.enabled ? "bg-gray-100" : "bg-gray-50"
-      }`}
+      )}
     >
       <input
         type="checkbox"
@@ -85,9 +87,10 @@ export function ExclusionPatternItem({
         className="w-3.5 h-3.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
       />
       <span
-        className={`flex-1 text-xs truncate ${
+        className={cn(
+          "flex-1 text-xs truncate",
           pattern.enabled ? "text-gray-700" : "text-gray-400"
-        }`}
+        )}
         title={pattern.pattern}
       >
         {formatUrl(pattern.pattern)}

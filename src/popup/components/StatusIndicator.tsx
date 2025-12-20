@@ -1,4 +1,5 @@
 import type { TranslationAvailabilityStatus } from "@/shared/utils/translator";
+import { cn } from "@/lib/utils";
 
 // Extend status type to include downloading state (UI-only state)
 type StatusIndicatorStatus = TranslationAvailabilityStatus | "downloading";
@@ -19,12 +20,12 @@ export function StatusIndicator({
   const sizeClass = size === "sm" ? "w-2 h-2" : "w-3 h-3";
   const isClickable = onClick && status === "after-download";
 
-  const baseClass = `inline-block rounded-full ${sizeClass}`;
+  const baseClass = cn("inline-block rounded-full", sizeClass);
 
   if (status === "available") {
     return (
       <span
-        className={`${baseClass} bg-green-500`}
+        className={cn(baseClass, "bg-green-500")}
         title="ダウンロード済み"
       />
     );
@@ -36,9 +37,11 @@ export function StatusIndicator({
         type="button"
         onClick={onClick}
         disabled={!isClickable}
-        className={`${baseClass} border-2 border-blue-500 bg-transparent ${
-          isClickable ? "cursor-pointer hover:bg-blue-100" : ""
-        }`}
+        className={cn(
+          baseClass,
+          "border-2 border-blue-500 bg-transparent",
+          isClickable && "cursor-pointer hover:bg-blue-100"
+        )}
         title={showDownloadHint ? "クリックでダウンロード" : "ダウンロード可能"}
       />
     );
@@ -47,7 +50,7 @@ export function StatusIndicator({
   if (status === "downloading") {
     return (
       <span
-        className={`${baseClass} border-2 border-blue-500 border-t-transparent animate-spin`}
+        className={cn(baseClass, "border-2 border-blue-500 border-t-transparent animate-spin")}
         title="ダウンロード中..."
       />
     );
@@ -56,7 +59,7 @@ export function StatusIndicator({
   // unavailable or unsupported
   return (
     <span
-      className={`${baseClass} bg-gray-300`}
+      className={cn(baseClass, "bg-gray-300")}
       title="使用不可"
     />
   );

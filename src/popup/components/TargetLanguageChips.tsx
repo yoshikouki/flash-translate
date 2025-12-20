@@ -5,6 +5,7 @@ import {
   type TranslationAvailabilityStatus,
 } from "@/shared/utils/translator";
 import { StatusIndicator } from "./StatusIndicator";
+import { cn } from "@/lib/utils";
 
 interface TargetLanguageStatus {
   code: string;
@@ -81,11 +82,12 @@ export function TargetLanguageChips({
                 key={lang.code}
                 type="button"
                 onClick={() => onChangeTargetLanguage(lang.code)}
-                className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${
+                className={cn(
+                  "inline-flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors",
                   isSelected
                     ? "bg-blue-500 text-white"
                     : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-100"
-                }`}
+                )}
                 title={getLanguageName(lang.code)}
               >
                 <span>{getLanguageCode(lang.code)}</span>

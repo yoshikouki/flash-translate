@@ -6,6 +6,7 @@ import {
   type LanguagePairStatus,
 } from "@/shared/utils/translator";
 import { StatusIndicator } from "./StatusIndicator";
+import { cn } from "@/lib/utils";
 
 interface SourceLanguageChipsProps {
   targetLanguage: string;
@@ -100,11 +101,12 @@ export function SourceLanguageChips({
               type="button"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               disabled={downloadablePairs.length === 0}
-              className={`inline-flex items-center justify-center w-7 h-7 rounded border border-dashed ${
+              className={cn(
+                "inline-flex items-center justify-center w-7 h-7 rounded border border-dashed",
                 downloadablePairs.length > 0
                   ? "border-blue-400 text-blue-500 hover:bg-blue-50"
                   : "border-gray-300 text-gray-400 cursor-not-allowed"
-              }`}
+              )}
               title={
                 downloadablePairs.length > 0
                   ? `${downloadablePairs.length}言語追加可能`

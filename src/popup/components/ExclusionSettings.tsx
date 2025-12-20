@@ -7,6 +7,7 @@ import {
 } from "@/shared/storage/settings";
 import { ExclusionPatternItem } from "./ExclusionPatternItem";
 import { useCurrentTabUrl } from "../hooks/useCurrentTabUrl";
+import { cn } from "@/lib/utils";
 
 export function ExclusionSettings() {
   const currentTabUrl = useCurrentTabUrl();
@@ -72,11 +73,12 @@ export function ExclusionSettings() {
           type="button"
           onClick={handleAddCurrentSite}
           disabled={isCurrentSiteExcluded}
-          className={`w-full mb-2 px-3 py-2 rounded border border-dashed text-sm text-left flex items-center gap-2 ${
+          className={cn(
+            "w-full mb-2 px-3 py-2 rounded border border-dashed text-sm text-left flex items-center gap-2",
             isCurrentSiteExcluded
               ? "border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50"
               : "border-blue-300 text-blue-600 hover:bg-blue-50 hover:border-blue-400"
-          }`}
+          )}
         >
           <span className="text-lg leading-none">+</span>
           <span className="truncate flex-1">{formatUrl(currentTabUrl)}</span>
