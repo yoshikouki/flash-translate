@@ -38,4 +38,6 @@ export default defineManifest({
     },
   ],
 
+  minimum_chrome_version: "138",
+  homepage_url: "https://github.com/yoshikouki/flash-translate",
 });
