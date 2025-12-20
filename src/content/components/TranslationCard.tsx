@@ -113,9 +113,10 @@ export function TranslationCard({
     });
   };
 
+  // Use initial width for position calculation to prevent re-centering during resize
   const position = usePopupPosition({
     selectionRect: selection.rect,
-    popupWidth: width,
+    popupWidth: popupWidth,
     popupHeight: 180,
   });
 

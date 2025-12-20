@@ -22,12 +22,16 @@ export function useResizable({
   onResizeEnd,
 }: UseResizableOptions): UseResizableReturn {
   const [width, setWidth] = useState(initialWidth);
-  const [isResizing, setIsResizing] = useState(false);
   const [offsetX, setOffsetX] = useState(0);
-  const startXRef = useRef(0);
-  const startWidthRef = useRef(0);
-  const startOffsetXRef = useRef(0);
-  const directionRef = useRef<"left" | "right">("right");
+  const [isResizing, setIsResizing] = useState(false);
+
+  // Refs to store values at drag start
+  const dragStartRef = useRef({
+    mouseX: 0,
+    width: 0,
+    offsetX: 0,
+    side: "right" as "left" | "right",
+  });
 
   // Update width when initialWidth changes (e.g., from settings)
   useEffect(() => {
@@ -39,42 +43,56 @@ export function useResizable({
     setWidth((prev) => Math.min(prev, maxWidth));
   }, [maxWidth]);
 
-  const handleLeftMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsResizing(true);
-    startXRef.current = e.clientX;
-    startWidthRef.current = width;
-    startOffsetXRef.current = offsetX;
-    directionRef.current = "left";
-  }, [width, offsetX]);
+  const handleLeftMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragStartRef.current = {
+        mouseX: e.clientX,
+        width: width,
+        offsetX: offsetX,
+        side: "left",
+      };
+      setIsResizing(true);
+    },
+    [width, offsetX]
+  );
 
-  const handleRightMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsResizing(true);
-    startXRef.current = e.clientX;
-    startWidthRef.current = width;
-    directionRef.current = "right";
-  }, [width]);
+  const handleRightMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragStartRef.current = {
+        mouseX: e.clientX,
+        width: width,
+        offsetX: offsetX,
+        side: "right",
+      };
+      setIsResizing(true);
+    },
+    [width, offsetX]
+  );
 
   useEffect(() => {
     if (!isResizing) return;
 
     const handleMouseMove = (e: MouseEvent) => {
-      const deltaX = e.clientX - startXRef.current;
-      // Left side: invert delta (drag left = increase width)
-      const adjustedDelta = directionRef.current === "left" ? -deltaX : deltaX;
-      const newWidth = Math.min(
-        maxWidth,
-        Math.max(minWidth, startWidthRef.current + adjustedDelta)
-      );
-      setWidth(newWidth);
+      const { mouseX, width: startWidth, offsetX: startOffsetX, side } = dragStartRef.current;
+      const deltaX = e.clientX - mouseX;
 
-      // Left resize: adjust position to keep right edge fixed
-      if (directionRef.current === "left") {
-        const actualWidthChange = newWidth - startWidthRef.current;
-        setOffsetX(startOffsetXRef.current - actualWidthChange);
+      if (side === "left") {
+        // Left handle: drag left to increase width, right edge stays fixed
+        // deltaX < 0 means mouse moved left = increase width
+        const newWidth = Math.min(maxWidth, Math.max(minWidth, startWidth - deltaX));
+        const widthChange = newWidth - startWidth;
+        setWidth(newWidth);
+        // Move popup left by the width increase to keep right edge fixed
+        setOffsetX(startOffsetX - widthChange);
+      } else {
+        // Right handle: drag right to increase width, left edge stays fixed
+        const newWidth = Math.min(maxWidth, Math.max(minWidth, startWidth + deltaX));
+        setWidth(newWidth);
+        // No offset change needed - left edge stays fixed
       }
     };
 
