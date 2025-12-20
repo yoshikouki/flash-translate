@@ -16,7 +16,7 @@ Flash Translate is committed to protecting your privacy. This extension uses Chr
 ### Data We Store
 
 - **Language Preferences**: Your source and target language settings are stored in `chrome.storage.sync` to maintain your preferences across devices where you're signed into Chrome.
-- **Site Exclusion Settings**: URL patterns for sites where you've disabled translation are stored locally to remember your preferences.
+- **Site Exclusion Settings**: URL patterns for sites where you've disabled translation are stored in `chrome.storage.sync` and synced across devices where you're signed into Chrome.
 
 ### Data We DO NOT Collect
 
