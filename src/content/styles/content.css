@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Explicitly specify source directories for TailwindCSS v4 HMR */
+@source "../../**/*.{ts,tsx}";
+@source "../../../src/**/*.{ts,tsx}";
+
 * {
   box-sizing: border-box;
 }
