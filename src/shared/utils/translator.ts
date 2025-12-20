@@ -107,7 +107,7 @@ class TranslatorManager {
         targetLanguage,
         monitor(m) {
           m.addEventListener("downloadprogress", (e: ProgressEvent) => {
-            if (e.lengthComputable) {
+            if (e.lengthComputable && import.meta.env.DEV) {
               const progress = (e.loaded / e.total) * 100;
               console.log(`Translation model download: ${progress.toFixed(1)}%`);
             }
