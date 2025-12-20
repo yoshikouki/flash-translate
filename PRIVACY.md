@@ -27,7 +27,7 @@ Flash Translate is committed to protecting your privacy. This extension uses Chr
 
 ## How Translation Works
 
-Flash Translate uses Chrome's built-in Translator API (available in Chrome 138+), which processes all translations **locally on your device**. No text is sent to external servers for translation.
+Flash Translate relies on Chrome's built-in Translator API, which is designed to perform translation on-device without transmitting user text to external servers.
 
 ## Permissions Explained
 
