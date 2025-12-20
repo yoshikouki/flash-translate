@@ -144,7 +144,7 @@ export function TranslationCard({
       className="fixed font-sans text-sm leading-normal text-gray-800"
     >
       <div
-        className="relative rounded-xl bg-white/80 blur border-4 border-solid border-stone-400/60 max-w-dvw shadow-2xl overflow-visible"
+        className="relative rounded-xl bg-white/80 backdrop-blur-md border border-solid border-stone-400/60 shadow-2xl overflow-visible"
         style={{
           width: `${width}px`,
           minWidth: `${MIN_POPUP_WIDTH}px`,
