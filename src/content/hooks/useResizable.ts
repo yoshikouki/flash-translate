@@ -31,6 +31,11 @@ export function useResizable({
     setWidth(initialWidth);
   }, [initialWidth]);
 
+  // Clamp width when maxWidth changes (e.g., window resize)
+  useEffect(() => {
+    setWidth((prev) => Math.min(prev, maxWidth));
+  }, [maxWidth]);
+
   const handleLeftMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();

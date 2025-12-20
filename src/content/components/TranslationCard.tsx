@@ -24,7 +24,7 @@ interface TranslationCardProps {
 
 const DEFAULT_POPUP_WIDTH = 320;
 const MIN_POPUP_WIDTH = 280;
-const MAX_POPUP_WIDTH = 600;
+const POPUP_EDGE_MARGIN = 32; // 両端に16pxずつの余白
 
 export function TranslationCard({
   selection,
@@ -33,6 +33,18 @@ export function TranslationCard({
   const [sourceLanguage, setSourceLanguage] = useState(DEFAULT_SOURCE_LANGUAGE);
   const [targetLanguage, setTargetLanguage] = useState(DEFAULT_TARGET_LANGUAGE);
   const [popupWidth, setPopupWidth] = useState(DEFAULT_POPUP_WIDTH);
+  const [maxPopupWidth, setMaxPopupWidth] = useState(
+    () => window.innerWidth - POPUP_EDGE_MARGIN
+  );
+
+  // Update max width on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setMaxPopupWidth(window.innerWidth - POPUP_EDGE_MARGIN);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Load initial settings and subscribe to changes
   useEffect(() => {
@@ -61,7 +73,7 @@ export function TranslationCard({
   const { width, isResizing, handleLeftMouseDown, handleRightMouseDown } = useResizable({
     initialWidth: popupWidth,
     minWidth: MIN_POPUP_WIDTH,
-    maxWidth: MAX_POPUP_WIDTH,
+    maxWidth: maxPopupWidth,
     onResizeEnd: handleResizeEnd,
   });
 
@@ -137,7 +149,7 @@ export function TranslationCard({
         style={{
           width: `${width}px`,
           minWidth: `${MIN_POPUP_WIDTH}px`,
-          maxWidth: `${MAX_POPUP_WIDTH}px`,
+          maxWidth: `${maxPopupWidth}px`,
           overflow: "visible",
         }}
       >
