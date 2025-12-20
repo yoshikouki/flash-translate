@@ -10,26 +10,14 @@ export function ResizeHandle({ onMouseDown, isResizing, side }: ResizeHandleProp
   return (
     <div
       onMouseDown={onMouseDown}
-      style={{
-        position: "absolute",
-        top: 0,
-        [side]: -6,
-        width: 16,
-        height: "100%",
-        cursor: "ew-resize",
-        zIndex: 10,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
+      className="absolute top-0 w-4 h-full cursor-ew-resize z-10 flex items-center justify-center"
+      style={{ [side]: -6 }}
     >
       <GripVertical
         size={16}
-        style={{
-          color: isResizing ? "#3b82f6" : "#9ca3af",
-          opacity: isResizing ? 1 : 0.7,
-          transition: "color 0.15s, opacity 0.15s",
-        }}
+        className={`transition-[color,opacity] duration-150 ${
+          isResizing ? "text-blue-500 opacity-100" : "text-gray-400 opacity-70"
+        }`}
       />
     </div>
   );
