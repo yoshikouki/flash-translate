@@ -1,74 +1,88 @@
 # Flash Translate
 
-Chrome拡張機能 - ブラウザ内蔵のTranslator APIを使った即座翻訳
+A Chrome extension for instant translation using the browser's built-in Translator API.
 
-## 機能
+## Features
 
-- **テキスト選択で即座翻訳**: ページ上のテキストを選択すると、選択箇所の近くにポップアップで翻訳結果を表示
-- **ストリーミング翻訳**: 翻訳結果をリアルタイムで表示
-- **多言語対応**: 14言語をサポート（英語、日本語、中国語、韓国語、スペイン語など）
-- **設定の同期**: 言語設定はchrome.storage.syncで同期
+- **Instant translation on text selection**: Select text on any webpage to see translations in a popup near your selection
+- **Streaming translation**: View translation results in real-time as they're generated
+- **Multi-language support**: Supports 14 languages (English, Japanese, Chinese, Korean, Spanish, and more)
+- **Settings sync**: Language preferences sync across devices via chrome.storage.sync
+- **Site exclusion**: Disable translation on specific websites
+- **Privacy-focused**: All translation happens on-device using Chrome's built-in AI - no data sent to external servers
 
-## 必要条件
+## Requirements
 
-- **Chrome 138以上** (Translator APIサポート)
-- **Translator APIの有効化**:
-  1. `chrome://flags` を開く
-  2. 「Translator API」を検索
-  3. 「Enabled」に設定
-  4. Chromeを再起動
+- **Chrome 138+** (Translator API support)
+- **Enable Translator API**:
+  1. Open `chrome://flags`
+  2. Search for "Translator API"
+  3. Set to "Enabled"
+  4. Restart Chrome
 
-## 開発
+## Installation
+
+### From Chrome Web Store
+
+Coming soon.
+
+### Manual Installation (Development)
+
+1. Run `bun run dev` or `bun run build`
+2. Open `chrome://extensions/`
+3. Enable "Developer mode"
+4. Click "Load unpacked"
+5. Select the `dist` folder
+
+## Development
 
 ```bash
-# 依存関係のインストール
+# Install dependencies
 bun install
 
-# 開発サーバー起動（HMR対応）
+# Start development server (with HMR)
 bun run dev
 
-# ビルド
+# Production build
 bun run build
 
-# 型チェック
+# Type checking
 bun run lint
 ```
 
-### 拡張機能のインストール（開発用）
+## Tech Stack
 
-1. `bun run dev` または `bun run build` を実行
-2. `chrome://extensions/` を開く
-3. 「デベロッパーモード」を有効化
-4. 「パッケージ化されていない拡張機能を読み込む」をクリック
-5. `dist` フォルダを選択
+- **Vite** + **@crxjs/vite-plugin** - Chrome extension builds with HMR
+- **React 19** + **TypeScript** - UI components
+- **React Compiler** - Automatic memoization
+- **Tailwind CSS v4** - Styling
+- **Chrome Translator API** - On-device AI translation
 
-## 技術スタック
-
-- **Vite** + **@crxjs/vite-plugin** - Chrome拡張機能のビルド（HMR対応）
-- **React 19** + **TypeScript** - UI
-- **Tailwind CSS v4** - スタイリング
-- **Chrome Translator API** - ブラウザ内蔵AI翻訳
-
-## プロジェクト構造
+## Project Structure
 
 ```
 src/
-├── manifest.ts              # Chrome拡張機能マニフェスト
+├── manifest.ts              # Chrome extension manifest
 ├── background/              # Service Worker
-├── content/                 # Content Script（テキスト選択→翻訳ポップアップ）
-│   ├── components/          # TranslationPopup等
-│   ├── hooks/               # useTextSelection, useTranslator等
+├── content/                 # Content Script (text selection → translation popup)
+│   ├── components/          # TranslationPopup, etc.
+│   ├── hooks/               # useTextSelection, useTranslator, etc.
 │   └── styles/
-├── popup/                   # Popup UI（設定・手動翻訳）
+├── popup/                   # Popup UI (settings, manual translation)
 │   ├── components/
 │   └── styles/
-└── shared/                  # 共有コード
-    ├── constants/           # 言語リスト
-    ├── storage/             # chrome.storage操作
-    ├── types/               # 型定義
-    └── utils/               # Translator APIラッパー
+└── shared/                  # Shared code
+    ├── components/          # ErrorBoundary, etc.
+    ├── constants/           # Language list
+    ├── storage/             # chrome.storage operations
+    ├── types/               # Type definitions
+    └── utils/               # Translator API wrapper
 ```
 
-## ライセンス
+## Privacy
+
+Flash Translate respects your privacy. All translation is performed locally on your device using Chrome's built-in Translator API. No text or personal data is sent to external servers. See [PRIVACY.md](PRIVACY.md) for details.
+
+## License
 
 MIT
