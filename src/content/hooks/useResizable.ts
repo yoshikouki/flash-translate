@@ -4,6 +4,7 @@ interface UseResizableOptions {
   initialWidth: number;
   minWidth?: number;
   maxWidth?: number;
+  edgeMargin?: number;
   onResizeEnd?: (width: number) => void;
 }
 
@@ -19,6 +20,7 @@ export function useResizable({
   initialWidth,
   minWidth = 280,
   maxWidth = 600,
+  edgeMargin = 8,
   onResizeEnd,
 }: UseResizableOptions): UseResizableReturn {
   const [width, setWidth] = useState(initialWidth);
@@ -31,6 +33,8 @@ export function useResizable({
     width: 0,
     offsetX: 0,
     side: "right" as "left" | "right",
+    popupLeft: 0,
+    popupRight: 0,
   });
 
   // Update width when initialWidth changes (e.g., from settings)
@@ -43,15 +47,31 @@ export function useResizable({
     setWidth((prev) => Math.min(prev, maxWidth));
   }, [maxWidth]);
 
+  const getPopupRect = (e: React.MouseEvent) => {
+    // Navigate up to find the popup container (the one with position: fixed)
+    let element = e.currentTarget.parentElement;
+    while (element && getComputedStyle(element).position !== "fixed") {
+      element = element.parentElement;
+    }
+    if (element) {
+      const rect = element.getBoundingClientRect();
+      return { left: rect.left, right: rect.right };
+    }
+    return { left: 0, right: window.innerWidth };
+  };
+
   const handleLeftMouseDown = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
+      const popupRect = getPopupRect(e);
       dragStartRef.current = {
         mouseX: e.clientX,
         width: width,
         offsetX: offsetX,
         side: "left",
+        popupLeft: popupRect.left,
+        popupRight: popupRect.right,
       };
       setIsResizing(true);
     },
@@ -62,11 +82,14 @@ export function useResizable({
     (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
+      const popupRect = getPopupRect(e);
       dragStartRef.current = {
         mouseX: e.clientX,
         width: width,
         offsetX: offsetX,
         side: "right",
+        popupLeft: popupRect.left,
+        popupRight: popupRect.right,
       };
       setIsResizing(true);
     },
@@ -77,20 +100,27 @@ export function useResizable({
     if (!isResizing) return;
 
     const handleMouseMove = (e: MouseEvent) => {
-      const { mouseX, width: startWidth, offsetX: startOffsetX, side } = dragStartRef.current;
+      const { mouseX, width: startWidth, offsetX: startOffsetX, side, popupLeft, popupRight } = dragStartRef.current;
       const deltaX = e.clientX - mouseX;
+      const viewportWidth = window.innerWidth;
 
       if (side === "left") {
         // Left handle: drag left to increase width, right edge stays fixed
         // deltaX < 0 means mouse moved left = increase width
-        const newWidth = Math.min(maxWidth, Math.max(minWidth, startWidth - deltaX));
+        // Limit: new left edge must not go past edgeMargin
+        const maxExpandLeft = popupLeft - edgeMargin;
+        const clampedDelta = Math.max(-maxExpandLeft, deltaX);
+        const newWidth = Math.min(maxWidth, Math.max(minWidth, startWidth - clampedDelta));
         const widthChange = newWidth - startWidth;
         setWidth(newWidth);
         // Move popup left by the width increase to keep right edge fixed
         setOffsetX(startOffsetX - widthChange);
       } else {
         // Right handle: drag right to increase width, left edge stays fixed
-        const newWidth = Math.min(maxWidth, Math.max(minWidth, startWidth + deltaX));
+        // Limit: new right edge must not go past viewportWidth - edgeMargin
+        const maxExpandRight = viewportWidth - edgeMargin - popupRight;
+        const clampedDelta = Math.min(maxExpandRight, deltaX);
+        const newWidth = Math.min(maxWidth, Math.max(minWidth, startWidth + clampedDelta));
         setWidth(newWidth);
         // No offset change needed - left edge stays fixed
       }
@@ -108,7 +138,7 @@ export function useResizable({
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isResizing, minWidth, maxWidth, onResizeEnd, width]);
+  }, [isResizing, minWidth, maxWidth, edgeMargin, onResizeEnd, width]);
 
   return {
     width,
