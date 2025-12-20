@@ -72,7 +72,7 @@ export function TranslationCard({
     await saveSettings({ popupWidth: newWidth });
   };
 
-  const { width, isResizing, handleLeftMouseDown, handleRightMouseDown } = useResizable({
+  const { width, isResizing, offsetX: resizeOffsetX, handleLeftMouseDown, handleRightMouseDown } = useResizable({
     initialWidth: popupWidth,
     minWidth: MIN_POPUP_WIDTH,
     maxWidth: maxPopupWidth,
@@ -141,7 +141,7 @@ export function TranslationCard({
   return (
     <div
       style={{
-        left: `${position.x + offset.x}px`,
+        left: `${position.x + offset.x + resizeOffsetX}px`,
         top: `${position.y + offset.y}px`,
         zIndex: 2147483647,
       }}
