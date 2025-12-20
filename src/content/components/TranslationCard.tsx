@@ -58,7 +58,7 @@ export function TranslationCard({
     await saveSettings({ popupWidth: newWidth });
   };
 
-  const { width, isResizing, handleMouseDown } = useResizable({
+  const { width, isResizing, handleLeftMouseDown, handleRightMouseDown } = useResizable({
     initialWidth: popupWidth,
     minWidth: MIN_POPUP_WIDTH,
     maxWidth: MAX_POPUP_WIDTH,
@@ -140,9 +140,11 @@ export function TranslationCard({
           width: `${width}px`,
           minWidth: `${MIN_POPUP_WIDTH}px`,
           maxWidth: `${MAX_POPUP_WIDTH}px`,
+          overflow: "visible",
         }}
       >
-        <ResizeHandle onMouseDown={handleMouseDown} isResizing={isResizing} />
+        <ResizeHandle onMouseDown={handleLeftMouseDown} isResizing={isResizing} side="left" />
+        <ResizeHandle onMouseDown={handleRightMouseDown} isResizing={isResizing} side="right" />
         <CardHeader
           sourceLanguage={sourceLanguage}
           targetLanguage={targetLanguage}

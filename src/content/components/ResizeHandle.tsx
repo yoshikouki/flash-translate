@@ -1,22 +1,37 @@
 interface ResizeHandleProps {
   onMouseDown: (e: React.MouseEvent) => void;
   isResizing: boolean;
+  side: "left" | "right";
 }
 
-export function ResizeHandle({ onMouseDown, isResizing }: ResizeHandleProps) {
+export function ResizeHandle({ onMouseDown, isResizing, side }: ResizeHandleProps) {
+  const isLeft = side === "left";
+
   return (
     <div
-      className="absolute top-0 right-0 h-full w-2 cursor-ew-resize group"
-      style={{
-        cursor: "ew-resize",
-      }}
       onMouseDown={onMouseDown}
+      style={{
+        position: "absolute",
+        top: 0,
+        [side]: -4,
+        width: 12,
+        height: "100%",
+        cursor: "ew-resize",
+        zIndex: 10,
+      }}
     >
       <div
-        className="absolute top-1/2 right-0 -translate-y-1/2 h-8 w-1 rounded-full transition-colors"
         style={{
+          position: "absolute",
+          top: "50%",
+          [isLeft ? "left" : "right"]: 4,
+          transform: "translateY(-50%)",
+          width: 4,
+          height: 32,
+          borderRadius: 4,
           backgroundColor: isResizing ? "#3b82f6" : "#d1d5db",
-          opacity: isResizing ? 1 : 0.6,
+          opacity: isResizing ? 1 : 0.5,
+          transition: "background-color 0.15s, opacity 0.15s",
         }}
       />
     </div>

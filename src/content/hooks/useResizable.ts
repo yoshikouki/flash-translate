@@ -10,7 +10,8 @@ interface UseResizableOptions {
 interface UseResizableReturn {
   width: number;
   isResizing: boolean;
-  handleMouseDown: (e: React.MouseEvent) => void;
+  handleLeftMouseDown: (e: React.MouseEvent) => void;
+  handleRightMouseDown: (e: React.MouseEvent) => void;
 }
 
 export function useResizable({
@@ -23,18 +24,29 @@ export function useResizable({
   const [isResizing, setIsResizing] = useState(false);
   const startXRef = useRef(0);
   const startWidthRef = useRef(0);
+  const directionRef = useRef<"left" | "right">("right");
 
   // Update width when initialWidth changes (e.g., from settings)
   useEffect(() => {
     setWidth(initialWidth);
   }, [initialWidth]);
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+  const handleLeftMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsResizing(true);
     startXRef.current = e.clientX;
     startWidthRef.current = width;
+    directionRef.current = "left";
+  }, [width]);
+
+  const handleRightMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsResizing(true);
+    startXRef.current = e.clientX;
+    startWidthRef.current = width;
+    directionRef.current = "right";
   }, [width]);
 
   useEffect(() => {
@@ -42,9 +54,11 @@ export function useResizable({
 
     const handleMouseMove = (e: MouseEvent) => {
       const deltaX = e.clientX - startXRef.current;
+      // Left side: invert delta (drag left = increase width)
+      const adjustedDelta = directionRef.current === "left" ? -deltaX : deltaX;
       const newWidth = Math.min(
         maxWidth,
-        Math.max(minWidth, startWidthRef.current + deltaX)
+        Math.max(minWidth, startWidthRef.current + adjustedDelta)
       );
       setWidth(newWidth);
     };
@@ -66,6 +80,7 @@ export function useResizable({
   return {
     width,
     isResizing,
-    handleMouseDown,
+    handleLeftMouseDown,
+    handleRightMouseDown,
   };
 }
