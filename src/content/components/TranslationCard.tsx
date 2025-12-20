@@ -26,7 +26,7 @@ interface TranslationCardProps {
 
 const DEFAULT_POPUP_WIDTH = 320;
 const MIN_POPUP_WIDTH = 280;
-const POPUP_EDGE_MARGIN = 32; // 両端に16pxずつの余白
+const POPUP_EDGE_MARGIN = 32; // 16px margin on each side
 
 export function TranslationCard({
   selection,

@@ -26,7 +26,7 @@ export function StatusIndicator({
     return (
       <span
         className={cn(baseClass, "bg-green-500")}
-        title="ダウンロード済み"
+        title="Downloaded"
       />
     );
   }
@@ -42,7 +42,7 @@ export function StatusIndicator({
           "border-2 border-blue-500 bg-transparent",
           isClickable && "cursor-pointer hover:bg-blue-100"
         )}
-        title={showDownloadHint ? "クリックでダウンロード" : "ダウンロード可能"}
+        title={showDownloadHint ? "Click to download" : "Available for download"}
       />
     );
   }
@@ -51,7 +51,7 @@ export function StatusIndicator({
     return (
       <span
         className={cn(baseClass, "border-2 border-blue-500 border-t-transparent animate-spin")}
-        title="ダウンロード中..."
+        title="Downloading..."
       />
     );
   }
@@ -60,7 +60,7 @@ export function StatusIndicator({
   return (
     <span
       className={cn(baseClass, "bg-gray-300")}
-      title="使用不可"
+      title="Unavailable"
     />
   );
 }

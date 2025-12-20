@@ -70,8 +70,8 @@ export function SourceLanguageChips({
     return (
       <div className="px-3 py-3 border-b border-gray-200">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500">翻訳元</span>
-          <span className="text-xs text-gray-400">読み込み中...</span>
+          <span className="text-xs text-gray-500">Source</span>
+          <span className="text-xs text-gray-400">Loading...</span>
         </div>
       </div>
     );
@@ -80,7 +80,7 @@ export function SourceLanguageChips({
   return (
     <div className="px-3 py-2.5 border-b border-gray-200">
       <div className="flex items-center gap-2">
-        <span className="text-xs text-gray-500 shrink-0">翻訳元</span>
+        <span className="text-xs text-gray-500 shrink-0">Source</span>
         <div className="flex flex-wrap gap-1.5 flex-1">
           {availablePairs.map((pair) => (
             <div
@@ -109,8 +109,8 @@ export function SourceLanguageChips({
               )}
               title={
                 downloadablePairs.length > 0
-                  ? `${downloadablePairs.length}言語追加可能`
-                  : "追加可能な言語なし"
+                  ? `${downloadablePairs.length} language(s) available`
+                  : "No languages available"
               }
             >
               +

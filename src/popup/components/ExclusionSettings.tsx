@@ -64,7 +64,7 @@ export function ExclusionSettings() {
   return (
     <div className="px-3 py-2.5">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-gray-500">除外サイト</span>
+        <span className="text-xs text-gray-500">Excluded Sites</span>
       </div>
 
       {/* Add current site button */}
@@ -83,7 +83,7 @@ export function ExclusionSettings() {
           <span className="text-lg leading-none">+</span>
           <span className="truncate flex-1">{formatUrl(currentTabUrl)}</span>
           {isCurrentSiteExcluded && (
-            <span className="text-xs text-gray-400 shrink-0">除外中</span>
+            <span className="text-xs text-gray-400 shrink-0">Excluded</span>
           )}
         </button>
       )}
@@ -91,7 +91,7 @@ export function ExclusionSettings() {
       {/* Existing patterns */}
       {patterns.length === 0 ? (
         <p className="text-xs text-gray-400 text-center py-2">
-          除外サイトなし
+          No excluded sites
         </p>
       ) : (
         <div className="space-y-1.5">

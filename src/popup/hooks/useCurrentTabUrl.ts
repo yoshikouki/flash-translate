@@ -9,7 +9,7 @@ export function useCurrentTabUrl(): string | null {
       if (tabUrl) {
         try {
           const origin = new URL(tabUrl).origin;
-          // chrome:// や edge:// などのブラウザ内部URLは除外
+          // Exclude browser internal URLs like chrome:// or edge://
           if (!origin.startsWith("chrome") && !origin.startsWith("edge")) {
             setUrl(origin);
           }

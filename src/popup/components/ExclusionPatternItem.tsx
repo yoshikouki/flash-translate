@@ -99,7 +99,7 @@ export function ExclusionPatternItem({
         onClick={() => setIsEditing(true)}
         className="text-xs text-gray-400 hover:text-blue-600 p-0.5"
         type="button"
-        title="編集"
+        title="Edit"
       >
         <svg
           className="w-3 h-3"
@@ -119,7 +119,7 @@ export function ExclusionPatternItem({
         onClick={onDelete}
         className="text-xs text-gray-400 hover:text-red-600 p-0.5"
         type="button"
-        title="削除"
+        title="Delete"
       >
         <svg
           className="w-3 h-3"
