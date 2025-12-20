@@ -23,8 +23,8 @@ export function ResizeHandle({ onMouseDown, isResizing, side }: ResizeHandleProp
       <div
         style={{
           position: "absolute",
-          top: 12,
-          bottom: 12,
+          top: 0,
+          bottom: 0,
           [isLeft ? "left" : "right"]: 4,
           width: 4,
           borderRadius: 4,

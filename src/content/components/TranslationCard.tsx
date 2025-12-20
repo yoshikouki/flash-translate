@@ -122,16 +122,14 @@ export function TranslationCard({
     64
   );
 
-  const style: React.CSSProperties = {
-    position: "fixed",
-    left: `${position.x}px`,
-    top: `${position.y}px`,
-    zIndex: 2147483647,
-  };
-
   return (
     <div
-      style={style}
+      style={{
+        position: "fixed",
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        zIndex: 2147483647,
+      }}
       className="font-sans text-sm leading-normal text-gray-800"
     >
       <div
