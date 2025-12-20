@@ -20,7 +20,7 @@ export function CopyButton({ text }: CopyButtonProps) {
 
   return (
     <button
-      className="text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1 disabled:opacity-30 disabled:cursor-not-allowed"
+      className="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors px-1 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
       onClick={handleCopy}
       disabled={!text}
       aria-label="Copy translation"

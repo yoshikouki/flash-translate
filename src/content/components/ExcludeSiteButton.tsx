@@ -39,7 +39,7 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
   return (
     <>
       <button
-        className="text-sm leading-none cursor-pointer border-none transition-colors p-1 bg-transparent text-gray-400 hover:text-red-500"
+        className="flex items-center text-sm leading-none cursor-pointer border-none transition-colors px-1 bg-transparent text-gray-400 hover:text-red-500 hover:bg-red-200 rounded"
         onClick={handleClick}
         aria-label="Exclude this site"
         title="このサイトを除外"
@@ -48,20 +48,20 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
         ⊘
       </button>
       {isConfirming && (
-        <div className="absolute inset-0 flex items-center justify-between px-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl">
-          <span className="text-xs text-gray-600">
+        <div className="absolute inset-0 flex items-stretch justify-between px-3 py-2 bg-white border border-solid border-red-200 rounded-xl">
+          <span className="flex items-center text-xs text-gray-600">
             このサイトで無効にする？
           </span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-stretch gap-2 py-0">
             <button
-              className="text-xs px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors cursor-pointer border-none"
+              className="flex items-center text-xs px-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors cursor-pointer border-none"
               onClick={handleConfirm}
               type="button"
             >
               無効にする
             </button>
             <button
-              className="text-gray-400 hover:text-gray-600 text-lg leading-none cursor-pointer bg-transparent border-none transition-colors p-1"
+              className="flex items-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 text-lg leading-none cursor-pointer bg-transparent border-none transition-colors px-1 rounded"
               onClick={handleCancel}
               aria-label="Cancel"
               type="button"

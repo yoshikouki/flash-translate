@@ -24,7 +24,7 @@ export function CardHeader({
   onClose,
 }: CardHeaderProps) {
   return (
-    <div className="relative flex items-center justify-between px-3 py-2 bg-linear-to-r from-blue-50 to-indigo-50 border-b border-gray-100 rounded-t-xl">
+    <div className="relative flex items-stretch justify-between px-3 py-1 border-b border-none rounded-t-xl" style={{ minHeight: '48px' }}>
       <LanguageSelector
         sourceLanguage={sourceLanguage}
         targetLanguage={targetLanguage}
@@ -32,11 +32,11 @@ export function CardHeader({
         onTargetChange={onTargetChange}
         onSwap={onSwap}
       />
-      <div className="flex items-center gap-1">
+      <div className="flex items-stretch gap-1">
         <CopyButton text={result} />
         <ExcludeSiteButton onExcluded={onClose} />
         <button
-          className="text-gray-400 hover:text-blue-600 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors p-1"
+          className="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors px-1 rounded"
           onClick={onOpenSettings}
           aria-label="Open settings"
           type="button"
@@ -44,7 +44,7 @@ export function CardHeader({
           ⚙
         </button>
         <button
-          className="text-gray-400 hover:text-gray-600 text-xl leading-none cursor-pointer bg-transparent border-none transition-colors p-1 -mr-1"
+          className="flex items-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 text-xl leading-none cursor-pointer bg-transparent border-none transition-colors px-1 -mr-1 rounded"
           onClick={onClose}
           aria-label="Close"
           type="button"

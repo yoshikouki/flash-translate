@@ -1,7 +1,7 @@
-import type { TranslatorAvailability } from "@/shared/utils/translator";
+import type { TranslationAvailabilityStatus } from "@/shared/utils/translator";
 
 interface TranslationContentProps {
-  availability: TranslatorAvailability;
+  availability: TranslationAvailabilityStatus;
   sourceLanguage: string;
   targetLanguage: string;
   isLoading: boolean;
