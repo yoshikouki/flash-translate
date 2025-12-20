@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslator } from "../hooks/useTranslator";
 import { usePopupPosition } from "../hooks/usePopupPosition";
 import { useResizable } from "../hooks/useResizable";
+import { useDraggable } from "../hooks/useDraggable";
 import type { SelectionInfo } from "../hooks/useTextSelection";
 import {
   getSettings,
@@ -16,6 +17,7 @@ import { CardHeader } from "./CardHeader";
 import { CardFooter } from "./CardFooter";
 import { TranslationContent } from "./TranslationContent";
 import { ResizeHandle } from "./ResizeHandle";
+import { DragHandle } from "./DragHandle";
 
 interface TranslationCardProps {
   selection: SelectionInfo;
@@ -77,6 +79,8 @@ export function TranslationCard({
     onResizeEnd: handleResizeEnd,
   });
 
+  const { offset, isDragging, handleMouseDown: handleDragMouseDown } = useDraggable();
+
   const { result, isLoading, error, translate, availability } = useTranslator({
     sourceLanguage,
     targetLanguage,
@@ -137,20 +141,21 @@ export function TranslationCard({
   return (
     <div
       style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
+        left: `${position.x + offset.x}px`,
+        top: `${position.y + offset.y}px`,
         zIndex: 2147483647,
       }}
       className="fixed font-sans text-sm leading-normal text-gray-800"
     >
       <div
-        className="relative rounded-xl bg-white/80 backdrop-blur border border-solid border-stone-400/60 shadow-2xl overflow-visible"
+        className="relative rounded-xl bg-white/80 backdrop-blur border border-solid border-stone-400/60 shadow-2xl overflow-visible pt-4"
         style={{
           width: `${width}px`,
           minWidth: `${MIN_POPUP_WIDTH}px`,
           maxWidth: `${maxPopupWidth}px`,
         }}
       >
+        <DragHandle onMouseDown={handleDragMouseDown} isDragging={isDragging} />
         <ResizeHandle onMouseDown={handleLeftMouseDown} isResizing={isResizing} side="left" />
         <ResizeHandle onMouseDown={handleRightMouseDown} isResizing={isResizing} side="right" />
         <CardHeader
