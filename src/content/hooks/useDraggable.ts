@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface UseDraggableOptions {
   onDragEnd?: (offset: { x: number; y: number }) => void;
@@ -19,17 +19,17 @@ export function useDraggable({
   const startMouseRef = useRef({ x: 0, y: 0 });
   const startOffsetRef = useRef({ x: 0, y: 0 });
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+  const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(true);
     startMouseRef.current = { x: e.clientX, y: e.clientY };
     startOffsetRef.current = offset;
-  }, [offset]);
+  };
 
-  const resetOffset = useCallback(() => {
+  const resetOffset = () => {
     setOffset({ x: 0, y: 0 });
-  }, []);
+  };
 
   useEffect(() => {
     if (!isDragging) return;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface UseResizableOptions {
   initialWidth: number;
@@ -60,41 +60,35 @@ export function useResizable({
     return { left: 0, right: window.innerWidth };
   };
 
-  const handleLeftMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const popupRect = getPopupRect(e);
-      dragStartRef.current = {
-        mouseX: e.clientX,
-        width: width,
-        offsetX: offsetX,
-        side: "left",
-        popupLeft: popupRect.left,
-        popupRight: popupRect.right,
-      };
-      setIsResizing(true);
-    },
-    [width, offsetX]
-  );
+  const handleLeftMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const popupRect = getPopupRect(e);
+    dragStartRef.current = {
+      mouseX: e.clientX,
+      width: width,
+      offsetX: offsetX,
+      side: "left",
+      popupLeft: popupRect.left,
+      popupRight: popupRect.right,
+    };
+    setIsResizing(true);
+  };
 
-  const handleRightMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const popupRect = getPopupRect(e);
-      dragStartRef.current = {
-        mouseX: e.clientX,
-        width: width,
-        offsetX: offsetX,
-        side: "right",
-        popupLeft: popupRect.left,
-        popupRight: popupRect.right,
-      };
-      setIsResizing(true);
-    },
-    [width, offsetX]
-  );
+  const handleRightMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const popupRect = getPopupRect(e);
+    dragStartRef.current = {
+      mouseX: e.clientX,
+      width: width,
+      offsetX: offsetX,
+      side: "right",
+      popupLeft: popupRect.left,
+      popupRight: popupRect.right,
+    };
+    setIsResizing(true);
+  };
 
   useEffect(() => {
     if (!isResizing) return;
