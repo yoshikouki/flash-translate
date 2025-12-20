@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslator } from "../hooks/useTranslator";
 import { usePopupPosition } from "../hooks/usePopupPosition";
+import { useResizable } from "../hooks/useResizable";
 import type { SelectionInfo } from "../hooks/useTextSelection";
 import {
   getSettings,
@@ -14,11 +15,16 @@ import {
 import { CardHeader } from "./CardHeader";
 import { CardFooter } from "./CardFooter";
 import { TranslationContent } from "./TranslationContent";
+import { ResizeHandle } from "./ResizeHandle";
 
 interface TranslationCardProps {
   selection: SelectionInfo;
   onClose: () => void;
 }
+
+const DEFAULT_POPUP_WIDTH = 320;
+const MIN_POPUP_WIDTH = 280;
+const MAX_POPUP_WIDTH = 600;
 
 export function TranslationCard({
   selection,
@@ -26,6 +32,7 @@ export function TranslationCard({
 }: TranslationCardProps) {
   const [sourceLanguage, setSourceLanguage] = useState(DEFAULT_SOURCE_LANGUAGE);
   const [targetLanguage, setTargetLanguage] = useState(DEFAULT_TARGET_LANGUAGE);
+  const [popupWidth, setPopupWidth] = useState(DEFAULT_POPUP_WIDTH);
 
   // Load initial settings and subscribe to changes
   useEffect(() => {
@@ -33,6 +40,7 @@ export function TranslationCard({
       const settings = await getSettings();
       setSourceLanguage(settings.sourceLanguage);
       setTargetLanguage(settings.targetLanguage);
+      setPopupWidth(settings.popupWidth ?? DEFAULT_POPUP_WIDTH);
     };
 
     loadSettings();
@@ -40,10 +48,22 @@ export function TranslationCard({
     const unsubscribe = subscribeToSettings((settings) => {
       setSourceLanguage(settings.sourceLanguage);
       setTargetLanguage(settings.targetLanguage);
+      setPopupWidth(settings.popupWidth ?? DEFAULT_POPUP_WIDTH);
     });
 
     return unsubscribe;
   }, []);
+
+  const handleResizeEnd = async (newWidth: number) => {
+    await saveSettings({ popupWidth: newWidth });
+  };
+
+  const { width, isResizing, handleMouseDown } = useResizable({
+    initialWidth: popupWidth,
+    minWidth: MIN_POPUP_WIDTH,
+    maxWidth: MAX_POPUP_WIDTH,
+    onResizeEnd: handleResizeEnd,
+  });
 
   const { result, isLoading, error, translate, availability } = useTranslator({
     sourceLanguage,
@@ -79,7 +99,7 @@ export function TranslationCard({
 
   const position = usePopupPosition({
     selectionRect: selection.rect,
-    popupWidth: 320,
+    popupWidth: width,
     popupHeight: 180,
   });
 
@@ -114,7 +134,15 @@ export function TranslationCard({
       style={style}
       className="font-sans text-sm leading-normal text-gray-800"
     >
-      <div className="bg-white rounded-xl border border-solid border-gray-200 shadow-2xl min-w-80 max-w-md">
+      <div
+        className="relative bg-white rounded-xl border border-solid border-gray-200 shadow-2xl"
+        style={{
+          width: `${width}px`,
+          minWidth: `${MIN_POPUP_WIDTH}px`,
+          maxWidth: `${MAX_POPUP_WIDTH}px`,
+        }}
+      >
+        <ResizeHandle onMouseDown={handleMouseDown} isResizing={isResizing} />
         <CardHeader
           sourceLanguage={sourceLanguage}
           targetLanguage={targetLanguage}

@@ -9,6 +9,7 @@ export interface TranslationSettings {
   targetLanguage: string;
   enableStreaming: boolean;
   popupPosition: "auto" | "top" | "bottom";
+  popupWidth: number;
   exclusionPatterns: ExclusionPattern[];
 }
 
@@ -19,6 +20,7 @@ const DEFAULT_SETTINGS: TranslationSettings = {
   targetLanguage: "ja",
   enableStreaming: true,
   popupPosition: "auto",
+  popupWidth: 320,
   exclusionPatterns: [],
 };
 
