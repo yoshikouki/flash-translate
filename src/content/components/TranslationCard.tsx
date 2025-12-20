@@ -11,18 +11,18 @@ import {
   DEFAULT_SOURCE_LANGUAGE,
   DEFAULT_TARGET_LANGUAGE,
 } from "@/shared/constants/languages";
-import { PopupHeader } from "./PopupHeader";
+import { CardHeader } from "./CardHeader";
 import { TranslationContent } from "./TranslationContent";
 
-interface TranslationPopupProps {
+interface TranslationCardProps {
   selection: SelectionInfo;
   onClose: () => void;
 }
 
-export function TranslationPopup({
+export function TranslationCard({
   selection,
   onClose,
-}: TranslationPopupProps) {
+}: TranslationCardProps) {
   const [sourceLanguage, setSourceLanguage] = useState(DEFAULT_SOURCE_LANGUAGE);
   const [targetLanguage, setTargetLanguage] = useState(DEFAULT_TARGET_LANGUAGE);
 
@@ -114,7 +114,7 @@ export function TranslationPopup({
       className="font-sans text-sm leading-normal text-gray-800"
     >
       <div className="bg-white rounded-xl border border-solid border-gray-200 shadow-2xl min-w-80 max-w-md">
-        <PopupHeader
+        <CardHeader
           sourceLanguage={sourceLanguage}
           targetLanguage={targetLanguage}
           onSourceChange={handleSourceChange}

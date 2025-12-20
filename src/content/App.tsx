@@ -1,5 +1,5 @@
 import { useTextSelection } from "./hooks/useTextSelection";
-import { TranslationPopup } from "./components/TranslationPopup";
+import { TranslationCard } from "./components/TranslationCard";
 
 export default function App() {
   const { selection, clearSelection } = useTextSelection();
@@ -8,5 +8,5 @@ export default function App() {
     return null;
   }
 
-  return <TranslationPopup selection={selection} onClose={clearSelection} />;
+  return <TranslationCard selection={selection} onClose={clearSelection} />;
 }

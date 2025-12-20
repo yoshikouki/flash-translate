@@ -2,7 +2,7 @@ import { LanguageSelector } from "./LanguageSelector";
 import { CopyButton } from "./CopyButton";
 import { ExcludeSiteButton } from "./ExcludeSiteButton";
 
-interface PopupHeaderProps {
+interface CardHeaderProps {
   sourceLanguage: string;
   targetLanguage: string;
   onSourceChange: (lang: string) => void;
@@ -13,7 +13,7 @@ interface PopupHeaderProps {
   onClose: () => void;
 }
 
-export function PopupHeader({
+export function CardHeader({
   sourceLanguage,
   targetLanguage,
   onSourceChange,
@@ -22,9 +22,9 @@ export function PopupHeader({
   result,
   onOpenSettings,
   onClose,
-}: PopupHeaderProps) {
+}: CardHeaderProps) {
   return (
-    <div className="relative flex items-center justify-between px-3 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100 rounded-t-xl">
+    <div className="relative flex items-center justify-between px-3 py-2 bg-linear-to-r from-blue-50 to-indigo-50 border-b border-gray-100 rounded-t-xl">
       <LanguageSelector
         sourceLanguage={sourceLanguage}
         targetLanguage={targetLanguage}
