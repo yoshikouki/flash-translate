@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslator } from "../hooks/useTranslator";
 import { usePopupPosition } from "../hooks/usePopupPosition";
 import { useResizable } from "../hooks/useResizable";
@@ -39,6 +39,9 @@ export function TranslationCard({
     () => window.innerWidth - POPUP_EDGE_MARGIN
   );
 
+  // Lock the initial width for position calculation (prevents re-centering after resize save)
+  const initialWidthForPositionRef = useRef<number | null>(null);
+
   // Update max width on window resize
   useEffect(() => {
     const handleResize = () => {
@@ -54,7 +57,12 @@ export function TranslationCard({
       const settings = await getSettings();
       setSourceLanguage(settings.sourceLanguage);
       setTargetLanguage(settings.targetLanguage);
-      setPopupWidth(settings.popupWidth ?? DEFAULT_POPUP_WIDTH);
+      const savedWidth = settings.popupWidth ?? DEFAULT_POPUP_WIDTH;
+      setPopupWidth(savedWidth);
+      // Lock initial width for position calculation (only set once)
+      if (initialWidthForPositionRef.current === null) {
+        initialWidthForPositionRef.current = savedWidth;
+      }
     };
 
     loadSettings();
@@ -63,6 +71,7 @@ export function TranslationCard({
       setSourceLanguage(settings.sourceLanguage);
       setTargetLanguage(settings.targetLanguage);
       setPopupWidth(settings.popupWidth ?? DEFAULT_POPUP_WIDTH);
+      // Note: we intentionally don't update initialWidthForPositionRef here
     });
 
     return unsubscribe;
@@ -113,10 +122,10 @@ export function TranslationCard({
     });
   };
 
-  // Use initial width for position calculation to prevent re-centering during resize
+  // Use locked initial width for position calculation to prevent re-centering during/after resize
   const position = usePopupPosition({
     selectionRect: selection.rect,
-    popupWidth: popupWidth,
+    popupWidth: initialWidthForPositionRef.current ?? popupWidth,
     popupHeight: 180,
   });
 
