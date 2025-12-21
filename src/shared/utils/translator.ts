@@ -6,6 +6,10 @@ import {
   buildStreamingResult,
   isSameLanguagePair,
   isEmptyParagraph,
+  filterSourceLanguages,
+  createUnavailabilityError,
+  createUnsupportedError,
+  createNotAvailableError,
   type ChromeAvailability,
 } from "./translatorUtils";
 
@@ -76,7 +80,7 @@ class TranslatorManager {
 
     try {
       if (typeof Translator === "undefined") {
-        throw new Error("Translator API is not available in this browser");
+        throw createNotAvailableError();
       }
 
       // Check availability
@@ -86,13 +90,11 @@ class TranslatorManager {
       );
 
       if (availability === "unsupported") {
-        throw new Error("Translator API is not supported");
+        throw createUnsupportedError();
       }
 
       if (availability === "unavailable") {
-        throw new Error(
-          `Translation not available for ${sourceLanguage} → ${targetLanguage}`
-        );
+        throw createUnavailabilityError(sourceLanguage, targetLanguage);
       }
 
       // Create translator instance with download progress monitoring
@@ -227,16 +229,15 @@ export async function checkAllPairsToTarget(
   targetLanguage: string,
   sourceLanguages: string[]
 ): Promise<LanguagePairStatus[]> {
+  const filteredLanguages = filterSourceLanguages(sourceLanguages, targetLanguage);
   const results = await Promise.all(
-    sourceLanguages
-      .filter((source) => source !== targetLanguage)
-      .map(async (sourceLanguage) => {
-        const status = await translatorManager.checkAvailability(
-          sourceLanguage,
-          targetLanguage
-        );
-        return { sourceLanguage, targetLanguage, status };
-      })
+    filteredLanguages.map(async (sourceLanguage) => {
+      const status = await translatorManager.checkAvailability(
+        sourceLanguage,
+        targetLanguage
+      );
+      return { sourceLanguage, targetLanguage, status };
+    })
   );
   return results;
 }

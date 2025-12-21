@@ -9,6 +9,10 @@ import {
   isValidTranslationText,
   isAbortError,
   toError,
+  filterSourceLanguages,
+  createUnavailabilityError,
+  createUnsupportedError,
+  createNotAvailableError,
 } from "./translatorUtils";
 
 describe("mapAvailabilityStatus", () => {
@@ -276,5 +280,65 @@ describe("toError", () => {
     const result = toError({ key: "value" });
     expect(result).toBeInstanceOf(Error);
     expect(result.message).toBe("[object Object]");
+  });
+});
+
+describe("filterSourceLanguages", () => {
+  it("filters out target language from source languages", () => {
+    const sources = ["en", "ja", "fr", "de"];
+    expect(filterSourceLanguages(sources, "ja")).toEqual(["en", "fr", "de"]);
+  });
+
+  it("returns all languages if target is not in sources", () => {
+    const sources = ["en", "ja", "fr"];
+    expect(filterSourceLanguages(sources, "de")).toEqual(["en", "ja", "fr"]);
+  });
+
+  it("returns empty array when sources is empty", () => {
+    expect(filterSourceLanguages([], "en")).toEqual([]);
+  });
+
+  it("returns empty array when only source equals target", () => {
+    expect(filterSourceLanguages(["en"], "en")).toEqual([]);
+  });
+
+  it("handles duplicate languages in sources", () => {
+    const sources = ["en", "ja", "en", "ja"];
+    expect(filterSourceLanguages(sources, "ja")).toEqual(["en", "en"]);
+  });
+
+  it("is case-sensitive", () => {
+    const sources = ["en", "EN", "En"];
+    expect(filterSourceLanguages(sources, "en")).toEqual(["EN", "En"]);
+  });
+});
+
+describe("createUnavailabilityError", () => {
+  it("creates error with language pair in message", () => {
+    const error = createUnavailabilityError("en", "ja");
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toBe("Translation not available for en → ja");
+  });
+
+  it("includes both source and target in message", () => {
+    const error = createUnavailabilityError("fr", "de");
+    expect(error.message).toContain("fr");
+    expect(error.message).toContain("de");
+  });
+});
+
+describe("createUnsupportedError", () => {
+  it("creates error with unsupported message", () => {
+    const error = createUnsupportedError();
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toBe("Translator API is not supported");
+  });
+});
+
+describe("createNotAvailableError", () => {
+  it("creates error with not available message", () => {
+    const error = createNotAvailableError();
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toBe("Translator API is not available in this browser");
   });
 });

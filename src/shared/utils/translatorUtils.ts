@@ -115,3 +115,40 @@ export function toError(error: unknown): Error {
   }
   return new Error(String(error));
 }
+
+/**
+ * Filter source languages to exclude the target language
+ * Used when checking availability for multiple language pairs
+ */
+export function filterSourceLanguages(
+  sourceLanguages: string[],
+  targetLanguage: string
+): string[] {
+  return sourceLanguages.filter((source) => source !== targetLanguage);
+}
+
+/**
+ * Create an error for unavailable translation pair
+ */
+export function createUnavailabilityError(
+  sourceLanguage: string,
+  targetLanguage: string
+): Error {
+  return new Error(
+    `Translation not available for ${sourceLanguage} → ${targetLanguage}`
+  );
+}
+
+/**
+ * Create an error for unsupported Translator API
+ */
+export function createUnsupportedError(): Error {
+  return new Error("Translator API is not supported");
+}
+
+/**
+ * Create an error for unavailable Translator API in browser
+ */
+export function createNotAvailableError(): Error {
+  return new Error("Translator API is not available in this browser");
+}
