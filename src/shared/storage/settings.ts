@@ -7,8 +7,6 @@ export interface ExclusionPattern {
 export interface TranslationSettings {
   sourceLanguage: string;
   targetLanguage: string;
-  popupPosition: "auto" | "top" | "bottom";
-  popupWidth: number;
   exclusionPatterns: ExclusionPattern[];
   skipSameLanguage: boolean;
 }
@@ -18,8 +16,6 @@ const STORAGE_KEY = "flash-translate-settings";
 const DEFAULT_SETTINGS: TranslationSettings = {
   sourceLanguage: "en",
   targetLanguage: "ja",
-  popupPosition: "auto",
-  popupWidth: 320,
   exclusionPatterns: [],
   skipSameLanguage: true,
 };

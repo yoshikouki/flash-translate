@@ -1,0 +1,16 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/content/index.tsx",
+    "src/popup/index.tsx",
+    "src/background/index.ts"
+  ],
+  "project": ["src/**/*.{ts,tsx}"],
+  "ignore": ["**/*.test.ts"],
+  "ignoreDependencies": [
+    "tailwindcss",
+    "@types/react",
+    "@types/react-dom",
+    "babel-plugin-react-compiler"
+  ]
+}
