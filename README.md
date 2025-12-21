@@ -5,9 +5,8 @@ A Chrome extension for instant translation using the browser's built-in Translat
 ## Features
 
 - **Instant translation on text selection**: Select text to view translations immediately
-- **Works with long text**: Translate large paragraphs or repeat translations as often as you need
-- **Multi-language support**: Supports 14 languages including English, Japanese, Chinese, Korean, and Spanish
-- **Smooth reading flow**: Stay focused without page transitions or copy & paste
+- **Handles long text**: Translate large paragraphs without length limits
+- **Unlimited translations**: Translate long passages as often as you like
 - **Site exclusion**: Disable translation on specific websites
 - **Settings sync**: Your preferences sync automatically across devices
 - **Privacy-focused**: All translation happens on-device using Chrome's built-in AI - no data sent to external servers
