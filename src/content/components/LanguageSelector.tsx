@@ -1,4 +1,4 @@
-import { ArrowRightLeft } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 
 interface LanguageSelectorProps {
@@ -35,7 +35,7 @@ export function LanguageSelector({
         type="button"
         aria-label="Swap languages"
       >
-        <ArrowRightLeft size={12} />
+        <ChevronRight size={12} />
       </button>
       <select
         value={targetLanguage}

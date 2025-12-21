@@ -12,6 +12,7 @@ import { TargetLanguageChips } from "./TargetLanguageChips";
 import { SourceLanguageChips } from "./SourceLanguageChips";
 
 export function LanguageSettings() {
+  const [sourceLanguage, setSourceLanguage] = useState<string>("en");
   const [targetLanguage, setTargetLanguage] = useState<string>("ja");
   const [pairs, setPairs] = useState<LanguagePairStatus[]>([]);
   const [isLoadingPairs, setIsLoadingPairs] = useState(false);
@@ -20,6 +21,7 @@ export function LanguageSettings() {
   useEffect(() => {
     const init = async () => {
       const settings = await getSettings();
+      setSourceLanguage(settings.sourceLanguage);
       setTargetLanguage(settings.targetLanguage);
     };
     init();
@@ -37,6 +39,11 @@ export function LanguageSettings() {
     loadPairs();
   }, [targetLanguage]);
 
+  const handleSourceLanguageChange = async (code: string) => {
+    setSourceLanguage(code);
+    await saveSettings({ sourceLanguage: code });
+  };
+
   const handleTargetLanguageChange = async (code: string) => {
     setTargetLanguage(code);
     await saveSettings({ targetLanguage: code });
@@ -50,9 +57,11 @@ export function LanguageSettings() {
       />
       <SourceLanguageChips
         targetLanguage={targetLanguage}
+        sourceLanguage={sourceLanguage}
         pairs={pairs}
         isLoading={isLoadingPairs}
         onPairsChange={setPairs}
+        onSourceLanguageChange={handleSourceLanguageChange}
       />
     </>
   );

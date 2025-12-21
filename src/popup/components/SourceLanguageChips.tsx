@@ -10,16 +10,20 @@ import { cn } from "@/lib/utils";
 
 interface SourceLanguageChipsProps {
   targetLanguage: string;
+  sourceLanguage: string;
   pairs: LanguagePairStatus[];
   isLoading: boolean;
   onPairsChange: (pairs: LanguagePairStatus[]) => void;
+  onSourceLanguageChange: (lang: string) => void;
 }
 
 export function SourceLanguageChips({
   targetLanguage,
+  sourceLanguage,
   pairs,
   isLoading,
   onPairsChange,
+  onSourceLanguageChange,
 }: SourceLanguageChipsProps) {
   const [downloadingPairs, setDownloadingPairs] = useState<Set<string>>(
     new Set()
@@ -82,18 +86,28 @@ export function SourceLanguageChips({
       <div className="flex items-center gap-2">
         <span className="text-xs text-gray-500 shrink-0">Source</span>
         <div className="flex flex-wrap gap-1.5 flex-1">
-          {availablePairs.map((pair) => (
-            <div
-              key={pair.sourceLanguage}
-              className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-xs text-gray-700"
-              title={getLanguageName(pair.sourceLanguage)}
-            >
-              <span>{getLanguageCode(pair.sourceLanguage)}</span>
-              <StatusIndicator
-                status={getStatus(pair.sourceLanguage) || "available"}
-              />
-            </div>
-          ))}
+          {availablePairs.map((pair) => {
+            const isSelected = pair.sourceLanguage === sourceLanguage;
+            return (
+              <button
+                key={pair.sourceLanguage}
+                type="button"
+                onClick={() => onSourceLanguageChange(pair.sourceLanguage)}
+                className={cn(
+                  "inline-flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors",
+                  isSelected
+                    ? "bg-blue-100 text-blue-700 ring-1 ring-blue-300"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                )}
+                title={getLanguageName(pair.sourceLanguage)}
+              >
+                <span>{getLanguageCode(pair.sourceLanguage)}</span>
+                <StatusIndicator
+                  status={getStatus(pair.sourceLanguage) || "available"}
+                />
+              </button>
+            );
+          })}
 
           {/* Add button with dropdown */}
           <div className="relative">
