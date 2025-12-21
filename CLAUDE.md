@@ -56,5 +56,62 @@ To test the extension: Load `dist/` folder as unpacked extension in `chrome://ex
 - React 19 + TypeScript
 - **React Compiler** enabled via `babel-plugin-react-compiler` (automatic memoization - no manual `useMemo`/`useCallback`/`memo` needed)
 - Tailwind CSS v4
+- Vitest for testing
 - `@types/dom-chromium-ai` for Translator API types
 - Path alias: `@/` → `src/`
+
+## Testing Strategy
+
+### Principle: Extract Pure Functions, Avoid Mocks
+
+This project follows a testing strategy that prioritizes **pure function extraction** over mocking. When code is difficult to test due to DOM, browser APIs, or React dependencies, refactor to extract testable pure functions rather than introducing mocks.
+
+### Pattern
+
+**Before** (hard to test - requires DOM mocks):
+```typescript
+// useTextSelection.ts
+const handleMouseUp = () => {
+  const text = window.getSelection()?.toString().trim();
+  if (text && text.length > 0 && text.length < 5000) {
+    // ... logic mixed with DOM access
+  }
+};
+```
+
+**After** (testable without mocks):
+```typescript
+// textSelection.ts - Pure functions
+export function isValidSelectionText(text: string | null): text is string {
+  if (!text) return false;
+  const trimmed = text.trim();
+  return trimmed.length > 0 && trimmed.length < MAX_SELECTION_LENGTH;
+}
+
+// useTextSelection.ts - Hook uses pure functions
+import { isValidSelectionText } from "./textSelection";
+const handleMouseUp = () => {
+  const text = window.getSelection()?.toString().trim();
+  if (isValidSelectionText(text)) { /* ... */ }
+};
+```
+
+### Guidelines
+
+1. **Identify logic vs. side effects**: Separate validation, transformation, and decision logic from DOM access and state updates
+2. **Use interfaces for DOM types**: Instead of depending on `DOMRect`, define `RectLike { width: number; height: number }` for testability
+3. **Co-locate pure functions**: Place `foo.ts` (pure functions) alongside `useFoo.ts` (hook that uses them)
+4. **Test files mirror source**: `foo.ts` → `foo.test.ts`
+
+### Test Commands
+
+```bash
+bun run test        # Watch mode
+bun run test:run    # Single run (CI)
+```
+
+### Examples in Codebase
+
+- `src/content/hooks/textSelection.ts` + `textSelection.test.ts`: Text selection validation
+- `src/shared/storage/settings.ts` + `settings.test.ts`: URL exclusion, language matching
+- `src/shared/constants/languages.ts` + `languages.test.ts`: Language code utilities
