@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { calculateLeftResize, calculateRightResize } from "./resizable";
 
 interface UseResizableOptions {
   initialWidth: number;
@@ -96,27 +97,27 @@ export function useResizable({
     const handleMouseMove = (e: MouseEvent) => {
       const { mouseX, width: startWidth, offsetX: startOffsetX, side, popupLeft, popupRight } = dragStartRef.current;
       const deltaX = e.clientX - mouseX;
-      const viewportWidth = window.innerWidth;
+      const constraints = { minWidth, maxWidth, edgeMargin };
 
       if (side === "left") {
-        // Left handle: drag left to increase width, right edge stays fixed
-        // deltaX < 0 means mouse moved left = increase width
-        // Limit: new left edge must not go past edgeMargin
-        const maxExpandLeft = popupLeft - edgeMargin;
-        const clampedDelta = Math.max(-maxExpandLeft, deltaX);
-        const newWidth = Math.min(maxWidth, Math.max(minWidth, startWidth - clampedDelta));
-        const widthChange = newWidth - startWidth;
+        const { newWidth, newOffsetX } = calculateLeftResize({
+          deltaX,
+          startWidth,
+          startOffsetX,
+          popupLeft,
+          constraints,
+        });
         setWidth(newWidth);
-        // Move popup left by the width increase to keep right edge fixed
-        setOffsetX(startOffsetX - widthChange);
+        setOffsetX(newOffsetX);
       } else {
-        // Right handle: drag right to increase width, left edge stays fixed
-        // Limit: new right edge must not go past viewportWidth - edgeMargin
-        const maxExpandRight = viewportWidth - edgeMargin - popupRight;
-        const clampedDelta = Math.min(maxExpandRight, deltaX);
-        const newWidth = Math.min(maxWidth, Math.max(minWidth, startWidth + clampedDelta));
+        const { newWidth } = calculateRightResize({
+          deltaX,
+          startWidth,
+          popupRight,
+          viewportWidth: window.innerWidth,
+          constraints,
+        });
         setWidth(newWidth);
-        // No offset change needed - left edge stays fixed
       }
     };
 
