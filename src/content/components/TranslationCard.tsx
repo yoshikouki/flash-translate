@@ -22,6 +22,7 @@ import { DragHandle } from "./DragHandle";
 interface TranslationCardProps {
   selection: SelectionInfo;
   onClose: () => void;
+  onExcludeSite: () => void;
 }
 
 const DEFAULT_POPUP_WIDTH = 320;
@@ -31,6 +32,7 @@ const POPUP_EDGE_MARGIN = 32; // 16px margin on each side
 export function TranslationCard({
   selection,
   onClose,
+  onExcludeSite,
 }: TranslationCardProps) {
   const [sourceLanguage, setSourceLanguage] = useState(DEFAULT_SOURCE_LANGUAGE);
   const [targetLanguage, setTargetLanguage] = useState(DEFAULT_TARGET_LANGUAGE);
@@ -176,6 +178,7 @@ export function TranslationCard({
           onSwap={handleSwap}
           onOpenSettings={handleOpenSettings}
           onClose={onClose}
+          onExcludeSite={onExcludeSite}
         />
 
         <div

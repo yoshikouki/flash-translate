@@ -9,7 +9,7 @@ import {
 } from "@/shared/storage/settings";
 
 export default function App() {
-  const { selection, clearSelection } = useTextSelection();
+  const { selection, isVisible, dismissPopup, clearSelection } = useTextSelection();
   const [targetLanguage, setTargetLanguage] = useState("ja");
   const [skipSameLanguage, setSkipSameLanguage] = useState(true);
 
@@ -30,7 +30,7 @@ export default function App() {
     return unsubscribe;
   }, []);
 
-  if (!selection) {
+  if (!selection || !isVisible) {
     return null;
   }
 
@@ -40,5 +40,11 @@ export default function App() {
     return null;
   }
 
-  return <TranslationCard selection={selection} onClose={clearSelection} />;
+  return (
+    <TranslationCard
+      selection={selection}
+      onClose={dismissPopup}
+      onExcludeSite={clearSelection}
+    />
+  );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const MAX_SELECTION_LENGTH = 5000;
 const SELECTION_DELAY_MS = 10;
@@ -10,6 +10,8 @@ export interface SelectionInfo {
 
 export function useTextSelection() {
   const [selection, setSelection] = useState<SelectionInfo | null>(null);
+  const [isVisible, setIsVisible] = useState(true);
+  const lastSelectionTextRef = useRef<string | null>(null);
 
   const handleMouseUp = () => {
     // Delay to ensure selection is complete
@@ -23,12 +25,21 @@ export function useTextSelection() {
           const rect = range?.getBoundingClientRect();
 
           if (rect && rect.width > 0 && rect.height > 0) {
+            // Show popup for new selections
+            if (selectedText !== lastSelectionTextRef.current) {
+              setIsVisible(true);
+            }
+            lastSelectionTextRef.current = selectedText;
             setSelection({
               text: selectedText,
               rect,
             });
           }
         } catch {
+          if (selectedText !== lastSelectionTextRef.current) {
+            setIsVisible(true);
+          }
+          lastSelectionTextRef.current = selectedText;
           setSelection({
               text: selectedText,
               rect: document.body.getBoundingClientRect(),
@@ -50,18 +61,28 @@ export function useTextSelection() {
       );
       if (!isInsideOurUI) {
         setSelection(null);
+        lastSelectionTextRef.current = null;
       }
     }
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
-      setSelection(null);
+      // Escape key hides popup but keeps text selection
+      setIsVisible(false);
     }
   };
 
+  // Dismiss popup without clearing text selection
+  const dismissPopup = () => {
+    setIsVisible(false);
+  };
+
+  // Clear selection completely (used when excluding sites)
   const clearSelection = () => {
     setSelection(null);
+    setIsVisible(false);
+    lastSelectionTextRef.current = null;
     // Also clear the browser's text selection to prevent re-triggering
     window.getSelection()?.removeAllRanges();
   };
@@ -78,5 +99,5 @@ export function useTextSelection() {
     };
   }, []);
 
-  return { selection, clearSelection };
+  return { selection, isVisible, dismissPopup, clearSelection };
 }

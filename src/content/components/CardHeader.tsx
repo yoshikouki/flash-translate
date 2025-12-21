@@ -9,6 +9,7 @@ interface CardHeaderProps {
   onSwap: () => void;
   onOpenSettings: () => void;
   onClose: () => void;
+  onExcludeSite: () => void;
 }
 
 export function CardHeader({
@@ -19,6 +20,7 @@ export function CardHeader({
   onSwap,
   onOpenSettings,
   onClose,
+  onExcludeSite,
 }: CardHeaderProps) {
   return (
     <div className="relative flex items-stretch justify-between px-3 py-1 border-b border-none rounded-t-xl" style={{ minHeight: '48px' }}>
@@ -30,7 +32,7 @@ export function CardHeader({
         onSwap={onSwap}
       />
       <div className="flex items-stretch gap-1">
-        <ExcludeSiteButton onExcluded={onClose} />
+        <ExcludeSiteButton onExcluded={onExcludeSite} />
         <button
           className="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 text-sm leading-none cursor-pointer bg-transparent border-none transition-colors px-1 rounded"
           onClick={onOpenSettings}
