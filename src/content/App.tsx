@@ -5,6 +5,7 @@ import {
   getSettings,
   subscribeToSettings,
   shouldSkipTranslation,
+  getPageLanguage,
 } from "@/shared/storage/settings";
 
 export default function App() {
@@ -34,7 +35,8 @@ export default function App() {
   }
 
   // Skip translation if page language matches target language
-  if (shouldSkipTranslation(targetLanguage, skipSameLanguage)) {
+  const pageLanguage = getPageLanguage();
+  if (shouldSkipTranslation(targetLanguage, skipSameLanguage, pageLanguage)) {
     return null;
   }
 

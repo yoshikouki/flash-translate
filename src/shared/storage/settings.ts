@@ -32,24 +32,36 @@ export function isUrlExcluded(
   return patterns.some((p) => p.enabled && url.startsWith(p.pattern));
 }
 
-// Get the page's language from the HTML lang attribute
-// Normalizes language codes (e.g., "ja-JP" -> "ja", "zh-CN" -> "zh")
-export function getPageLanguage(): string | null {
-  const lang = document.documentElement.lang;
-  if (!lang) return null;
-  // Extract primary language code (before hyphen or underscore)
+// Pure function: Normalize language code (e.g., "ja-JP" -> "ja", "zh-CN" -> "zh")
+export function normalizeLanguageCode(lang: string): string {
   return lang.split(/[-_]/)[0].toLowerCase();
 }
 
-// Check if the page language matches the target language
+// Pure function: Check if languages match (both normalized for comparison)
+export function isLanguageMatch(
+  pageLanguage: string | null,
+  targetLanguage: string
+): boolean {
+  if (!pageLanguage) return false;
+  return (
+    normalizeLanguageCode(pageLanguage) === normalizeLanguageCode(targetLanguage)
+  );
+}
+
+// DOM accessor: Get the page's language from the HTML lang attribute
+export function getPageLanguage(): string | null {
+  const lang = document.documentElement.lang;
+  return lang || null;
+}
+
+// Pure function: Determine if translation should be skipped
 export function shouldSkipTranslation(
   targetLanguage: string,
-  skipSameLanguage: boolean
+  skipSameLanguage: boolean,
+  pageLanguage: string | null
 ): boolean {
   if (!skipSameLanguage) return false;
-  const pageLanguage = getPageLanguage();
-  if (!pageLanguage) return false;
-  return pageLanguage === targetLanguage.toLowerCase();
+  return isLanguageMatch(pageLanguage, targetLanguage);
 }
 
 // Generate a unique ID for exclusion patterns
