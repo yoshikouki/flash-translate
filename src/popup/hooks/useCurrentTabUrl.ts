@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getValidOrigin } from "./tabUrl";
 
 export function useCurrentTabUrl(): string | null {
   const [url, setUrl] = useState<string | null>(null);
@@ -23,15 +24,7 @@ export function useCurrentTabUrl(): string | null {
 
       const tabUrl = tabs[0]?.url;
       if (tabUrl) {
-        try {
-          const origin = new URL(tabUrl).origin;
-          // Exclude browser internal URLs like chrome:// or edge://
-          if (!origin.startsWith("chrome") && !origin.startsWith("edge")) {
-            setUrl(origin);
-          }
-        } catch {
-          setUrl(null);
-        }
+        setUrl(getValidOrigin(tabUrl));
       }
     });
   }, []);
