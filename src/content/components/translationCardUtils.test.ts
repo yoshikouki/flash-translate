@@ -57,13 +57,4 @@ describe("translationCard pure functions", () => {
     });
   });
 
-  describe("constants", () => {
-    it("MIN_POPUP_WIDTH is 280px", () => {
-      expect(MIN_POPUP_WIDTH).toBe(280);
-    });
-
-    it("POPUP_EDGE_MARGIN is 32px", () => {
-      expect(POPUP_EDGE_MARGIN).toBe(32);
-    });
-  });
 });

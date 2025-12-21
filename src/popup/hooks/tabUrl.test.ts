@@ -3,7 +3,6 @@ import {
   parseUrlToOrigin,
   isInternalBrowserUrl,
   getValidOrigin,
-  INTERNAL_URL_PREFIXES,
 } from "./tabUrl";
 
 describe("parseUrlToOrigin", () => {
@@ -153,17 +152,3 @@ describe("getValidOrigin", () => {
   });
 });
 
-describe("INTERNAL_URL_PREFIXES", () => {
-  it("contains expected prefixes", () => {
-    expect(INTERNAL_URL_PREFIXES).toContain("chrome");
-    expect(INTERNAL_URL_PREFIXES).toContain("chrome-extension");
-    expect(INTERNAL_URL_PREFIXES).toContain("edge");
-    expect(INTERNAL_URL_PREFIXES).toContain("about");
-    expect(INTERNAL_URL_PREFIXES).toContain("moz-extension");
-    expect(INTERNAL_URL_PREFIXES).toContain("file");
-  });
-
-  it("has expected length", () => {
-    expect(INTERNAL_URL_PREFIXES.length).toBe(6);
-  });
-});

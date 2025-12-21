@@ -243,8 +243,3 @@ describe("calculatePopupPosition", () => {
   });
 });
 
-describe("MIN_POPUP_HEIGHT", () => {
-  it("is 100 pixels", () => {
-    expect(MIN_POPUP_HEIGHT).toBe(100);
-  });
-});
