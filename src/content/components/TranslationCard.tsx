@@ -18,15 +18,17 @@ import { CardFooter } from "./CardFooter";
 import { TranslationContent } from "./TranslationContent";
 import { ResizeHandle } from "./ResizeHandle";
 import { DragHandle } from "./DragHandle";
+import {
+  MIN_POPUP_WIDTH,
+  calculatePopupWidth,
+  calculateMaxPopupWidth,
+} from "./translationCardUtils";
 
 interface TranslationCardProps {
   selection: SelectionInfo;
   onClose: () => void;
   onExcludeSite: () => void;
 }
-
-const MIN_POPUP_WIDTH = 280;
-const POPUP_EDGE_MARGIN = 32; // 16px margin on each side
 
 export function TranslationCard({
   selection,
@@ -35,20 +37,20 @@ export function TranslationCard({
 }: TranslationCardProps) {
   const [sourceLanguage, setSourceLanguage] = useState(DEFAULT_SOURCE_LANGUAGE);
   const [targetLanguage, setTargetLanguage] = useState(DEFAULT_TARGET_LANGUAGE);
-  const [maxPopupWidth, setMaxPopupWidth] = useState(
-    () => window.innerWidth - POPUP_EDGE_MARGIN
+  const [maxPopupWidth, setMaxPopupWidth] = useState(() =>
+    calculateMaxPopupWidth(window.innerWidth)
   );
 
   // Calculate popup width based on selection width (clamped to min/max)
-  const selectionBasedWidth = Math.min(
-    Math.max(selection.rect.width, MIN_POPUP_WIDTH),
+  const selectionBasedWidth = calculatePopupWidth(
+    selection.rect.width,
     maxPopupWidth
   );
 
   // Update max width on window resize
   useEffect(() => {
     const handleResize = () => {
-      setMaxPopupWidth(window.innerWidth - POPUP_EDGE_MARGIN);
+      setMaxPopupWidth(calculateMaxPopupWidth(window.innerWidth));
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
