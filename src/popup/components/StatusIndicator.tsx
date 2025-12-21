@@ -1,8 +1,11 @@
 import type { TranslationAvailabilityStatus } from "@/shared/utils/translator";
 import { cn } from "@/lib/utils";
 
-// Extend status type to include downloading state (UI-only state)
-type StatusIndicatorStatus = TranslationAvailabilityStatus | "downloading";
+// Extend status type to include UI-only states
+type StatusIndicatorStatus =
+  | TranslationAvailabilityStatus
+  | "downloading"
+  | "error";
 
 interface StatusIndicatorProps {
   status: StatusIndicatorStatus;
@@ -24,10 +27,7 @@ export function StatusIndicator({
 
   if (status === "available") {
     return (
-      <span
-        className={cn(baseClass, "bg-green-500")}
-        title="Downloaded"
-      />
+      <span className={cn(baseClass, "bg-green-500")} title="Downloaded" />
     );
   }
 
@@ -42,7 +42,9 @@ export function StatusIndicator({
           "border-2 border-blue-500 bg-transparent",
           isClickable && "cursor-pointer hover:bg-blue-100"
         )}
-        title={showDownloadHint ? "Click to download" : "Available for download"}
+        title={
+          showDownloadHint ? "Click to download" : "Available for download"
+        }
       />
     );
   }
@@ -50,17 +52,24 @@ export function StatusIndicator({
   if (status === "downloading") {
     return (
       <span
-        className={cn(baseClass, "border-2 border-blue-500 border-t-transparent animate-spin")}
+        className={cn(
+          baseClass,
+          "border-2 border-blue-500 border-t-transparent animate-spin"
+        )}
         title="Downloading..."
       />
     );
   }
 
+  if (status === "error") {
+    return (
+      <span
+        className={cn(baseClass, "bg-red-500")}
+        title="Download failed - click to retry"
+      />
+    );
+  }
+
   // unavailable or unsupported
-  return (
-    <span
-      className={cn(baseClass, "bg-gray-300")}
-      title="Unavailable"
-    />
-  );
+  return <span className={cn(baseClass, "bg-gray-300")} title="Unavailable" />;
 }

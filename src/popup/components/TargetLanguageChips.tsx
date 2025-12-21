@@ -59,17 +59,20 @@ export function TargetLanguageChips({
 
   if (isLoading) {
     return (
-      <div className="px-3 py-2.5 bg-gray-50">
+      <div className="px-3 py-2.5">
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">Target</span>
-          <span className="text-xs text-gray-400">Loading...</span>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
+            <span className="text-xs text-gray-400">Loading languages...</span>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="px-3 py-2.5 bg-gray-50">
+    <div className="px-3 py-2.5">
       <div className="flex items-start gap-2">
         <span className="text-xs text-gray-500 shrink-0 pt-1.5">Target</span>
         <div className="flex flex-wrap gap-1.5 flex-1">
@@ -83,18 +86,15 @@ export function TargetLanguageChips({
                 type="button"
                 onClick={() => onChangeTargetLanguage(lang.code)}
                 className={cn(
-                  "inline-flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors",
+                  "inline-flex items-center gap-1 px-2 py-1 rounded text-xs transition-all duration-150",
                   isSelected
-                    ? "bg-blue-500 text-white"
-                    : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-100"
+                    ? "bg-blue-500 text-white shadow-sm"
+                    : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
                 )}
                 title={getLanguageName(lang.code)}
               >
                 <span>{getLanguageCode(lang.code)}</span>
-                <StatusIndicator
-                  status={status}
-                  size="sm"
-                />
+                <StatusIndicator status={status} size="sm" />
               </button>
             );
           })}

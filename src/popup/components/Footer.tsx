@@ -1,5 +1,12 @@
+import { useState } from "react";
 import { urls } from "@/lib/urls";
-import { CircleQuestionMarkIcon, HouseIcon, ThumbsUpIcon } from "lucide-react";
+import {
+  CheckIcon,
+  ExternalLinkIcon,
+  HelpCircleIcon,
+  Share2Icon,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 function GitHubIcon() {
   return (
@@ -14,27 +21,31 @@ function GitHubIcon() {
   );
 }
 
-function handleShare() {
-  const shareData = {
-    title: "Flash Translate",
-    text: "Chrome の組み込み翻訳 API を使った高速翻訳拡張機能",
-    url: urls.chromeWebStore,
+export function Footer() {
+  const [shareState, setShareState] = useState<"idle" | "shared">("idle");
+
+  const handleShare = async () => {
+    const shareData = {
+      title: "Flash Translate",
+      text: "Chrome の組み込み翻訳 API を使った高速翻訳拡張機能",
+      url: urls.chromeWebStore,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(urls.chromeWebStore);
+      }
+      setShareState("shared");
+      setTimeout(() => setShareState("idle"), 2000);
+    } catch {
+      // User cancelled share
+    }
   };
 
-  if (navigator.share) {
-    navigator.share(shareData).catch(() => {
-      // User cancelled or share failed, fallback to copying URL
-      navigator.clipboard.writeText(urls.chromeWebStore);
-    });
-  } else {
-    // Fallback: copy URL to clipboard
-    navigator.clipboard.writeText(urls.chromeWebStore);
-  }
-}
-
-export function Footer() {
   return (
-    <footer className="flex items-center justify-between gap-4 px-4 py-3 border-t border-gray-100 bg-gray-50">
+    <footer className="flex items-center justify-between gap-4 px-4 py-3 border-t border-gray-100 bg-gray-50/80">
       <div className="flex items-center justify-center gap-4">
         <a
           href={urls.support}
@@ -43,19 +54,19 @@ export function Footer() {
           className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
           title="Support & Feedback"
         >
-          <CircleQuestionMarkIcon size={20} />
+          <HelpCircleIcon size={18} />
           <span>Support</span>
         </a>
       </div>
-      <div className="flex items-center justify-center gap-4">
+      <div className="flex items-center justify-center gap-3">
         <a
-          href={urls.support}
+          href={urls.chromeWebStore}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
           title="Chrome Web Store"
         >
-          <HouseIcon size={20} />
+          <ExternalLinkIcon size={18} />
         </a>
         <a
           href={urls.repository}
@@ -69,10 +80,19 @@ export function Footer() {
         <button
           type="button"
           onClick={handleShare}
-          className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
-          title="Share this extension"
+          className={cn(
+            "flex items-center gap-1.5 text-xs transition-colors cursor-pointer",
+            shareState === "shared"
+              ? "text-green-600"
+              : "text-gray-500 hover:text-gray-700"
+          )}
+          title={shareState === "shared" ? "Shared!" : "Share this extension"}
         >
-          <ThumbsUpIcon size={20} />
+          {shareState === "shared" ? (
+            <CheckIcon size={18} />
+          ) : (
+            <Share2Icon size={18} />
+          )}
         </button>
       </div>
     </footer>
