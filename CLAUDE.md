@@ -81,18 +81,23 @@ const handleMouseUp = () => {
 
 **After** (testable without mocks):
 ```typescript
-// textSelection.ts - Pure functions
-export function isValidSelectionText(text: string | null): text is string {
-  if (!text) return false;
+// textSelection.ts - Pure functions (validation + normalization)
+export function getValidSelectionText(text: string | null): string | null {
+  if (!text) return null;
   const trimmed = text.trim();
-  return trimmed.length > 0 && trimmed.length < MAX_SELECTION_LENGTH;
+  if (trimmed.length === 0 || trimmed.length >= MAX_SELECTION_LENGTH) {
+    return null;
+  }
+  return trimmed;
 }
 
-// useTextSelection.ts - Hook uses pure functions
-import { isValidSelectionText } from "./textSelection";
+// useTextSelection.ts - Hook delegates to pure functions
+import { getValidSelectionText } from "./textSelection";
 const handleMouseUp = () => {
-  const text = window.getSelection()?.toString().trim();
-  if (isValidSelectionText(text)) { /* ... */ }
+  const rawText = window.getSelection()?.toString();
+  const validText = getValidSelectionText(rawText); // validation + trim
+  if (!validText) return;
+  // use validText...
 };
 ```
 

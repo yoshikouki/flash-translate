@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import {
-  isValidSelectionText,
+  getValidSelectionText,
   isValidRect,
   shouldShowPopupForSelection,
   isClickInsideShadowHost,
@@ -21,9 +21,11 @@ export function useTextSelection() {
     // Delay to ensure selection is complete
     setTimeout(() => {
       const windowSelection = window.getSelection();
-      const selectedText = windowSelection?.toString().trim();
+      const rawText = windowSelection?.toString();
 
-      if (!isValidSelectionText(selectedText)) {
+      // Validate and normalize (trim) in pure function
+      const validText = getValidSelectionText(rawText);
+      if (!validText) {
         return;
       }
 
@@ -40,11 +42,11 @@ export function useTextSelection() {
         rect = document.body.getBoundingClientRect();
       }
 
-      if (shouldShowPopupForSelection(selectedText, lastSelectionTextRef.current)) {
+      if (shouldShowPopupForSelection(validText, lastSelectionTextRef.current)) {
         setIsVisible(true);
       }
-      lastSelectionTextRef.current = selectedText;
-      setSelection({ text: selectedText, rect });
+      lastSelectionTextRef.current = validText;
+      setSelection({ text: validText, rect });
     }, SELECTION_DELAY_MS);
   };
 

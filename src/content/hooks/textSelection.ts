@@ -14,12 +14,16 @@ export interface SelectionInfo {
 }
 
 /**
- * Validates if the selected text is within acceptable bounds
+ * Validates and normalizes selected text.
+ * Returns trimmed text if valid, null otherwise.
  */
-export function isValidSelectionText(text: string | undefined | null): text is string {
-  if (!text) return false;
+export function getValidSelectionText(text: string | undefined | null): string | null {
+  if (!text) return null;
   const trimmed = text.trim();
-  return trimmed.length > 0 && trimmed.length < MAX_SELECTION_LENGTH;
+  if (trimmed.length === 0 || trimmed.length >= MAX_SELECTION_LENGTH) {
+    return null;
+  }
+  return trimmed;
 }
 
 /**

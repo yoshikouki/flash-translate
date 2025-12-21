@@ -1,40 +1,44 @@
 import { describe, it, expect } from "vitest";
 import {
-  isValidSelectionText,
+  getValidSelectionText,
   isValidRect,
   shouldShowPopupForSelection,
   MAX_SELECTION_LENGTH,
 } from "./textSelection";
 
-describe("isValidSelectionText", () => {
-  it("returns false for null or undefined", () => {
-    expect(isValidSelectionText(null)).toBe(false);
-    expect(isValidSelectionText(undefined)).toBe(false);
+describe("getValidSelectionText", () => {
+  it("returns null for null or undefined", () => {
+    expect(getValidSelectionText(null)).toBeNull();
+    expect(getValidSelectionText(undefined)).toBeNull();
   });
 
-  it("returns false for empty string", () => {
-    expect(isValidSelectionText("")).toBe(false);
+  it("returns null for empty string", () => {
+    expect(getValidSelectionText("")).toBeNull();
   });
 
-  it("returns false for whitespace-only string", () => {
-    expect(isValidSelectionText("   ")).toBe(false);
-    expect(isValidSelectionText("\n\t")).toBe(false);
+  it("returns null for whitespace-only string", () => {
+    expect(getValidSelectionText("   ")).toBeNull();
+    expect(getValidSelectionText("\n\t")).toBeNull();
   });
 
-  it("returns true for valid text", () => {
-    expect(isValidSelectionText("hello")).toBe(true);
-    expect(isValidSelectionText("こんにちは")).toBe(true);
-    expect(isValidSelectionText("  trimmed  ")).toBe(true);
+  it("returns trimmed text for valid input", () => {
+    expect(getValidSelectionText("hello")).toBe("hello");
+    expect(getValidSelectionText("こんにちは")).toBe("こんにちは");
   });
 
-  it("returns false for text exceeding max length", () => {
+  it("trims whitespace from valid text", () => {
+    expect(getValidSelectionText("  trimmed  ")).toBe("trimmed");
+    expect(getValidSelectionText("\n hello \t")).toBe("hello");
+  });
+
+  it("returns null for text exceeding max length", () => {
     const longText = "a".repeat(MAX_SELECTION_LENGTH);
-    expect(isValidSelectionText(longText)).toBe(false);
+    expect(getValidSelectionText(longText)).toBeNull();
   });
 
-  it("returns true for text at max length - 1", () => {
+  it("returns text at max length - 1", () => {
     const maxText = "a".repeat(MAX_SELECTION_LENGTH - 1);
-    expect(isValidSelectionText(maxText)).toBe(true);
+    expect(getValidSelectionText(maxText)).toBe(maxText);
   });
 });
 
