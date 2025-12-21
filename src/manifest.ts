@@ -5,7 +5,7 @@ export default defineManifest({
   manifest_version: 3,
   name: "Flash Translate",
   version: packageJson.version,
-  description: "Instant translation with Chrome built-in Translator API",
+  description: "Translate selected text instantly, without leaving the page. All processing happens on your device.",
 
   icons: {
     16: "icons/icon-16.png",
