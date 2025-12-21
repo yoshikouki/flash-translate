@@ -7,6 +7,14 @@ import { getSettings, isUrlExcluded } from "@/shared/storage/settings";
 
 const HOST_ID = "flash-translate-root";
 
+// Message listener for popup to get current URL
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message.type === "GET_CURRENT_URL") {
+    sendResponse({ url: window.location.href });
+  }
+  return false; // Synchronous response
+});
+
 async function initializeContentScript() {
   // Check if already initialized
   if (document.getElementById(HOST_ID)) {

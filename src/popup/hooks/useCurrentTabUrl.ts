@@ -22,10 +22,32 @@ export function useCurrentTabUrl(): string | null {
         return;
       }
 
-      const tabUrl = tabs[0]?.url;
-      if (tabUrl) {
-        setUrl(getValidOrigin(tabUrl));
+      const tabId = tabs[0]?.id;
+      if (tabId === undefined) {
+        return;
       }
+
+      // Request URL from content script (avoids needing "tabs" permission)
+      chrome.tabs.sendMessage(
+        tabId,
+        { type: "GET_CURRENT_URL" },
+        (response) => {
+          // Content script may not be loaded (e.g., chrome:// pages)
+          if (chrome.runtime.lastError) {
+            if (import.meta.env.DEV) {
+              console.log(
+                "[Flash Translate] Content script not available:",
+                chrome.runtime.lastError.message
+              );
+            }
+            return;
+          }
+
+          if (response?.url) {
+            setUrl(getValidOrigin(response.url));
+          }
+        }
+      );
     });
   }, []);
 
