@@ -3,7 +3,7 @@
 
 export const MAX_SELECTION_LENGTH = 5000;
 
-export interface RectLike {
+interface RectLike {
   width: number;
   height: number;
 }

@@ -9,8 +9,6 @@
   "ignore": ["**/*.test.ts"],
   "ignoreDependencies": [
     "tailwindcss",
-    "@types/react",
-    "@types/react-dom",
     "babel-plugin-react-compiler"
   ]
 }

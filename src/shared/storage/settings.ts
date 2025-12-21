@@ -4,7 +4,7 @@ export interface ExclusionPattern {
   enabled: boolean;
 }
 
-export interface TranslationSettings {
+interface TranslationSettings {
   sourceLanguage: string;
   targetLanguage: string;
   exclusionPatterns: ExclusionPattern[];
@@ -143,4 +143,3 @@ export function subscribeToSettings(
   }
 }
 
-export { STORAGE_KEY, DEFAULT_SETTINGS };
