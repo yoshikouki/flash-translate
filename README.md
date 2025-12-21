@@ -1,5 +1,7 @@
 # Flash Translate
 
+![Screen shot](./images/eyecatch.png)
+
 A Chrome extension for instant translation using the browser's built-in Translator API.
 
 ## Features
