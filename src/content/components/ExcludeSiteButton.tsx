@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Ban, X } from "lucide-react";
 import {
   saveSettings,
   getSettings,
@@ -39,13 +40,13 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
   return (
     <>
       <button
-        className="flex items-center text-sm leading-none cursor-pointer border-none transition-colors px-1 bg-transparent text-gray-400 hover:text-red-500 hover:bg-red-200 rounded"
+        className="flex items-center cursor-pointer border-none transition-colors p-1 bg-transparent text-gray-400 hover:text-red-500 hover:bg-red-200 rounded"
         onClick={handleClick}
         aria-label="Exclude this site"
         title="Exclude this site"
         type="button"
       >
-        ⊘
+        <Ban size={14} />
       </button>
       {isConfirming && (
         <div className="absolute inset-0 flex items-stretch justify-between px-3 py-2 bg-white border border-solid border-red-200 rounded-xl">
@@ -61,12 +62,12 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
               Disable
             </button>
             <button
-              className="flex items-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 text-lg leading-none cursor-pointer bg-transparent border-none transition-colors px-1 rounded"
+              className="flex items-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer bg-transparent border-none transition-colors p-1 rounded"
               onClick={handleCancel}
               aria-label="Cancel"
               type="button"
             >
-              ×
+              <X size={16} />
             </button>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import { ArrowRightLeft } from "lucide-react";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 
 interface LanguageSelectorProps {
@@ -30,11 +31,11 @@ export function LanguageSelector({
       </select>
       <button
         onClick={onSwap}
-        className="flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-50 text-xs cursor-pointer bg-transparent border-none px-1 rounded transition-colors"
+        className="flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-50 cursor-pointer bg-transparent border-none p-1 rounded transition-colors"
         type="button"
         aria-label="Swap languages"
       >
-        -&gt;
+        <ArrowRightLeft size={12} />
       </button>
       <select
         value={targetLanguage}

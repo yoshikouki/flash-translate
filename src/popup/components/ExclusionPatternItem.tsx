@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Pencil, X } from "lucide-react";
 import type { ExclusionPattern } from "@/shared/storage/settings";
 import { cn } from "@/lib/utils";
 
@@ -97,43 +98,19 @@ export function ExclusionPatternItem({
       </span>
       <button
         onClick={() => setIsEditing(true)}
-        className="text-xs text-gray-400 hover:text-blue-600 p-0.5"
+        className="text-gray-400 hover:text-blue-600 p-0.5"
         type="button"
         title="Edit"
       >
-        <svg
-          className="w-3 h-3"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-          />
-        </svg>
+        <Pencil size={12} />
       </button>
       <button
         onClick={onDelete}
-        className="text-xs text-gray-400 hover:text-red-600 p-0.5"
+        className="text-gray-400 hover:text-red-600 p-0.5"
         type="button"
         title="Delete"
       >
-        <svg
-          className="w-3 h-3"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        <X size={12} />
       </button>
     </div>
   );
