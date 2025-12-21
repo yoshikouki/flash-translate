@@ -1,5 +1,14 @@
 // Using official @types/dom-chromium-ai types
 
+import {
+  mapAvailabilityStatus,
+  splitTextIntoParagraphs,
+  buildStreamingResult,
+  isSameLanguagePair,
+  isEmptyParagraph,
+  type ChromeAvailability,
+} from "./translatorUtils";
+
 interface CachedTranslator {
   translator: Translator;
   sourceLanguage: string;
@@ -35,18 +44,7 @@ class TranslatorManager {
         targetLanguage,
       });
 
-      // Availability type: "unavailable" | "downloadable" | "downloading" | "available"
-      switch (result) {
-        case "available":
-          return "available";
-        case "downloadable":
-        case "downloading":
-          return "after-download";
-        case "unavailable":
-          return "unavailable";
-        default:
-          return "unavailable";
-      }
+      return mapAvailabilityStatus(result as ChromeAvailability);
     } catch {
       return "unsupported";
     }
@@ -57,12 +55,8 @@ class TranslatorManager {
     targetLanguage: string
   ): Promise<Translator> {
     // Reuse existing instance if same language pair
-    if (
-      this.instance &&
-      this.instance.sourceLanguage === sourceLanguage &&
-      this.instance.targetLanguage === targetLanguage
-    ) {
-      return this.instance.translator;
+    if (isSameLanguagePair(this.instance, sourceLanguage, targetLanguage)) {
+      return this.instance!.translator;
     }
 
     // Destroy existing instance if different language pair
@@ -162,7 +156,7 @@ class TranslatorManager {
     const translator = await this.getTranslator(sourceLanguage, targetLanguage);
 
     // Split by paragraph breaks to preserve structure
-    const paragraphs = text.split(/\n\n+/);
+    const paragraphs = splitTextIntoParagraphs(text);
 
     if (paragraphs.length === 1) {
       // Single paragraph - stream normally
@@ -184,13 +178,13 @@ class TranslatorManager {
       const translatedParagraphs: string[] = [];
 
       for (let i = 0; i < paragraphs.length; i++) {
-        const paragraph = paragraphs[i].trim();
-        if (!paragraph) {
+        const paragraph = paragraphs[i];
+        if (isEmptyParagraph(paragraph)) {
           translatedParagraphs.push("");
           continue;
         }
 
-        const stream = translator.translateStreaming(paragraph);
+        const stream = translator.translateStreaming(paragraph.trim());
         const reader = stream.getReader();
 
         try {
@@ -200,11 +194,7 @@ class TranslatorManager {
             if (done) break;
             paragraphResult += value;
             // Yield current progress: completed paragraphs + current paragraph
-            const currentResult = [
-              ...translatedParagraphs,
-              paragraphResult,
-            ].join("\n\n");
-            yield currentResult;
+            yield buildStreamingResult(translatedParagraphs, paragraphResult);
           }
           translatedParagraphs.push(paragraphResult);
         } finally {
