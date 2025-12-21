@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslator } from "../hooks/useTranslator";
 import { usePopupPosition } from "../hooks/usePopupPosition";
 import { useResizable } from "../hooks/useResizable";
@@ -25,7 +25,6 @@ interface TranslationCardProps {
   onExcludeSite: () => void;
 }
 
-const DEFAULT_POPUP_WIDTH = 320;
 const MIN_POPUP_WIDTH = 280;
 const POPUP_EDGE_MARGIN = 32; // 16px margin on each side
 
@@ -36,13 +35,15 @@ export function TranslationCard({
 }: TranslationCardProps) {
   const [sourceLanguage, setSourceLanguage] = useState(DEFAULT_SOURCE_LANGUAGE);
   const [targetLanguage, setTargetLanguage] = useState(DEFAULT_TARGET_LANGUAGE);
-  const [popupWidth, setPopupWidth] = useState(DEFAULT_POPUP_WIDTH);
   const [maxPopupWidth, setMaxPopupWidth] = useState(
     () => window.innerWidth - POPUP_EDGE_MARGIN
   );
 
-  // Lock the initial width for position calculation (prevents re-centering after resize save)
-  const initialWidthForPositionRef = useRef<number | null>(null);
+  // Calculate popup width based on selection width (clamped to min/max)
+  const selectionBasedWidth = Math.min(
+    Math.max(selection.rect.width, MIN_POPUP_WIDTH),
+    maxPopupWidth
+  );
 
   // Update max width on window resize
   useEffect(() => {
@@ -59,12 +60,6 @@ export function TranslationCard({
       const settings = await getSettings();
       setSourceLanguage(settings.sourceLanguage);
       setTargetLanguage(settings.targetLanguage);
-      const savedWidth = settings.popupWidth ?? DEFAULT_POPUP_WIDTH;
-      setPopupWidth(savedWidth);
-      // Lock initial width for position calculation (only set once)
-      if (initialWidthForPositionRef.current === null) {
-        initialWidthForPositionRef.current = savedWidth;
-      }
     };
 
     loadSettings();
@@ -72,22 +67,15 @@ export function TranslationCard({
     const unsubscribe = subscribeToSettings((settings) => {
       setSourceLanguage(settings.sourceLanguage);
       setTargetLanguage(settings.targetLanguage);
-      setPopupWidth(settings.popupWidth ?? DEFAULT_POPUP_WIDTH);
-      // Note: we intentionally don't update initialWidthForPositionRef here
     });
 
     return unsubscribe;
   }, []);
 
-  const handleResizeEnd = async (newWidth: number) => {
-    await saveSettings({ popupWidth: newWidth });
-  };
-
   const { width, isResizing, offsetX: resizeOffsetX, handleLeftMouseDown, handleRightMouseDown } = useResizable({
-    initialWidth: popupWidth,
+    initialWidth: selectionBasedWidth,
     minWidth: MIN_POPUP_WIDTH,
     maxWidth: maxPopupWidth,
-    onResizeEnd: handleResizeEnd,
   });
 
   const { offset, isDragging, handleMouseDown: handleDragMouseDown } = useDraggable();
@@ -124,10 +112,9 @@ export function TranslationCard({
     });
   };
 
-  // Use locked initial width for position calculation to prevent re-centering during/after resize
   const position = usePopupPosition({
     selectionRect: selection.rect,
-    popupWidth: initialWidthForPositionRef.current ?? popupWidth,
+    popupWidth: selectionBasedWidth,
     popupHeight: 180,
   });
 
