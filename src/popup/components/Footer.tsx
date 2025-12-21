@@ -1,7 +1,4 @@
-const SUPPORT_URL = "https://forms.gle/Kjbebqeu2Uqk7eX6A";
-const REPO_URL = "https://github.com/yoshikouki/flash-translate";
-const CHROME_STORE_URL =
-  "https://chromewebstore.google.com/detail/flash-translate/mmaombipdockgnidjpbijocjhbpopffd";
+import { urls } from "@/lib/urls";
 
 function GitHubIcon() {
   return (
@@ -60,17 +57,17 @@ function handleShare() {
   const shareData = {
     title: "Flash Translate",
     text: "Chrome の組み込み翻訳 API を使った高速翻訳拡張機能",
-    url: CHROME_STORE_URL,
+    url: urls.chromeWebStore,
   };
 
   if (navigator.share) {
     navigator.share(shareData).catch(() => {
       // User cancelled or share failed, fallback to copying URL
-      navigator.clipboard.writeText(CHROME_STORE_URL);
+      navigator.clipboard.writeText(urls.chromeWebStore);
     });
   } else {
     // Fallback: copy URL to clipboard
-    navigator.clipboard.writeText(CHROME_STORE_URL);
+    navigator.clipboard.writeText(urls.chromeWebStore);
   }
 }
 
@@ -78,7 +75,7 @@ export function Footer() {
   return (
     <footer className="flex items-center justify-center gap-4 px-4 py-3 border-t border-gray-100 bg-gray-50">
       <a
-        href={REPO_URL}
+        href={urls.repository}
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
@@ -88,7 +85,7 @@ export function Footer() {
         <span>GitHub</span>
       </a>
       <a
-        href={SUPPORT_URL}
+        href={urls.support}
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
