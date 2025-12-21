@@ -1,10 +1,10 @@
 import { urls } from "@/lib/urls";
-import { CircleQuestionMarkIcon, ThumbsUpIcon } from "lucide-react";
+import { CircleQuestionMarkIcon, HouseIcon, ThumbsUpIcon } from "lucide-react";
 
 function GitHubIcon() {
   return (
     <svg
-      className="w-4 h-4"
+      className="w-5 h-5"
       viewBox="0 0 24 24"
       fill="currentColor"
       aria-hidden="true"
@@ -34,36 +34,47 @@ function handleShare() {
 
 export function Footer() {
   return (
-    <footer className="flex items-center justify-center gap-4 px-4 py-3 border-t border-gray-100 bg-gray-50">
-      <a
-        href={urls.repository}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
-        title="GitHub Repository"
-      >
-        <GitHubIcon />
-        <span>GitHub</span>
-      </a>
-      <a
-        href={urls.support}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
-        title="Support & Feedback"
-      >
-        <CircleQuestionMarkIcon size={20} />
-        <span>Support</span>
-      </a>
-      <button
-        type="button"
-        onClick={handleShare}
-        className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
-        title="Share this extension"
-      >
-        <ThumbsUpIcon size={20} />
-        <span>Share</span>
-      </button>
+    <footer className="flex items-center justify-between gap-4 px-4 py-3 border-t border-gray-100 bg-gray-50">
+      <div className="flex items-center justify-center gap-4">
+        <a
+          href={urls.support}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+          title="Support & Feedback"
+        >
+          <CircleQuestionMarkIcon size={20} />
+          <span>Support</span>
+        </a>
+      </div>
+      <div className="flex items-center justify-center gap-4">
+        <a
+          href={urls.support}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+          title="Chrome Web Store"
+        >
+          <HouseIcon size={20} />
+        </a>
+        <a
+          href={urls.repository}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+          title="GitHub Repository"
+        >
+          <GitHubIcon />
+        </a>
+        <button
+          type="button"
+          onClick={handleShare}
+          className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+          title="Share this extension"
+        >
+          <ThumbsUpIcon size={20} />
+        </button>
+      </div>
     </footer>
   );
 }

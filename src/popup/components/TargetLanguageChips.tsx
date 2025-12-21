@@ -59,7 +59,7 @@ export function TargetLanguageChips({
 
   if (isLoading) {
     return (
-      <div className="px-3 py-2.5 border-b border-gray-200 bg-gray-50">
+      <div className="px-3 py-2.5 bg-gray-50">
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">Target</span>
           <span className="text-xs text-gray-400">Loading...</span>
@@ -69,7 +69,7 @@ export function TargetLanguageChips({
   }
 
   return (
-    <div className="px-3 py-2.5 border-b border-gray-200 bg-gray-50">
+    <div className="px-3 py-2.5 bg-gray-50">
       <div className="flex items-start gap-2">
         <span className="text-xs text-gray-500 shrink-0 pt-1.5">Target</span>
         <div className="flex flex-wrap gap-1.5 flex-1">

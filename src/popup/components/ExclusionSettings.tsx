@@ -64,7 +64,7 @@ export function ExclusionSettings() {
   return (
     <div className="px-3 py-2.5">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-gray-500">Excluded Sites</span>
+        <span className="text-sm text-gray-700">Excluded Sites</span>
       </div>
 
       {/* Add current site button */}
@@ -90,7 +90,7 @@ export function ExclusionSettings() {
 
       {/* Existing patterns */}
       {patterns.length === 0 ? (
-        <p className="text-xs text-gray-400 text-center py-2">
+        <p className="text-xs text-gray-400 text-left py-2">
           No excluded sites
         </p>
       ) : (

@@ -72,7 +72,7 @@ export function SourceLanguageChips({
 
   if (isLoading) {
     return (
-      <div className="px-3 py-3 border-b border-gray-200">
+      <div className="px-3 py-3 bg-gray-50 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">Source</span>
           <span className="text-xs text-gray-400">Loading...</span>
@@ -82,7 +82,7 @@ export function SourceLanguageChips({
   }
 
   return (
-    <div className="px-3 py-2.5 border-b border-gray-200">
+    <div className="px-3 py-2.5 bg-gray-50 border-b border-gray-200">
       <div className="flex items-center gap-2">
         <span className="text-xs text-gray-500 shrink-0">Source</span>
         <div className="flex flex-wrap gap-1.5 flex-1">
