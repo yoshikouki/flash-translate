@@ -10,6 +10,7 @@ export interface TranslationSettings {
   popupPosition: "auto" | "top" | "bottom";
   popupWidth: number;
   exclusionPatterns: ExclusionPattern[];
+  skipSameLanguage: boolean;
 }
 
 const STORAGE_KEY = "flash-translate-settings";
@@ -20,6 +21,7 @@ const DEFAULT_SETTINGS: TranslationSettings = {
   popupPosition: "auto",
   popupWidth: 320,
   exclusionPatterns: [],
+  skipSameLanguage: true,
 };
 
 // Helper to check if a URL matches any enabled exclusion pattern
@@ -28,6 +30,26 @@ export function isUrlExcluded(
   patterns: ExclusionPattern[]
 ): boolean {
   return patterns.some((p) => p.enabled && url.startsWith(p.pattern));
+}
+
+// Get the page's language from the HTML lang attribute
+// Normalizes language codes (e.g., "ja-JP" -> "ja", "zh-CN" -> "zh")
+export function getPageLanguage(): string | null {
+  const lang = document.documentElement.lang;
+  if (!lang) return null;
+  // Extract primary language code (before hyphen or underscore)
+  return lang.split(/[-_]/)[0].toLowerCase();
+}
+
+// Check if the page language matches the target language
+export function shouldSkipTranslation(
+  targetLanguage: string,
+  skipSameLanguage: boolean
+): boolean {
+  if (!skipSameLanguage) return false;
+  const pageLanguage = getPageLanguage();
+  if (!pageLanguage) return false;
+  return pageLanguage === targetLanguage.toLowerCase();
 }
 
 // Generate a unique ID for exclusion patterns
