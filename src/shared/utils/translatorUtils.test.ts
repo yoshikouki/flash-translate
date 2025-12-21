@@ -6,6 +6,9 @@ import {
   buildStreamingResult,
   isSameLanguagePair,
   isEmptyParagraph,
+  isValidTranslationText,
+  isAbortError,
+  toError,
 } from "./translatorUtils";
 
 describe("mapAvailabilityStatus", () => {
@@ -168,5 +171,110 @@ describe("isEmptyParagraph", () => {
 
   it("returns false for string with only non-whitespace", () => {
     expect(isEmptyParagraph("a")).toBe(false);
+  });
+});
+
+describe("isValidTranslationText", () => {
+  it("returns true for non-empty text", () => {
+    expect(isValidTranslationText("Hello")).toBe(true);
+  });
+
+  it("returns true for text with leading/trailing whitespace", () => {
+    expect(isValidTranslationText("  Hello  ")).toBe(true);
+  });
+
+  it("returns false for empty string", () => {
+    expect(isValidTranslationText("")).toBe(false);
+  });
+
+  it("returns false for whitespace-only string", () => {
+    expect(isValidTranslationText("   ")).toBe(false);
+    expect(isValidTranslationText("\t")).toBe(false);
+    expect(isValidTranslationText("\n")).toBe(false);
+    expect(isValidTranslationText("  \t\n  ")).toBe(false);
+  });
+
+  it("returns true for single character", () => {
+    expect(isValidTranslationText("a")).toBe(true);
+  });
+
+  it("returns true for multiline text", () => {
+    expect(isValidTranslationText("Line 1\nLine 2")).toBe(true);
+  });
+});
+
+describe("isAbortError", () => {
+  it("returns true for AbortError", () => {
+    const abortError = new DOMException("Aborted", "AbortError");
+    expect(isAbortError(abortError)).toBe(true);
+  });
+
+  it("returns true for Error with name AbortError", () => {
+    const error = new Error("Operation cancelled");
+    error.name = "AbortError";
+    expect(isAbortError(error)).toBe(true);
+  });
+
+  it("returns false for regular Error", () => {
+    expect(isAbortError(new Error("Some error"))).toBe(false);
+  });
+
+  it("returns false for TypeError", () => {
+    expect(isAbortError(new TypeError("Type error"))).toBe(false);
+  });
+
+  it("returns false for non-Error values", () => {
+    expect(isAbortError("AbortError")).toBe(false);
+    expect(isAbortError(null)).toBe(false);
+    expect(isAbortError(undefined)).toBe(false);
+    expect(isAbortError({ name: "AbortError" })).toBe(false);
+  });
+});
+
+describe("toError", () => {
+  it("returns Error instance unchanged", () => {
+    const error = new Error("Test error");
+    expect(toError(error)).toBe(error);
+  });
+
+  it("returns TypeError unchanged", () => {
+    const error = new TypeError("Type error");
+    expect(toError(error)).toBe(error);
+  });
+
+  it("converts string to Error", () => {
+    const result = toError("string error");
+    expect(result).toBeInstanceOf(Error);
+    expect(result.message).toBe("string error");
+  });
+
+  it("converts number to Error", () => {
+    const result = toError(42);
+    expect(result).toBeInstanceOf(Error);
+    expect(result.message).toBe("42");
+  });
+
+  it("converts null to Error with 'Unknown error'", () => {
+    const result = toError(null);
+    expect(result).toBeInstanceOf(Error);
+    expect(result.message).toBe("Unknown error");
+  });
+
+  it("converts undefined to Error with 'Unknown error'", () => {
+    const result = toError(undefined);
+    expect(result).toBeInstanceOf(Error);
+    expect(result.message).toBe("Unknown error");
+  });
+
+  it("converts empty string to Error with 'Unknown error'", () => {
+    const result = toError("");
+    expect(result).toBeInstanceOf(Error);
+    expect(result.message).toBe("Unknown error");
+  });
+
+  it("converts object to Error with string representation", () => {
+    const result = toError({ key: "value" });
+    expect(result).toBeInstanceOf(Error);
+    expect(result.message).toBe("[object Object]");
   });
 });

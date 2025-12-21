@@ -3,6 +3,11 @@ import {
   translatorManager,
   type TranslationAvailabilityStatus,
 } from "@/shared/utils/translator";
+import {
+  isValidTranslationText,
+  isAbortError,
+  toError,
+} from "@/shared/utils/translatorUtils";
 
 interface UseTranslatorOptions {
   sourceLanguage: string;
@@ -45,7 +50,7 @@ export function useTranslator({
   }, [sourceLanguage, targetLanguage]);
 
   const translate = async (text: string) => {
-    if (!text.trim()) return;
+    if (!isValidTranslationText(text)) return;
 
     // Cancel previous translation if still running
     if (abortControllerRef.current) {
@@ -87,14 +92,14 @@ export function useTranslator({
         setState((prev) => ({ ...prev, result, isLoading: false, error: null }));
       }
     } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") {
+      if (isAbortError(error)) {
         return;
       }
       setState((prev) => ({
         ...prev,
         result: "",
         isLoading: false,
-        error: error instanceof Error ? error : new Error("Unknown error"),
+        error: toError(error),
       }));
     }
   };
