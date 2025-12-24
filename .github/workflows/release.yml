@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
 
     steps:
       - uses: actions/checkout@v6
@@ -47,6 +48,17 @@ jobs:
             echo "version=$TAG_VERSION" >> $GITHUB_OUTPUT
             echo "tag_name=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
             echo "is_manual=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get previous tag
+        id: prev_tag
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          echo "prev_tag=$PREV_TAG" >> $GITHUB_OUTPUT
+          if [ -n "$PREV_TAG" ]; then
+            echo "has_prev_tag=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_prev_tag=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Verify version consistency
@@ -86,6 +98,30 @@ jobs:
           sha256sum flash-translate-${{ steps.version.outputs.tag_name }}.zip > checksums.txt
           cat checksums.txt
 
+      - name: Generate release notes with Claude
+        id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Generate release notes for ${{ steps.version.outputs.tag_name }}.
+
+            Previous tag: ${{ steps.prev_tag.outputs.prev_tag || 'none' }}
+
+            First, run this command to get the commit history:
+            ```
+            git log --oneline ${{ steps.prev_tag.outputs.prev_tag && format('{0}..HEAD', steps.prev_tag.outputs.prev_tag) || 'HEAD~10..HEAD' }}
+            ```
+
+            Then create release notes in Japanese with these sections (only include sections that have content):
+            - ✨ 新機能
+            - 🐛 バグ修正
+            - 🔧 改善
+            - 📝 その他
+
+            Keep it concise. Write the release notes to a file named `release-notes.md`.
+          claude_args: '--allowed-tools "Bash(git log:*),Write" --max-turns 3'
+
       - name: Create and push tag
         if: github.event_name == 'workflow_dispatch'
         run: |
@@ -98,7 +134,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag_name }}
+          body_path: release-notes.md
           files: |
             flash-translate-${{ steps.version.outputs.tag_name }}.zip
             checksums.txt
-          generate_release_notes: true
