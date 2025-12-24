@@ -1,4 +1,4 @@
-export const EXTENSION_ID = "gibfhkdnpbinchfllkhaihmghbbollfd";
+export const EXTENSION_ID = "@@extension_id";
 
 export const urls = {
   chromeWebStore: `https://chromewebstore.google.com/detail/flash-translate/${EXTENSION_ID}`,
