@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.2). Leave empty to use package.json version.'
+        required: false
+        type: string
 
 jobs:
   release:
@@ -12,7 +18,9 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -22,12 +30,40 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ -n "${{ inputs.version }}" ]; then
+              VERSION="${{ inputs.version }}"
+            else
+              VERSION=$(jq -r .version package.json)
+            fi
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "tag_name=v$VERSION" >> $GITHUB_OUTPUT
+            echo "is_manual=true" >> $GITHUB_OUTPUT
+          else
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            echo "version=$TAG_VERSION" >> $GITHUB_OUTPUT
+            echo "tag_name=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
+            echo "is_manual=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Verify version consistency
+        if: github.event_name == 'push'
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"
           PKG_VERSION=$(jq -r .version package.json)
           if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
             echo "::error::Tag version ($TAG_VERSION) does not match package.json version ($PKG_VERSION)"
+            exit 1
+          fi
+
+      - name: Check if tag exists
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if git rev-parse "${{ steps.version.outputs.tag_name }}" >/dev/null 2>&1; then
+            echo "::error::Tag ${{ steps.version.outputs.tag_name }} already exists"
             exit 1
           fi
 
@@ -43,17 +79,26 @@ jobs:
       - name: Create ZIP
         run: |
           cd dist
-          zip -r ../flash-translate-${{ github.ref_name }}.zip .
+          zip -r ../flash-translate-${{ steps.version.outputs.tag_name }}.zip .
 
       - name: Calculate checksum
         run: |
-          sha256sum flash-translate-${{ github.ref_name }}.zip > checksums.txt
+          sha256sum flash-translate-${{ steps.version.outputs.tag_name }}.zip > checksums.txt
           cat checksums.txt
+
+      - name: Create and push tag
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "${{ steps.version.outputs.tag_name }}" -m "Release ${{ steps.version.outputs.tag_name }}"
+          git push origin "${{ steps.version.outputs.tag_name }}"
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.version.outputs.tag_name }}
           files: |
-            flash-translate-${{ github.ref_name }}.zip
+            flash-translate-${{ steps.version.outputs.tag_name }}.zip
             checksums.txt
           generate_release_notes: true
