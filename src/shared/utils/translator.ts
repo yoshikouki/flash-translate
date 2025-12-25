@@ -1,13 +1,15 @@
 // Using official @types/dom-chromium-ai types
 
 import {
-  buildStreamingResult,
+  readStreamAccumulated,
+  streamMultipleParagraphs,
+} from "./translator-streaming";
+import {
   type ChromeAvailability,
   createNotAvailableError,
   createUnavailabilityError,
   createUnsupportedError,
   filterSourceLanguages,
-  isEmptyParagraph,
   isSameLanguagePair,
   mapAvailabilityStatus,
   splitTextIntoParagraphs,
@@ -152,63 +154,22 @@ class TranslatorManager {
     return translator.translate(text);
   }
 
-  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Streaming logic requires handling multiple paragraphs
   async *translateStreaming(
     text: string,
     sourceLanguage: string,
     targetLanguage: string
   ): AsyncGenerator<string> {
     const translator = await this.getTranslator(sourceLanguage, targetLanguage);
-
-    // Split by paragraph breaks to preserve structure
     const paragraphs = splitTextIntoParagraphs(text);
 
     if (paragraphs.length === 1) {
       // Single paragraph - stream normally
-      const stream = translator.translateStreaming(text);
-      const reader = stream.getReader();
-      try {
-        let accumulated = "";
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) {
-            break;
-          }
-          accumulated += value;
-          yield accumulated;
-        }
-      } finally {
-        reader.releaseLock();
-      }
+      yield* readStreamAccumulated(translator.translateStreaming(text));
     } else {
       // Multiple paragraphs - translate each and join with line breaks
-      const translatedParagraphs: string[] = [];
-
-      for (const paragraph of paragraphs) {
-        if (isEmptyParagraph(paragraph)) {
-          translatedParagraphs.push("");
-          continue;
-        }
-
-        const stream = translator.translateStreaming(paragraph.trim());
-        const reader = stream.getReader();
-
-        try {
-          let paragraphResult = "";
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) {
-              break;
-            }
-            paragraphResult += value;
-            // Yield current progress: completed paragraphs + current paragraph
-            yield buildStreamingResult(translatedParagraphs, paragraphResult);
-          }
-          translatedParagraphs.push(paragraphResult);
-        } finally {
-          reader.releaseLock();
-        }
-      }
+      yield* streamMultipleParagraphs(paragraphs, (paragraph) =>
+        translator.translateStreaming(paragraph)
+      );
     }
   }
 
