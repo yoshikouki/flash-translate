@@ -1,10 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  clampWidth,
+  calculateLeftResize,
   calculateMaxLeftExpansion,
   calculateMaxRightExpansion,
-  calculateLeftResize,
   calculateRightResize,
+  clampWidth,
   type ResizeConstraints,
 } from "./resizable";
 

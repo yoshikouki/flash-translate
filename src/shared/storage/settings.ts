@@ -12,6 +12,7 @@ interface TranslationSettings {
 }
 
 const STORAGE_KEY = "flash-translate-settings";
+const LANG_SEPARATOR_REGEX = /[-_]/;
 
 const DEFAULT_SETTINGS: TranslationSettings = {
   sourceLanguage: "en",
@@ -30,7 +31,7 @@ export function isUrlExcluded(
 
 // Pure function: Normalize language code (e.g., "ja-JP" -> "ja", "zh-CN" -> "zh")
 export function normalizeLanguageCode(lang: string): string {
-  return lang.split(/[-_]/)[0].toLowerCase();
+  return lang.split(LANG_SEPARATOR_REGEX)[0].toLowerCase();
 }
 
 // Pure function: Check if languages match (both normalized for comparison)
@@ -38,9 +39,12 @@ export function isLanguageMatch(
   pageLanguage: string | null,
   targetLanguage: string
 ): boolean {
-  if (!pageLanguage) return false;
+  if (!pageLanguage) {
+    return false;
+  }
   return (
-    normalizeLanguageCode(pageLanguage) === normalizeLanguageCode(targetLanguage)
+    normalizeLanguageCode(pageLanguage) ===
+    normalizeLanguageCode(targetLanguage)
   );
 }
 
@@ -56,7 +60,9 @@ export function shouldSkipTranslation(
   skipSameLanguage: boolean,
   pageLanguage: string | null
 ): boolean {
-  if (!skipSameLanguage) return false;
+  if (!skipSameLanguage) {
+    return false;
+  }
   return isLanguageMatch(pageLanguage, targetLanguage);
 }
 
@@ -115,6 +121,7 @@ export function subscribeToSettings(
   callback: (settings: TranslationSettings) => void
 ): () => void {
   if (!isContextValid()) {
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: no-op cleanup for invalid context
     return () => {};
   }
 
@@ -122,7 +129,9 @@ export function subscribeToSettings(
     changes: { [key: string]: chrome.storage.StorageChange },
     areaName: string
   ) => {
-    if (!isContextValid()) return;
+    if (!isContextValid()) {
+      return;
+    }
     if (areaName === "sync" && changes[STORAGE_KEY]) {
       callback(changes[STORAGE_KEY].newValue as TranslationSettings);
     }
@@ -137,9 +146,12 @@ export function subscribeToSettings(
     };
   } catch (error) {
     if (import.meta.env.DEV) {
-      console.error("[Flash Translate] Failed to subscribe to settings:", error);
+      console.error(
+        "[Flash Translate] Failed to subscribe to settings:",
+        error
+      );
     }
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: no-op cleanup for error case
     return () => {};
   }
 }
-
