@@ -24,6 +24,10 @@ A Chrome extension for instant translation using the browser's built-in Translat
 
 ## Installation
 
+### Chrome Web Store
+
+[**Install Flash Translate**](https://chromewebstore.google.com/detail/gibfhkdnpbinchfllkhaihmghbbollfd)
+
 ### Manual Installation (Development)
 
 1. Run `bun run dev` or `bun run build`
