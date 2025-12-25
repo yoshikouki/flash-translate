@@ -1,3 +1,7 @@
+import { createPrefixedLogger } from "./logger";
+
+const log = createPrefixedLogger("i18n");
+
 /**
  * Type-safe wrapper for chrome.i18n.getMessage
  * Returns the localized message or the key if not found (dev fallback)
@@ -11,9 +15,7 @@ export function getMessage(
   // In development, return the key if message is empty
   // This helps identify missing translations
   if (!message) {
-    if (import.meta.env.DEV) {
-      console.warn(`[i18n] Missing translation for key: ${key}`);
-    }
+    log.warn(`Missing translation for key: ${key}`);
     return key;
   }
 
