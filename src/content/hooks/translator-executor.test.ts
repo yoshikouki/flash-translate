@@ -216,7 +216,7 @@ describe("executeNonStreamingTranslation", () => {
     expect(result.type).toBe("error");
     if (result.type === "error") {
       expect(result.error).toBeInstanceOf(Error);
-      expect(result.error.message).toBe("string error");
+      expect(result.error.message).toBe("Unknown error: string error");
     }
   });
 });
