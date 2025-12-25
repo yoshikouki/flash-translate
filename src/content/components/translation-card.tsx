@@ -131,14 +131,12 @@ export function TranslationCard({
   });
 
   // Translate when selection or language changes
-  // Note: translate is intentionally excluded from deps to avoid infinite loops
-  // (React Compiler handles memoization, but useEffect deps need explicit values)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: translate is intentionally excluded to avoid infinite loops (it captures sourceLanguage/targetLanguage)
   useEffect(() => {
     if (selection.text) {
       translate(selection.text);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selection.text, translate]);
+  }, [selection.text, sourceLanguage, targetLanguage]);
 
   if (!position) {
     return null;
