@@ -3,11 +3,11 @@ import {
   type TranslationAvailabilityStatus,
   translatorManager,
 } from "@/shared/utils/translator";
+import { isValidTranslationText } from "@/shared/utils/translator-utils";
 import {
-  isAbortError,
-  isValidTranslationText,
-  toError,
-} from "@/shared/utils/translator-utils";
+  executeNonStreamingTranslation,
+  executeStreamingTranslation,
+} from "./translator-executor";
 
 interface UseTranslatorOptions {
   sourceLanguage: string;
@@ -49,16 +49,13 @@ export function useTranslator({
     checkAvailability();
   }, [sourceLanguage, targetLanguage]);
 
-  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Translation logic requires handling multiple states
   const translate = async (text: string) => {
     if (!isValidTranslationText(text)) {
       return;
     }
 
     // Cancel previous translation if still running
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
+    abortControllerRef.current?.abort();
     abortControllerRef.current = new AbortController();
 
     setState((prev) => ({
@@ -68,48 +65,39 @@ export function useTranslator({
       error: null,
     }));
 
-    try {
-      if (streaming) {
-        // Streaming translation
-        let result = "";
-        for await (const chunk of translatorManager.translateStreaming(
-          text,
-          sourceLanguage,
-          targetLanguage
-        )) {
-          // Check if aborted
-          if (abortControllerRef.current?.signal.aborted) {
-            return;
-          }
-          result = chunk; // API returns cumulative result
-          setState((prev) => ({ ...prev, result }));
-        }
-        setState((prev) => ({ ...prev, isLoading: false }));
-      } else {
-        // Non-streaming translation
-        const result = await translatorManager.translate(
-          text,
-          sourceLanguage,
-          targetLanguage
-        );
-        setState((prev) => ({
-          ...prev,
-          result,
-          isLoading: false,
-          error: null,
-        }));
-      }
-    } catch (error) {
-      if (isAbortError(error)) {
-        return;
-      }
+    const options = {
+      text,
+      sourceLanguage,
+      targetLanguage,
+      signal: abortControllerRef.current.signal,
+    };
+
+    const executionResult = streaming
+      ? await executeStreamingTranslation(options, translatorManager, {
+          onChunk: (result) => setState((prev) => ({ ...prev, result })),
+        })
+      : await executeNonStreamingTranslation(options, translatorManager);
+
+    if (executionResult.type === "aborted") {
+      return;
+    }
+
+    if (executionResult.type === "error") {
       setState((prev) => ({
         ...prev,
         result: "",
         isLoading: false,
-        error: toError(error),
+        error: executionResult.error,
       }));
+      return;
     }
+
+    setState((prev) => ({
+      ...prev,
+      result: executionResult.result,
+      isLoading: false,
+      error: null,
+    }));
   };
 
   const reset = () => {
