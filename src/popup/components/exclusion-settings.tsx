@@ -6,6 +6,7 @@ import {
   getSettings,
   saveSettings,
 } from "@/shared/storage/settings";
+import { getMessage } from "@/shared/utils/i18n";
 import { useCurrentTabUrl } from "../hooks/use-current-tab-url";
 import { ExclusionPatternItem } from "./exclusion-pattern-item";
 
@@ -64,7 +65,9 @@ export function ExclusionSettings() {
   return (
     <div className="px-3 py-2.5">
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-gray-700 text-sm">Excluded Sites</span>
+        <span className="text-gray-700 text-sm">
+          {getMessage("popup_exclusion_title")}
+        </span>
       </div>
 
       {/* Add current site button */}
@@ -83,7 +86,9 @@ export function ExclusionSettings() {
           <span className="text-lg leading-none">+</span>
           <span className="flex-1 truncate">{formatUrl(currentTabUrl)}</span>
           {isCurrentSiteExcluded && (
-            <span className="shrink-0 text-gray-400 text-xs">Excluded</span>
+            <span className="shrink-0 text-gray-400 text-xs">
+              {getMessage("popup_exclusion_excluded")}
+            </span>
           )}
         </button>
       )}
@@ -91,7 +96,7 @@ export function ExclusionSettings() {
       {/* Existing patterns */}
       {patterns.length === 0 ? (
         <p className="py-2 text-left text-gray-400 text-xs">
-          No excluded sites
+          {getMessage("popup_exclusion_noSites")}
         </p>
       ) : (
         <div className="space-y-1.5">

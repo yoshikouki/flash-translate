@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import ErrorBoundary from "@/shared/components/error-boundary";
+import { getMessage } from "@/shared/utils/i18n";
 import App from "./app";
 import "./styles/popup.css";
 
@@ -12,7 +13,9 @@ ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <ErrorBoundary
       fallback={
-        <div className="p-4 text-center text-red-600">An error occurred</div>
+        <div className="p-4 text-center text-red-600">
+          {getMessage("popup_error_generic")}
+        </div>
       }
     >
       <App />

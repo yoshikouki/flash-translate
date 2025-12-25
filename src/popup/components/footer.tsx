@@ -7,6 +7,7 @@ import {
 import { useState } from "react";
 import { urls } from "@/lib/urls";
 import { cn } from "@/lib/utils";
+import { getMessage } from "@/shared/utils/i18n";
 
 function GitHubIcon() {
   return (
@@ -26,8 +27,8 @@ export function Footer() {
 
   const handleShare = async () => {
     const shareData = {
-      title: "Flash Translate",
-      text: "Chrome の組み込み翻訳 API を使った高速翻訳拡張機能",
+      title: getMessage("popup_header_title"),
+      text: getMessage("popup_footer_shareText"),
       url: urls.chromeWebStore,
     };
 
@@ -52,10 +53,10 @@ export function Footer() {
           href={urls.support}
           rel="noopener noreferrer"
           target="_blank"
-          title="Support & Feedback"
+          title={getMessage("popup_footer_supportTitle")}
         >
           <HelpCircleIcon size={18} />
-          <span>Support</span>
+          <span>{getMessage("popup_footer_support")}</span>
         </a>
       </div>
       <div className="flex items-center justify-center gap-3">
@@ -64,7 +65,7 @@ export function Footer() {
           href={urls.chromeWebStore}
           rel="noopener noreferrer"
           target="_blank"
-          title="Chrome Web Store"
+          title={getMessage("popup_footer_chromeWebStore")}
         >
           <ExternalLinkIcon size={18} />
         </a>
@@ -73,7 +74,7 @@ export function Footer() {
           href={urls.repository}
           rel="noopener noreferrer"
           target="_blank"
-          title="GitHub Repository"
+          title={getMessage("popup_footer_githubRepository")}
         >
           <GitHubIcon />
         </a>
@@ -85,7 +86,11 @@ export function Footer() {
               : "text-gray-500 hover:text-gray-700"
           )}
           onClick={handleShare}
-          title={shareState === "shared" ? "Shared!" : "Share this extension"}
+          title={
+            shareState === "shared"
+              ? getMessage("popup_footer_shared")
+              : getMessage("popup_footer_shareExtension")
+          }
           type="button"
         >
           {shareState === "shared" ? (

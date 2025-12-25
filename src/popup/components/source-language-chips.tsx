@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
+import { getMessage } from "@/shared/utils/i18n";
 import {
   checkAllPairsToTarget,
   type LanguagePairStatus,
@@ -112,10 +113,14 @@ export function SourceLanguageChips({
     return (
       <div className="px-3 py-2.5">
         <div className="flex items-center gap-2">
-          <span className="text-gray-500 text-xs">Source</span>
+          <span className="text-gray-500 text-xs">
+            {getMessage("popup_source_label")}
+          </span>
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 animate-spin rounded-full border-2 border-gray-200 border-t-blue-500" />
-            <span className="text-gray-400 text-xs">Loading languages...</span>
+            <span className="text-gray-400 text-xs">
+              {getMessage("popup_source_loading")}
+            </span>
           </div>
         </div>
       </div>
@@ -125,7 +130,9 @@ export function SourceLanguageChips({
   return (
     <div className="px-3 py-2.5">
       <div className="flex items-center gap-2">
-        <span className="shrink-0 text-gray-500 text-xs">Source</span>
+        <span className="shrink-0 text-gray-500 text-xs">
+          {getMessage("popup_source_label")}
+        </span>
         <div className="flex flex-1 flex-wrap gap-1.5">
           {availablePairs.map((pair) => {
             const isSelected = pair.sourceLanguage === sourceLanguage;
@@ -164,8 +171,11 @@ export function SourceLanguageChips({
               ref={buttonRef}
               title={
                 downloadablePairs.length > 0
-                  ? `${downloadablePairs.length} language(s) available`
-                  : "No languages available"
+                  ? getMessage(
+                      "popup_source_languagesAvailable",
+                      String(downloadablePairs.length)
+                    )
+                  : getMessage("popup_source_noLanguages")
               }
               type="button"
             >

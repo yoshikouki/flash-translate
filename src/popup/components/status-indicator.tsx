@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { getMessage } from "@/shared/utils/i18n";
 import type { TranslationAvailabilityStatus } from "@/shared/utils/translator";
 
 // Extend status type to include UI-only states
@@ -27,7 +28,10 @@ export function StatusIndicator({
 
   if (status === "available") {
     return (
-      <span className={cn(baseClass, "bg-green-500")} title="Downloaded" />
+      <span
+        className={cn(baseClass, "bg-green-500")}
+        title={getMessage("status_downloaded")}
+      />
     );
   }
 
@@ -42,7 +46,9 @@ export function StatusIndicator({
         disabled={!isClickable}
         onClick={onClick}
         title={
-          showDownloadHint ? "Click to download" : "Available for download"
+          showDownloadHint
+            ? getMessage("status_clickToDownload")
+            : getMessage("status_availableForDownload")
         }
         type="button"
       />
@@ -56,7 +62,7 @@ export function StatusIndicator({
           baseClass,
           "animate-spin border-2 border-blue-500 border-t-transparent"
         )}
-        title="Downloading..."
+        title={getMessage("status_downloading")}
       />
     );
   }
@@ -65,11 +71,16 @@ export function StatusIndicator({
     return (
       <span
         className={cn(baseClass, "bg-red-500")}
-        title="Download failed - click to retry"
+        title={getMessage("status_downloadFailed")}
       />
     );
   }
 
   // unavailable or unsupported
-  return <span className={cn(baseClass, "bg-gray-300")} title="Unavailable" />;
+  return (
+    <span
+      className={cn(baseClass, "bg-gray-300")}
+      title={getMessage("status_unavailable")}
+    />
+  );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
+import { getMessage } from "@/shared/utils/i18n";
 import {
   type TranslationAvailabilityStatus,
   translatorManager,
@@ -61,10 +62,14 @@ export function TargetLanguageChips({
     return (
       <div className="px-3 py-2.5">
         <div className="flex items-center gap-2">
-          <span className="text-gray-500 text-xs">Target</span>
+          <span className="text-gray-500 text-xs">
+            {getMessage("popup_target_label")}
+          </span>
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 animate-spin rounded-full border-2 border-gray-200 border-t-blue-500" />
-            <span className="text-gray-400 text-xs">Loading languages...</span>
+            <span className="text-gray-400 text-xs">
+              {getMessage("popup_target_loading")}
+            </span>
           </div>
         </div>
       </div>
@@ -74,7 +79,9 @@ export function TargetLanguageChips({
   return (
     <div className="px-3 py-2.5">
       <div className="flex items-start gap-2">
-        <span className="shrink-0 pt-1.5 text-gray-500 text-xs">Target</span>
+        <span className="shrink-0 pt-1.5 text-gray-500 text-xs">
+          {getMessage("popup_target_label")}
+        </span>
         <div className="flex flex-1 flex-wrap gap-1.5">
           {SUPPORTED_LANGUAGES.map((lang) => {
             const isSelected = lang.code === targetLanguage;

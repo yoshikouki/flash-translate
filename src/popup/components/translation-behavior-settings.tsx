@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getSettings, saveSettings } from "@/shared/storage/settings";
+import { getMessage } from "@/shared/utils/i18n";
 
 export function TranslationBehaviorSettings() {
   const [skipSameLanguage, setSkipSameLanguage] = useState(true);
@@ -22,9 +23,11 @@ export function TranslationBehaviorSettings() {
     <div className="border-gray-100 border-t px-3 py-2.5">
       <div className="flex items-center justify-between">
         <div className="flex-1 pr-3">
-          <span className="text-gray-700 text-sm">Skip same language</span>
+          <span className="text-gray-700 text-sm">
+            {getMessage("popup_behavior_skipSameLanguage")}
+          </span>
           <p className="mt-0.5 text-gray-400 text-xs">
-            Don't show popup when page language matches target
+            {getMessage("popup_behavior_skipSameLanguageDesc")}
           </p>
         </div>
         <button

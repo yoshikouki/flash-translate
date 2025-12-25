@@ -2,6 +2,7 @@ import { Pencil, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { ExclusionPattern } from "@/shared/storage/settings";
+import { getMessage } from "@/shared/utils/i18n";
 
 interface ExclusionPatternItemProps {
   pattern: ExclusionPattern;
@@ -67,7 +68,7 @@ export function ExclusionPatternItem({
           onClick={handleSaveEdit}
           type="button"
         >
-          OK
+          {getMessage("popup_exclusion_ok")}
         </button>
         <button
           className="px-1.5 text-gray-500 text-xs hover:text-gray-700"
@@ -105,7 +106,7 @@ export function ExclusionPatternItem({
       <button
         className="p-0.5 text-gray-400 hover:text-blue-600"
         onClick={() => setIsEditing(true)}
-        title="Edit"
+        title={getMessage("action_edit")}
         type="button"
       >
         <Pencil size={12} />
@@ -113,7 +114,7 @@ export function ExclusionPatternItem({
       <button
         className="p-0.5 text-gray-400 hover:text-red-600"
         onClick={onDelete}
-        title="Delete"
+        title={getMessage("action_delete")}
         type="button"
       >
         <X size={12} />
