@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
+import { createPrefixedLogger } from "@/shared/utils/logger";
 import { getValidOrigin } from "./tab-url";
+
+const log = createPrefixedLogger("TabUrl");
 
 export function useCurrentTabUrl(): string | null {
   const [url, setUrl] = useState<string | null>(null);
@@ -8,12 +11,7 @@ export function useCurrentTabUrl(): string | null {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       // Check for Chrome API errors
       if (chrome.runtime.lastError) {
-        if (import.meta.env.DEV) {
-          console.error(
-            "[Flash Translate] Tab query error:",
-            chrome.runtime.lastError.message
-          );
-        }
+        log.error("Tab query error:", chrome.runtime.lastError.message);
         return;
       }
 
@@ -34,12 +32,10 @@ export function useCurrentTabUrl(): string | null {
         (response) => {
           // Content script may not be loaded (e.g., chrome:// pages)
           if (chrome.runtime.lastError) {
-            if (import.meta.env.DEV) {
-              console.log(
-                "[Flash Translate] Content script not available:",
-                chrome.runtime.lastError.message
-              );
-            }
+            log.log(
+              "Content script not available:",
+              chrome.runtime.lastError.message
+            );
             return;
           }
 

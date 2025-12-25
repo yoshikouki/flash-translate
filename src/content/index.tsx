@@ -2,8 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import ErrorBoundary from "@/shared/components/error-boundary";
 import { getSettings, isUrlExcluded } from "@/shared/storage/settings";
+import { createPrefixedLogger } from "@/shared/utils/logger";
 import App from "./app";
 import contentStyles from "./styles/content.css?inline";
+
+const log = createPrefixedLogger("content");
 
 const HOST_ID = "flash-translate-root";
 
@@ -25,9 +28,7 @@ async function initializeContentScript() {
   const settings = await getSettings();
   const currentUrl = window.location.origin + window.location.pathname;
   if (isUrlExcluded(currentUrl, settings.exclusionPatterns)) {
-    if (import.meta.env.DEV) {
-      console.log("[Flash Translate] This page is excluded from translation");
-    }
+    log.log("This page is excluded from translation");
     return;
   }
 

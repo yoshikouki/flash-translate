@@ -1,6 +1,9 @@
 import type React from "react";
 import type { ReactNode } from "react";
 import { Component } from "react";
+import { createPrefixedLogger } from "@/shared/utils/logger";
+
+const log = createPrefixedLogger("ErrorBoundary");
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -23,8 +26,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("[Flash Translate] Error caught by ErrorBoundary:", error);
-    console.error("[Flash Translate] Error info:", errorInfo);
+    log.error("Error caught:", error);
+    log.error("Error info:", errorInfo);
   }
 
   render() {

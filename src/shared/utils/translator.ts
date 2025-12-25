@@ -1,9 +1,13 @@
 // Using official @types/dom-chromium-ai types
 
+import { createPrefixedLogger } from "./logger";
 import {
   readStreamAccumulated,
   streamMultipleParagraphs,
 } from "./translator-streaming";
+
+const log = createPrefixedLogger("translator");
+
 import {
   type ChromeAvailability,
   createNotAvailableError,
@@ -108,11 +112,9 @@ class TranslatorManager {
         targetLanguage,
         monitor(m) {
           const handleProgress = (e: ProgressEvent) => {
-            if (e.lengthComputable && import.meta.env.DEV) {
+            if (e.lengthComputable) {
               const progress = (e.loaded / e.total) * 100;
-              console.log(
-                `Translation model download: ${progress.toFixed(1)}%`
-              );
+              log.log(`Model download: ${progress.toFixed(1)}%`);
             }
             // Remove listener when download is complete
             if (e.loaded === e.total) {

@@ -2,6 +2,9 @@ import { Check, Copy, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { getMessage } from "@/shared/utils/i18n";
+import { createPrefixedLogger } from "@/shared/utils/logger";
+
+const log = createPrefixedLogger("CopyButton");
 
 interface CopyButtonProps {
   text: string | null;
@@ -19,9 +22,7 @@ export function CopyButton({ text }: CopyButtonProps) {
       setState("copied");
       setTimeout(() => setState("idle"), 2000);
     } catch (err) {
-      if (import.meta.env.DEV) {
-        console.error("Failed to copy:", err);
-      }
+      log.error("Failed to copy:", err);
       setState("error");
       setTimeout(() => setState("idle"), 2000);
     }

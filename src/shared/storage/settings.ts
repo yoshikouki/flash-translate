@@ -1,3 +1,7 @@
+import { createPrefixedLogger } from "@/shared/utils/logger";
+
+const log = createPrefixedLogger("settings");
+
 export interface ExclusionPattern {
   id: string;
   pattern: string; // origin + path prefix (e.g., "https://example.com/admin")
@@ -92,9 +96,7 @@ export async function getSettings(): Promise<TranslationSettings> {
       | undefined;
     return { ...DEFAULT_SETTINGS, ...settings };
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.error("[Flash Translate] Failed to get settings:", error);
-    }
+    log.error("Failed to get settings:", error);
     return DEFAULT_SETTINGS;
   }
 }
@@ -111,9 +113,7 @@ export async function saveSettings(
     const updated = { ...current, ...settings };
     await chrome.storage.sync.set({ [STORAGE_KEY]: updated });
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.error("[Flash Translate] Failed to save settings:", error);
-    }
+    log.error("Failed to save settings:", error);
   }
 }
 
@@ -145,12 +145,7 @@ export function subscribeToSettings(
       }
     };
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.error(
-        "[Flash Translate] Failed to subscribe to settings:",
-        error
-      );
-    }
+    log.error("Failed to subscribe to settings:", error);
     // biome-ignore lint/suspicious/noEmptyBlockStatements: no-op cleanup for error case
     return () => {};
   }

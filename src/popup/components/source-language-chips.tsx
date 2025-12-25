@@ -2,12 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import { getMessage } from "@/shared/utils/i18n";
+import { createPrefixedLogger } from "@/shared/utils/logger";
 import {
   checkAllPairsToTarget,
   type LanguagePairStatus,
   translatorManager,
 } from "@/shared/utils/translator";
 import { StatusIndicator } from "./status-indicator";
+
+const log = createPrefixedLogger("SourceLanguageChips");
 
 interface SourceLanguageChipsProps {
   targetLanguage: string;
@@ -79,7 +82,7 @@ export function SourceLanguageChips({
       const statuses = await checkAllPairsToTarget(targetLanguage, sourceCodes);
       onPairsChange(statuses);
     } catch (error) {
-      console.error("Download failed:", error);
+      log.error("Download failed:", error);
       setDownloadErrors((prev) => new Set(prev).add(pairKey));
       // Auto-clear error after 5 seconds
       setTimeout(() => {
