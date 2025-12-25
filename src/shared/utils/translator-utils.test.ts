@@ -13,7 +13,7 @@ import {
   mapAvailabilityStatus,
   splitTextIntoParagraphs,
   toError,
-} from "./translatorUtils";
+} from "./translator-utils";
 
 describe("mapAvailabilityStatus", () => {
   it("maps 'available' to 'available'", () => {

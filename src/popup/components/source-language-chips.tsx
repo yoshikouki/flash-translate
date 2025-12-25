@@ -6,7 +6,7 @@ import {
   type LanguagePairStatus,
   translatorManager,
 } from "@/shared/utils/translator";
-import { StatusIndicator } from "./StatusIndicator";
+import { StatusIndicator } from "./status-indicator";
 
 interface SourceLanguageChipsProps {
   targetLanguage: string;

@@ -4,7 +4,7 @@ import {
   isValidRect,
   MAX_SELECTION_LENGTH,
   shouldShowPopupForSelection,
-} from "./textSelection";
+} from "./text-selection";
 
 describe("getValidSelectionText", () => {
   it("returns null for null or undefined", () => {

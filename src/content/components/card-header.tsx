@@ -1,6 +1,6 @@
 import { Settings, X } from "lucide-react";
-import { ExcludeSiteButton } from "./ExcludeSiteButton";
-import { LanguageSelector } from "./LanguageSelector";
+import { ExcludeSiteButton } from "./exclude-site-button";
+import { LanguageSelector } from "./language-selector";
 
 interface CardHeaderProps {
   sourceLanguage: string;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getValidOrigin } from "./tabUrl";
+import { getValidOrigin } from "./tab-url";
 
 export function useCurrentTabUrl(): string | null {
   const [url, setUrl] = useState<string | null>(null);

@@ -13,16 +13,16 @@ import { usePopupPosition } from "../hooks/usePopupPosition";
 import { useResizable } from "../hooks/useResizable";
 import type { SelectionInfo } from "../hooks/useTextSelection";
 import { useTranslator } from "../hooks/useTranslator";
-import { CardFooter } from "./CardFooter";
-import { CardHeader } from "./CardHeader";
-import { DragHandle } from "./DragHandle";
-import { ResizeHandle } from "./ResizeHandle";
-import { TranslationContent } from "./TranslationContent";
+import { CardFooter } from "./card-footer";
+import { CardHeader } from "./card-header";
+import { DragHandle } from "./drag-handle";
+import { ResizeHandle } from "./resize-handle";
 import {
   calculateMaxPopupWidth,
   calculatePopupWidth,
   MIN_POPUP_WIDTH,
-} from "./translationCardUtils";
+} from "./translation-card-utils";
+import { TranslationContent } from "./translation-content";
 
 interface TranslationCardProps {
   selection: SelectionInfo;

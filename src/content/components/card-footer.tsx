@@ -1,4 +1,4 @@
-import { CopyButton } from "./CopyButton";
+import { CopyButton } from "./copy-button";
 
 interface CardFooterProps {
   result: string | null;

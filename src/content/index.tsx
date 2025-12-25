@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import ErrorBoundary from "@/shared/components/ErrorBoundary";
+import ErrorBoundary from "@/shared/components/error-boundary";
 import { getSettings, isUrlExcluded } from "@/shared/storage/settings";
-import App from "./App";
+import App from "./app";
 import contentStyles from "./styles/content.css?inline";
 
 const HOST_ID = "flash-translate-root";

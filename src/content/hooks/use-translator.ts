@@ -7,7 +7,7 @@ import {
   isAbortError,
   isValidTranslationText,
   toError,
-} from "@/shared/utils/translatorUtils";
+} from "@/shared/utils/translator-utils";
 
 interface UseTranslatorOptions {
   sourceLanguage: string;

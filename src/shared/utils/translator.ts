@@ -11,7 +11,7 @@ import {
   isSameLanguagePair,
   mapAvailabilityStatus,
   splitTextIntoParagraphs,
-} from "./translatorUtils";
+} from "./translator-utils";
 
 interface CachedTranslator {
   translator: Translator;

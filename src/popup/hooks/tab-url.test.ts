@@ -3,7 +3,7 @@ import {
   getValidOrigin,
   isInternalBrowserUrl,
   parseUrlToOrigin,
-} from "./tabUrl";
+} from "./tab-url";
 
 describe("parseUrlToOrigin", () => {
   it("extracts origin from https URL", () => {

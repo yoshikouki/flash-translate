@@ -7,7 +7,7 @@ import {
   saveSettings,
 } from "@/shared/storage/settings";
 import { useCurrentTabUrl } from "../hooks/useCurrentTabUrl";
-import { ExclusionPatternItem } from "./ExclusionPatternItem";
+import { ExclusionPatternItem } from "./exclusion-pattern-item";
 
 export function ExclusionSettings() {
   const currentTabUrl = useCurrentTabUrl();

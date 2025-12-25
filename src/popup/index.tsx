@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import ErrorBoundary from "@/shared/components/ErrorBoundary";
-import App from "./App";
+import ErrorBoundary from "@/shared/components/error-boundary";
+import App from "./app";
 import "./styles/popup.css";
 
 const rootElement = document.getElementById("root");

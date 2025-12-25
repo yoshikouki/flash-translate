@@ -1,8 +1,8 @@
-import { ExclusionSettings } from "./components/ExclusionSettings";
-import { Footer } from "./components/Footer";
-import { LanguageSettings } from "./components/LanguageSettings";
-import { PopupHeader } from "./components/PopupHeader";
-import { TranslationBehaviorSettings } from "./components/TranslationBehaviorSettings";
+import { ExclusionSettings } from "./components/exclusion-settings";
+import { Footer } from "./components/footer";
+import { LanguageSettings } from "./components/language-settings";
+import { PopupHeader } from "./components/popup-header";
+import { TranslationBehaviorSettings } from "./components/translation-behavior-settings";
 
 export default function App() {
   return (

@@ -5,7 +5,7 @@ import {
   type TranslationAvailabilityStatus,
   translatorManager,
 } from "@/shared/utils/translator";
-import { StatusIndicator } from "./StatusIndicator";
+import { StatusIndicator } from "./status-indicator";
 
 interface TargetLanguageStatus {
   code: string;

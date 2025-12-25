@@ -5,7 +5,7 @@ import {
   calculateVerticalPosition,
   MIN_POPUP_HEIGHT,
   type RectLike,
-} from "./popupPosition";
+} from "./popup-position";
 
 // Helper to create a selection rect for testing
 function createRect(overrides: Partial<RectLike> = {}): RectLike {

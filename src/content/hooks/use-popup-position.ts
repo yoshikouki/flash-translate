@@ -1,4 +1,4 @@
-import { calculatePopupPosition, type PopupPosition } from "./popupPosition";
+import { calculatePopupPosition, type PopupPosition } from "./popup-position";
 
 interface UsePopupPositionOptions {
   selectionRect: DOMRect | null;

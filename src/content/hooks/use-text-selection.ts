@@ -5,9 +5,9 @@ import {
   isValidRect,
   type SelectionInfo,
   shouldShowPopupForSelection,
-} from "./textSelection";
+} from "./text-selection";
 
-export type { SelectionInfo } from "./textSelection";
+export type { SelectionInfo } from "./text-selection";
 
 const SELECTION_DELAY_MS = 10;
 const HOST_ID = "flash-translate-root";

@@ -3,12 +3,5 @@
   "extends": ["ultracite/core", "ultracite/react"],
   "javascript": {
     "globals": ["chrome", "Translator"]
-  },
-  "linter": {
-    "rules": {
-      "style": {
-        "useFilenamingConvention": "off"
-      }
-    }
   }
 }

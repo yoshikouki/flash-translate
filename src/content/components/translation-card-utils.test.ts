@@ -4,7 +4,7 @@ import {
   calculatePopupWidth,
   MIN_POPUP_WIDTH,
   POPUP_EDGE_MARGIN,
-} from "./translationCardUtils";
+} from "./translation-card-utils";
 
 describe("translationCard pure functions", () => {
   describe("calculatePopupWidth", () => {

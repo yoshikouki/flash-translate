@@ -5,8 +5,8 @@ import {
   checkAllPairsToTarget,
   type LanguagePairStatus,
 } from "@/shared/utils/translator";
-import { SourceLanguageChips } from "./SourceLanguageChips";
-import { TargetLanguageChips } from "./TargetLanguageChips";
+import { SourceLanguageChips } from "./source-language-chips";
+import { TargetLanguageChips } from "./target-language-chips";
 
 export function LanguageSettings() {
   const [sourceLanguage, setSourceLanguage] = useState<string>("en");

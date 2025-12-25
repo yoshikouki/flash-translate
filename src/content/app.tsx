@@ -7,8 +7,8 @@ import {
   shouldSkipTranslation,
   subscribeToSettings,
 } from "@/shared/storage/settings";
-import { TranslationCard } from "./components/TranslationCard";
-import { useTextSelection } from "./hooks/useTextSelection";
+import { TranslationCard } from "./components/translation-card";
+import { useTextSelection } from "./hooks/use-text-selection";
 
 function getCurrentUrl(): string {
   return window.location.origin + window.location.pathname;
