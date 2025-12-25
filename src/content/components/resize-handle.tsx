@@ -13,12 +13,18 @@ export function ResizeHandle({
   side,
 }: ResizeHandleProps) {
   return (
-    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: Resize handle requires mouse interaction
-    // biome-ignore lint/a11y/noStaticElementInteractions: Custom resize handle component
+    // biome-ignore lint/a11y/useSemanticElements: <hr> is not appropriate for resize handle
     <div
+      aria-label={`${side === "left" ? "左" : "右"}リサイズハンドル`}
+      aria-orientation="vertical"
+      aria-valuemax={100}
+      aria-valuemin={0}
+      aria-valuenow={50}
       className="absolute top-0 z-10 flex h-full w-4 cursor-ew-resize items-center justify-center"
       onMouseDown={onMouseDown}
+      role="separator"
       style={{ [side]: 0 }}
+      tabIndex={0}
     >
       <GripVertical
         className={cn(

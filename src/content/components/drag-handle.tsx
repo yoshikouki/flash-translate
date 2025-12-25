@@ -8,11 +8,13 @@ interface DragHandleProps {
 
 export function DragHandle({ onMouseDown, isDragging }: DragHandleProps) {
   return (
-    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: Drag handle requires mouse interaction
-    // biome-ignore lint/a11y/noStaticElementInteractions: Custom drag handle component
+    // biome-ignore lint/a11y/useSemanticElements: <button> would change default styles and behavior
     <div
+      aria-label="ポップアップを移動"
       className="absolute top-0 right-0 left-0 z-10 flex h-4 cursor-move items-center justify-center"
       onMouseDown={onMouseDown}
+      role="button"
+      tabIndex={0}
     >
       <GripHorizontal
         className={cn(
