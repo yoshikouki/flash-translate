@@ -14,7 +14,7 @@ Flash Translate is a Chrome extension that provides instant translation using th
 bun install         # Install dependencies
 bun run dev         # Development server with HMR
 bun run build       # Production build (output: dist/)
-bun run lint        # ESLint type checking
+bun run lint        # Biome linting and formatting check
 ```
 
 To test the extension: Load `dist/` folder as unpacked extension in `chrome://extensions/` (Developer mode)
@@ -56,6 +56,7 @@ To test the extension: Load `dist/` folder as unpacked extension in `chrome://ex
 - React 19 + TypeScript
 - **React Compiler** enabled via `babel-plugin-react-compiler` (automatic memoization - no manual `useMemo`/`useCallback`/`memo` needed)
 - Tailwind CSS v4
+- Biome (via Ultracite) for linting and formatting
 - Vitest for testing
 - `@types/dom-chromium-ai` for Translator API types
 - Path alias: `@/` → `src/`

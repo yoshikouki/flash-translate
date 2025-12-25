@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && rm -rf dist && vite build",
-    "lint": "eslint .",
+    "lint": "bun x ultracite check",
     "preview": "vite preview",
     "zip": "bun run build && mkdir -p releases && cd dist && zip -r ../releases/flash-translate-v$npm_package_version.zip .",
     "test": "vitest",
