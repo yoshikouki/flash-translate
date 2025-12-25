@@ -8,11 +8,11 @@ import {
   saveSettings,
   subscribeToSettings,
 } from "@/shared/storage/settings";
-import { useDraggable } from "../hooks/useDraggable";
-import { usePopupPosition } from "../hooks/usePopupPosition";
-import { useResizable } from "../hooks/useResizable";
-import type { SelectionInfo } from "../hooks/useTextSelection";
-import { useTranslator } from "../hooks/useTranslator";
+import { useDraggable } from "../hooks/use-draggable";
+import { usePopupPosition } from "../hooks/use-popup-position";
+import { useResizable } from "../hooks/use-resizable";
+import type { SelectionInfo } from "../hooks/use-text-selection";
+import { useTranslator } from "../hooks/use-translator";
 import { CardFooter } from "./card-footer";
 import { CardHeader } from "./card-header";
 import { DragHandle } from "./drag-handle";

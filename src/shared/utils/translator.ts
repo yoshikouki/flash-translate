@@ -61,8 +61,11 @@ class TranslatorManager {
     targetLanguage: string
   ): Promise<Translator> {
     // Reuse existing instance if same language pair
-    if (isSameLanguagePair(this.instance, sourceLanguage, targetLanguage)) {
-      return this.instance?.translator;
+    if (
+      this.instance &&
+      isSameLanguagePair(this.instance, sourceLanguage, targetLanguage)
+    ) {
+      return this.instance.translator;
     }
 
     // Destroy existing instance if different language pair
