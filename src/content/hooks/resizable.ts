@@ -83,7 +83,9 @@ export function calculateMaxRightExpansion(
  * Calculate new width and offset for left handle resize
  * Left handle: drag left to increase width, right edge stays fixed
  */
-export function calculateLeftResize(params: LeftResizeParams): LeftResizeResult {
+export function calculateLeftResize(
+  params: LeftResizeParams
+): LeftResizeResult {
   const { deltaX, startWidth, startOffsetX, popupLeft, constraints } = params;
   const { minWidth, maxWidth, edgeMargin } = constraints;
 
@@ -105,12 +107,18 @@ export function calculateLeftResize(params: LeftResizeParams): LeftResizeResult 
  * Calculate new width for right handle resize
  * Right handle: drag right to increase width, left edge stays fixed
  */
-export function calculateRightResize(params: RightResizeParams): RightResizeResult {
+export function calculateRightResize(
+  params: RightResizeParams
+): RightResizeResult {
   const { deltaX, startWidth, popupRight, viewportWidth, constraints } = params;
   const { minWidth, maxWidth, edgeMargin } = constraints;
 
   // Limit: new right edge must not go past viewportWidth - edgeMargin
-  const maxExpandRight = calculateMaxRightExpansion(popupRight, viewportWidth, edgeMargin);
+  const maxExpandRight = calculateMaxRightExpansion(
+    popupRight,
+    viewportWidth,
+    edgeMargin
+  );
   const clampedDelta = Math.min(maxExpandRight, deltaX);
 
   const newWidth = clampWidth(startWidth + clampedDelta, minWidth, maxWidth);

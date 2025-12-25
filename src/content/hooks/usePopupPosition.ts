@@ -13,7 +13,9 @@ export function usePopupPosition({
   popupHeight = 150,
   margin = 8,
 }: UsePopupPositionOptions): PopupPosition | null {
-  if (!selectionRect) return null;
+  if (!selectionRect) {
+    return null;
+  }
 
   return calculatePopupPosition(
     selectionRect,

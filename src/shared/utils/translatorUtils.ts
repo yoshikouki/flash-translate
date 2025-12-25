@@ -3,6 +3,8 @@
 
 import type { TranslationAvailabilityStatus } from "./translator";
 
+const PARAGRAPH_SEPARATOR_REGEX = /\n\n+/;
+
 /**
  * Chrome Translator API availability values
  */
@@ -44,7 +46,7 @@ export function mapAvailabilityStatus(
  * Splits on double newlines (paragraph breaks)
  */
 export function splitTextIntoParagraphs(text: string): string[] {
-  return text.split(/\n\n+/);
+  return text.split(PARAGRAPH_SEPARATOR_REGEX);
 }
 
 /**
@@ -72,7 +74,9 @@ export function isSameLanguagePair(
   sourceLanguage: string,
   targetLanguage: string
 ): boolean {
-  if (!cached) return false;
+  if (!cached) {
+    return false;
+  }
   return (
     cached.sourceLanguage === sourceLanguage &&
     cached.targetLanguage === targetLanguage

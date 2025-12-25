@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import {
   type ExclusionPattern,
   generatePatternId,
   getSettings,
   saveSettings,
 } from "@/shared/storage/settings";
-import { ExclusionPatternItem } from "./ExclusionPatternItem";
 import { useCurrentTabUrl } from "../hooks/useCurrentTabUrl";
-import { cn } from "@/lib/utils";
+import { ExclusionPatternItem } from "./ExclusionPatternItem";
 
 export function ExclusionSettings() {
   const currentTabUrl = useCurrentTabUrl();
@@ -32,7 +32,9 @@ export function ExclusionSettings() {
     : false;
 
   const handleAddCurrentSite = () => {
-    if (!currentTabUrl || isCurrentSiteExcluded) return;
+    if (!currentTabUrl || isCurrentSiteExcluded) {
+      return;
+    }
 
     const newPattern: ExclusionPattern = {
       id: generatePatternId(),
@@ -43,9 +45,7 @@ export function ExclusionSettings() {
   };
 
   const handlePatternChange = (updated: ExclusionPattern) => {
-    savePatterns(
-      patterns.map((p) => (p.id === updated.id ? updated : p))
-    );
+    savePatterns(patterns.map((p) => (p.id === updated.id ? updated : p)));
   };
 
   const handleDelete = (id: string) => {
@@ -63,34 +63,34 @@ export function ExclusionSettings() {
 
   return (
     <div className="px-3 py-2.5">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-gray-700">Excluded Sites</span>
+      <div className="mb-2 flex items-center justify-between">
+        <span className="text-gray-700 text-sm">Excluded Sites</span>
       </div>
 
       {/* Add current site button */}
       {currentTabUrl && (
         <button
-          type="button"
-          onClick={handleAddCurrentSite}
-          disabled={isCurrentSiteExcluded}
           className={cn(
-            "w-full mb-2 px-3 py-2 rounded border border-dashed text-sm text-left flex items-center gap-2",
+            "mb-2 flex w-full items-center gap-2 rounded border border-dashed px-3 py-2 text-left text-sm",
             isCurrentSiteExcluded
-              ? "border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50"
-              : "border-blue-300 text-blue-600 hover:bg-blue-50 hover:border-blue-400"
+              ? "cursor-not-allowed border-gray-200 bg-gray-50 text-gray-400"
+              : "border-blue-300 text-blue-600 hover:border-blue-400 hover:bg-blue-50"
           )}
+          disabled={isCurrentSiteExcluded}
+          onClick={handleAddCurrentSite}
+          type="button"
         >
           <span className="text-lg leading-none">+</span>
-          <span className="truncate flex-1">{formatUrl(currentTabUrl)}</span>
+          <span className="flex-1 truncate">{formatUrl(currentTabUrl)}</span>
           {isCurrentSiteExcluded && (
-            <span className="text-xs text-gray-400 shrink-0">Excluded</span>
+            <span className="shrink-0 text-gray-400 text-xs">Excluded</span>
           )}
         </button>
       )}
 
       {/* Existing patterns */}
       {patterns.length === 0 ? (
-        <p className="text-xs text-gray-400 text-left py-2">
+        <p className="py-2 text-left text-gray-400 text-xs">
           No excluded sites
         </p>
       ) : (
@@ -98,9 +98,9 @@ export function ExclusionSettings() {
           {patterns.map((pattern) => (
             <ExclusionPatternItem
               key={pattern.id}
-              pattern={pattern}
-              onPatternChange={handlePatternChange}
               onDelete={() => handleDelete(pattern.id)}
+              onPatternChange={handlePatternChange}
+              pattern={pattern}
             />
           ))}
         </div>

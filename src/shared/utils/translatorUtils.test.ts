@@ -1,18 +1,18 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  mapAvailabilityStatus,
-  splitTextIntoParagraphs,
-  joinParagraphs,
   buildStreamingResult,
-  isSameLanguagePair,
-  isEmptyParagraph,
-  isValidTranslationText,
-  isAbortError,
-  toError,
-  filterSourceLanguages,
+  createNotAvailableError,
   createUnavailabilityError,
   createUnsupportedError,
-  createNotAvailableError,
+  filterSourceLanguages,
+  isAbortError,
+  isEmptyParagraph,
+  isSameLanguagePair,
+  isValidTranslationText,
+  joinParagraphs,
+  mapAvailabilityStatus,
+  splitTextIntoParagraphs,
+  toError,
 } from "./translatorUtils";
 
 describe("mapAvailabilityStatus", () => {
@@ -339,6 +339,8 @@ describe("createNotAvailableError", () => {
   it("creates error with not available message", () => {
     const error = createNotAvailableError();
     expect(error).toBeInstanceOf(Error);
-    expect(error.message).toBe("Translator API is not available in this browser");
+    expect(error.message).toBe(
+      "Translator API is not available in this browser"
+    );
   });
 });

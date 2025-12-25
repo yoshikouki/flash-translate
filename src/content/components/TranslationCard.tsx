@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
-import { useTranslator } from "../hooks/useTranslator";
-import { usePopupPosition } from "../hooks/usePopupPosition";
-import { useResizable } from "../hooks/useResizable";
-import { useDraggable } from "../hooks/useDraggable";
-import type { SelectionInfo } from "../hooks/useTextSelection";
+import {
+  DEFAULT_SOURCE_LANGUAGE,
+  DEFAULT_TARGET_LANGUAGE,
+} from "@/shared/constants/languages";
 import {
   getSettings,
   saveSettings,
   subscribeToSettings,
 } from "@/shared/storage/settings";
-import {
-  DEFAULT_SOURCE_LANGUAGE,
-  DEFAULT_TARGET_LANGUAGE,
-} from "@/shared/constants/languages";
-import { CardHeader } from "./CardHeader";
+import { useDraggable } from "../hooks/useDraggable";
+import { usePopupPosition } from "../hooks/usePopupPosition";
+import { useResizable } from "../hooks/useResizable";
+import type { SelectionInfo } from "../hooks/useTextSelection";
+import { useTranslator } from "../hooks/useTranslator";
 import { CardFooter } from "./CardFooter";
-import { TranslationContent } from "./TranslationContent";
-import { ResizeHandle } from "./ResizeHandle";
+import { CardHeader } from "./CardHeader";
 import { DragHandle } from "./DragHandle";
+import { ResizeHandle } from "./ResizeHandle";
+import { TranslationContent } from "./TranslationContent";
 import {
-  MIN_POPUP_WIDTH,
-  calculatePopupWidth,
   calculateMaxPopupWidth,
+  calculatePopupWidth,
+  MIN_POPUP_WIDTH,
 } from "./translationCardUtils";
 
 interface TranslationCardProps {
@@ -74,13 +74,23 @@ export function TranslationCard({
     return unsubscribe;
   }, []);
 
-  const { width, isResizing, offsetX: resizeOffsetX, handleLeftMouseDown, handleRightMouseDown } = useResizable({
+  const {
+    width,
+    isResizing,
+    offsetX: resizeOffsetX,
+    handleLeftMouseDown,
+    handleRightMouseDown,
+  } = useResizable({
     initialWidth: selectionBasedWidth,
     minWidth: MIN_POPUP_WIDTH,
     maxWidth: maxPopupWidth,
   });
 
-  const { offset, isDragging, handleMouseDown: handleDragMouseDown } = useDraggable();
+  const {
+    offset,
+    isDragging,
+    handleMouseDown: handleDragMouseDown,
+  } = useDraggable();
 
   const { result, isLoading, error, translate, availability } = useTranslator({
     sourceLanguage,
@@ -128,9 +138,11 @@ export function TranslationCard({
       translate(selection.text);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selection.text, sourceLanguage, targetLanguage]);
+  }, [selection.text, translate]);
 
-  if (!position) return null;
+  if (!position) {
+    return null;
+  }
 
   const headerHeight = 40;
   const contentPadding = 24;
@@ -141,37 +153,45 @@ export function TranslationCard({
 
   return (
     <div
+      className="fixed font-sans text-gray-800 text-sm leading-normal"
       style={{
         left: `${position.x + offset.x + resizeOffsetX}px`,
         top: `${position.y + offset.y}px`,
-        zIndex: 2147483647,
+        zIndex: 2_147_483_647,
       }}
-      className="fixed font-sans text-sm leading-normal text-gray-800"
     >
       <div
-        className="relative rounded-xl bg-white/80 backdrop-blur border border-solid border-stone-400/60 shadow-2xl overflow-visible pt-4"
+        className="relative overflow-visible rounded-xl border border-stone-400/60 border-solid bg-white/80 pt-4 shadow-2xl backdrop-blur"
         style={{
           width: `${width}px`,
           minWidth: `${MIN_POPUP_WIDTH}px`,
           maxWidth: `${maxPopupWidth}px`,
         }}
       >
-        <DragHandle onMouseDown={handleDragMouseDown} isDragging={isDragging} />
-        <ResizeHandle onMouseDown={handleLeftMouseDown} isResizing={isResizing} side="left" />
-        <ResizeHandle onMouseDown={handleRightMouseDown} isResizing={isResizing} side="right" />
+        <DragHandle isDragging={isDragging} onMouseDown={handleDragMouseDown} />
+        <ResizeHandle
+          isResizing={isResizing}
+          onMouseDown={handleLeftMouseDown}
+          side="left"
+        />
+        <ResizeHandle
+          isResizing={isResizing}
+          onMouseDown={handleRightMouseDown}
+          side="right"
+        />
         <CardHeader
-          sourceLanguage={sourceLanguage}
-          targetLanguage={targetLanguage}
-          onSourceChange={handleSourceChange}
-          onTargetChange={handleTargetChange}
-          onSwap={handleSwap}
-          onOpenSettings={handleOpenSettings}
           onClose={onClose}
           onExcludeSite={onExcludeSite}
+          onOpenSettings={handleOpenSettings}
+          onSourceChange={handleSourceChange}
+          onSwap={handleSwap}
+          onTargetChange={handleTargetChange}
+          sourceLanguage={sourceLanguage}
+          targetLanguage={targetLanguage}
         />
 
         <div
-          className="px-4 py-3 min-h-16"
+          className="min-h-16 px-4 py-3"
           style={{
             maxHeight: `${maxContentHeight}px`,
             overflowY: "auto",
@@ -179,11 +199,11 @@ export function TranslationCard({
         >
           <TranslationContent
             availability={availability}
-            sourceLanguage={sourceLanguage}
-            targetLanguage={targetLanguage}
+            error={error}
             isLoading={isLoading}
             result={result}
-            error={error}
+            sourceLanguage={sourceLanguage}
+            targetLanguage={targetLanguage}
           />
         </div>
 

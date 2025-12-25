@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getValidSelectionText,
-  isValidRect,
-  shouldShowPopupForSelection,
   isClickInsideShadowHost,
+  isValidRect,
   type SelectionInfo,
+  shouldShowPopupForSelection,
 } from "./textSelection";
 
 export type { SelectionInfo } from "./textSelection";
@@ -42,7 +42,9 @@ export function useTextSelection() {
         rect = document.body.getBoundingClientRect();
       }
 
-      if (shouldShowPopupForSelection(validText, lastSelectionTextRef.current)) {
+      if (
+        shouldShowPopupForSelection(validText, lastSelectionTextRef.current)
+      ) {
         setIsVisible(true);
       }
       lastSelectionTextRef.current = validText;
@@ -85,6 +87,7 @@ export function useTextSelection() {
     window.getSelection()?.removeAllRanges();
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: React Compiler handles function memoization
   useEffect(() => {
     document.addEventListener("mouseup", handleMouseUp);
     document.addEventListener("mousedown", handleMouseDown);

@@ -1,10 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  normalizeLanguageCode,
-  isLanguageMatch,
-  shouldSkipTranslation,
-  isUrlExcluded,
   type ExclusionPattern,
+  isLanguageMatch,
+  isUrlExcluded,
+  normalizeLanguageCode,
+  shouldSkipTranslation,
 } from "./settings";
 
 describe("normalizeLanguageCode", () => {
@@ -88,7 +88,9 @@ describe("isUrlExcluded", () => {
   ];
 
   it("returns true when URL matches an enabled pattern", () => {
-    expect(isUrlExcluded("https://example.com/admin/users", patterns)).toBe(true);
+    expect(isUrlExcluded("https://example.com/admin/users", patterns)).toBe(
+      true
+    );
     expect(isUrlExcluded("https://blocked.com/page", patterns)).toBe(true);
   });
 

@@ -32,7 +32,9 @@ export function useDraggable({
   };
 
   useEffect(() => {
-    if (!isDragging) return;
+    if (!isDragging) {
+      return;
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
       const deltaX = e.clientX - startMouseRef.current.x;

@@ -1,7 +1,14 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": [
-    "ultracite/core",
-    "ultracite/react"
-  ]
+  "extends": ["ultracite/core", "ultracite/react"],
+  "javascript": {
+    "globals": ["chrome", "Translator"]
+  },
+  "linter": {
+    "rules": {
+      "style": {
+        "useFilenamingConvention": "off"
+      }
+    }
+  }
 }

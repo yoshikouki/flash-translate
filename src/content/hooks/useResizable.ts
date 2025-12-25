@@ -67,8 +67,8 @@ export function useResizable({
     const popupRect = getPopupRect(e);
     dragStartRef.current = {
       mouseX: e.clientX,
-      width: width,
-      offsetX: offsetX,
+      width,
+      offsetX,
       side: "left",
       popupLeft: popupRect.left,
       popupRight: popupRect.right,
@@ -82,8 +82,8 @@ export function useResizable({
     const popupRect = getPopupRect(e);
     dragStartRef.current = {
       mouseX: e.clientX,
-      width: width,
-      offsetX: offsetX,
+      width,
+      offsetX,
       side: "right",
       popupLeft: popupRect.left,
       popupRight: popupRect.right,
@@ -92,10 +92,19 @@ export function useResizable({
   };
 
   useEffect(() => {
-    if (!isResizing) return;
+    if (!isResizing) {
+      return;
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
-      const { mouseX, width: startWidth, offsetX: startOffsetX, side, popupLeft, popupRight } = dragStartRef.current;
+      const {
+        mouseX,
+        width: startWidth,
+        offsetX: startOffsetX,
+        side,
+        popupLeft,
+        popupRight,
+      } = dragStartRef.current;
       const deltaX = e.clientX - mouseX;
       const constraints = { minWidth, maxWidth, edgeMargin };
 

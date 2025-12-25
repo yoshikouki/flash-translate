@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import {
-  translatorManager,
   type TranslationAvailabilityStatus,
+  translatorManager,
 } from "@/shared/utils/translator";
 import { StatusIndicator } from "./StatusIndicator";
-import { cn } from "@/lib/utils";
 
 interface TargetLanguageStatus {
   code: string;
@@ -61,10 +61,10 @@ export function TargetLanguageChips({
     return (
       <div className="px-3 py-2.5">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500">Target</span>
+          <span className="text-gray-500 text-xs">Target</span>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
-            <span className="text-xs text-gray-400">Loading languages...</span>
+            <div className="h-3 w-3 animate-spin rounded-full border-2 border-gray-200 border-t-blue-500" />
+            <span className="text-gray-400 text-xs">Loading languages...</span>
           </div>
         </div>
       </div>
@@ -74,27 +74,27 @@ export function TargetLanguageChips({
   return (
     <div className="px-3 py-2.5">
       <div className="flex items-start gap-2">
-        <span className="text-xs text-gray-500 shrink-0 pt-1.5">Target</span>
-        <div className="flex flex-wrap gap-1.5 flex-1">
+        <span className="shrink-0 pt-1.5 text-gray-500 text-xs">Target</span>
+        <div className="flex flex-1 flex-wrap gap-1.5">
           {SUPPORTED_LANGUAGES.map((lang) => {
             const isSelected = lang.code === targetLanguage;
             const status = getStatus(lang.code);
 
             return (
               <button
-                key={lang.code}
-                type="button"
-                onClick={() => onChangeTargetLanguage(lang.code)}
                 className={cn(
-                  "inline-flex items-center gap-1 px-2 py-1 rounded text-xs transition-all duration-150",
+                  "inline-flex items-center gap-1 rounded px-2 py-1 text-xs transition-all duration-150",
                   isSelected
                     ? "bg-blue-500 text-white shadow-sm"
-                    : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
+                    : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
                 )}
+                key={lang.code}
+                onClick={() => onChangeTargetLanguage(lang.code)}
                 title={getLanguageName(lang.code)}
+                type="button"
               >
                 <span>{getLanguageCode(lang.code)}</span>
-                <StatusIndicator status={status} size="sm" />
+                <StatusIndicator size="sm" status={status} />
               </button>
             );
           })}

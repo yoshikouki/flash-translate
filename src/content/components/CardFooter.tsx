@@ -7,7 +7,7 @@ interface CardFooterProps {
 export function CardFooter({ result }: CardFooterProps) {
   return (
     <div
-      className="flex items-stretch px-3 border-t border-none rounded-b-xl"
+      className="flex items-stretch rounded-b-xl border-t border-none px-3"
       style={{ minHeight: "36px", justifyContent: "flex-end" }}
     >
       <CopyButton text={result} />

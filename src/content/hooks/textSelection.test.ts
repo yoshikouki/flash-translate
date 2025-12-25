@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
   getValidSelectionText,
   isValidRect,
-  shouldShowPopupForSelection,
   MAX_SELECTION_LENGTH,
+  shouldShowPopupForSelection,
 } from "./textSelection";
 
 describe("getValidSelectionText", () => {

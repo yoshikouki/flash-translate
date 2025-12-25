@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  translatorManager,
   type TranslationAvailabilityStatus,
+  translatorManager,
 } from "@/shared/utils/translator";
 import {
-  isValidTranslationText,
   isAbortError,
+  isValidTranslationText,
   toError,
 } from "@/shared/utils/translatorUtils";
 
@@ -49,8 +49,11 @@ export function useTranslator({
     checkAvailability();
   }, [sourceLanguage, targetLanguage]);
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Translation logic requires handling multiple states
   const translate = async (text: string) => {
-    if (!isValidTranslationText(text)) return;
+    if (!isValidTranslationText(text)) {
+      return;
+    }
 
     // Cancel previous translation if still running
     if (abortControllerRef.current) {
@@ -89,7 +92,12 @@ export function useTranslator({
           sourceLanguage,
           targetLanguage
         );
-        setState((prev) => ({ ...prev, result, isLoading: false, error: null }));
+        setState((prev) => ({
+          ...prev,
+          result,
+          isLoading: false,
+          error: null,
+        }));
       }
     } catch (error) {
       if (isAbortError(error)) {

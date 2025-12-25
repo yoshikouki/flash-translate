@@ -1,12 +1,12 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import {
-  translatorManager,
   checkAllPairsToTarget,
   type LanguagePairStatus,
+  translatorManager,
 } from "@/shared/utils/translator";
 import { StatusIndicator } from "./StatusIndicator";
-import { cn } from "@/lib/utils";
 
 interface SourceLanguageChipsProps {
   targetLanguage: string;
@@ -58,9 +58,7 @@ export function SourceLanguageChips({
   };
 
   const getLanguageName = (code: string) => {
-    return (
-      SUPPORTED_LANGUAGES.find((l) => l.code === code)?.nativeName || code
-    );
+    return SUPPORTED_LANGUAGES.find((l) => l.code === code)?.nativeName || code;
   };
 
   const handleDownload = async (sourceLang: string) => {
@@ -114,10 +112,10 @@ export function SourceLanguageChips({
     return (
       <div className="px-3 py-2.5">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500">Source</span>
+          <span className="text-gray-500 text-xs">Source</span>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
-            <span className="text-xs text-gray-400">Loading languages...</span>
+            <div className="h-3 w-3 animate-spin rounded-full border-2 border-gray-200 border-t-blue-500" />
+            <span className="text-gray-400 text-xs">Loading languages...</span>
           </div>
         </div>
       </div>
@@ -127,22 +125,22 @@ export function SourceLanguageChips({
   return (
     <div className="px-3 py-2.5">
       <div className="flex items-center gap-2">
-        <span className="text-xs text-gray-500 shrink-0">Source</span>
-        <div className="flex flex-wrap gap-1.5 flex-1">
+        <span className="shrink-0 text-gray-500 text-xs">Source</span>
+        <div className="flex flex-1 flex-wrap gap-1.5">
           {availablePairs.map((pair) => {
             const isSelected = pair.sourceLanguage === sourceLanguage;
             return (
               <button
-                key={pair.sourceLanguage}
-                type="button"
-                onClick={() => onSourceLanguageChange(pair.sourceLanguage)}
                 className={cn(
-                  "inline-flex items-center gap-1 px-2 py-1 rounded text-xs transition-all duration-150",
+                  "inline-flex items-center gap-1 rounded px-2 py-1 text-xs transition-all duration-150",
                   isSelected
                     ? "bg-blue-500 text-white shadow-sm"
-                    : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
+                    : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
                 )}
+                key={pair.sourceLanguage}
+                onClick={() => onSourceLanguageChange(pair.sourceLanguage)}
                 title={getLanguageName(pair.sourceLanguage)}
+                type="button"
               >
                 <span>{getLanguageCode(pair.sourceLanguage)}</span>
                 <StatusIndicator
@@ -155,45 +153,48 @@ export function SourceLanguageChips({
           {/* Add button with dropdown */}
           <div className="relative">
             <button
-              ref={buttonRef}
-              type="button"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              disabled={downloadablePairs.length === 0}
               className={cn(
-                "inline-flex items-center justify-center w-7 h-7 rounded border border-dashed transition-all duration-150",
+                "inline-flex h-7 w-7 items-center justify-center rounded border border-dashed transition-all duration-150",
                 downloadablePairs.length > 0
                   ? "border-blue-400 text-blue-500 hover:bg-blue-50"
-                  : "border-gray-300 text-gray-400 cursor-not-allowed"
+                  : "cursor-not-allowed border-gray-300 text-gray-400"
               )}
+              disabled={downloadablePairs.length === 0}
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              ref={buttonRef}
               title={
                 downloadablePairs.length > 0
                   ? `${downloadablePairs.length} language(s) available`
                   : "No languages available"
               }
+              type="button"
             >
               +
             </button>
 
             {isDropdownOpen && downloadablePairs.length > 0 && (
               <>
+                {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: Backdrop click to close */}
+                {/* biome-ignore lint/a11y/noStaticElementInteractions: Backdrop overlay */}
+                {/* biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard handled by Escape key */}
                 <div
                   className="fixed inset-0"
                   onClick={() => setIsDropdownOpen(false)}
                 />
                 <div
-                  ref={dropdownRef}
                   className={cn(
-                    "absolute top-full mt-1 z-10 bg-white border border-gray-200 rounded-lg shadow-lg min-w-32 max-h-48 overflow-y-auto",
-                    "animate-in fade-in-0 slide-in-from-top-2 duration-150",
+                    "absolute top-full z-10 mt-1 max-h-48 min-w-32 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg",
+                    "fade-in-0 slide-in-from-top-2 animate-in duration-150",
                     dropdownPosition === "left" ? "left-0" : "right-0"
                   )}
+                  ref={dropdownRef}
                 >
                   {downloadablePairs.map((pair) => (
                     <button
+                      className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50"
                       key={pair.sourceLanguage}
-                      type="button"
                       onClick={() => handleDownload(pair.sourceLanguage)}
-                      className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 flex items-center justify-between gap-2 transition-colors"
+                      type="button"
                     >
                       <span>{getLanguageName(pair.sourceLanguage)}</span>
                       <StatusIndicator status="after-download" />

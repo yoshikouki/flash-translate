@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Check, Copy, X } from "lucide-react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface CopyButtonProps {
@@ -10,7 +10,9 @@ export function CopyButton({ text }: CopyButtonProps) {
   const [state, setState] = useState<"idle" | "copied" | "error">("idle");
 
   const handleCopy = async () => {
-    if (!text) return;
+    if (!text) {
+      return;
+    }
     try {
       await navigator.clipboard.writeText(text);
       setState("copied");
@@ -26,15 +28,15 @@ export function CopyButton({ text }: CopyButtonProps) {
 
   return (
     <button
+      aria-label={state === "error" ? "Copy failed" : "Copy translation"}
       className={cn(
-        "flex items-center hover:bg-blue-50 cursor-pointer bg-transparent border-none transition-colors p-1 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent",
+        "flex cursor-pointer items-center rounded border-none bg-transparent p-1 transition-colors hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent",
         state === "idle" && "text-gray-400 hover:text-blue-600",
         state === "copied" && "text-green-600",
         state === "error" && "text-red-500"
       )}
-      onClick={handleCopy}
       disabled={!text}
-      aria-label={state === "error" ? "Copy failed" : "Copy translation"}
+      onClick={handleCopy}
       type="button"
     >
       {state === "idle" && <Copy size={14} />}

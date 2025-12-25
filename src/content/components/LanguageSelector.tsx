@@ -19,9 +19,9 @@ export function LanguageSelector({
   return (
     <div className="flex items-stretch gap-1">
       <select
-        value={sourceLanguage}
+        className="flex cursor-pointer appearance-none items-center rounded border-none bg-transparent px-1 font-medium text-blue-700 text-xs transition-colors hover:bg-blue-50 hover:text-blue-900 focus:outline-none"
         onChange={(e) => onSourceChange(e.target.value)}
-        className="flex items-center text-xs appearance-none text-blue-700 font-medium bg-transparent border-none cursor-pointer focus:outline-none hover:text-blue-900 hover:bg-blue-50 px-1 rounded transition-colors"
+        value={sourceLanguage}
       >
         {SUPPORTED_LANGUAGES.map((lang) => (
           <option key={lang.code} value={lang.code}>
@@ -30,20 +30,24 @@ export function LanguageSelector({
         ))}
       </select>
       <button
-        onClick={onSwap}
-        className="flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-50 cursor-pointer bg-transparent border-none p-1 rounded transition-colors"
-        type="button"
         aria-label="Swap languages"
+        className="flex cursor-pointer items-center rounded border-none bg-transparent p-1 text-blue-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
+        onClick={onSwap}
+        type="button"
       >
         <ChevronRight size={12} />
       </button>
       <select
-        value={targetLanguage}
+        className="flex cursor-pointer appearance-none items-center rounded border-none bg-transparent px-1 font-medium text-blue-700 text-xs transition-colors hover:bg-blue-50 hover:text-blue-900 focus:outline-none"
         onChange={(e) => onTargetChange(e.target.value)}
-        className="flex items-center text-xs appearance-none text-blue-700 font-medium bg-transparent border-none cursor-pointer focus:outline-none hover:text-blue-900 hover:bg-blue-50 px-1 rounded transition-colors"
+        value={targetLanguage}
       >
         {SUPPORTED_LANGUAGES.map((lang) => (
-          <option key={lang.code} value={lang.code} disabled={lang.code === sourceLanguage}>
+          <option
+            disabled={lang.code === sourceLanguage}
+            key={lang.code}
+            value={lang.code}
+          >
             {lang.code.toUpperCase()}
           </option>
         ))}

@@ -17,8 +17,12 @@ export interface SelectionInfo {
  * Validates and normalizes selected text.
  * Returns trimmed text if valid, null otherwise.
  */
-export function getValidSelectionText(text: string | undefined | null): string | null {
-  if (!text) return null;
+export function getValidSelectionText(
+  text: string | undefined | null
+): string | null {
+  if (!text) {
+    return null;
+  }
   const trimmed = text.trim();
   if (trimmed.length === 0 || trimmed.length >= MAX_SELECTION_LENGTH) {
     return null;
@@ -29,8 +33,12 @@ export function getValidSelectionText(text: string | undefined | null): string |
 /**
  * Validates if the selection rectangle has valid dimensions
  */
-export function isValidRect<T extends RectLike>(rect: T | undefined | null): rect is T {
-  if (!rect) return false;
+export function isValidRect<T extends RectLike>(
+  rect: T | undefined | null
+): rect is T {
+  if (!rect) {
+    return false;
+  }
   return rect.width > 0 && rect.height > 0;
 }
 
@@ -52,7 +60,5 @@ export function isClickInsideShadowHost(
   eventPath: EventTarget[],
   hostId: string
 ): boolean {
-  return eventPath.some(
-    (el) => el instanceof HTMLElement && el.id === hostId
-  );
+  return eventPath.some((el) => el instanceof HTMLElement && el.id === hostId);
 }

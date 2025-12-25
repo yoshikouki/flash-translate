@@ -1,10 +1,10 @@
-import { defineConfig, type Plugin } from "vite";
-import react from "@vitejs/plugin-react";
+import path from "node:path";
 import { crx } from "@crxjs/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig, type Plugin } from "vite";
+import babel from "vite-plugin-babel";
 import manifest from "./src/manifest";
-import path from "path";
-import babel from 'vite-plugin-babel';
 
 function contentScriptHmr(): Plugin {
   return {
@@ -26,9 +26,9 @@ export default defineConfig({
     contentScriptHmr(),
     babel({
       babelConfig: {
-        plugins: ['babel-plugin-react-compiler'],
+        plugins: ["babel-plugin-react-compiler"],
       },
-    })
+    }),
   ],
   resolve: {
     alias: {

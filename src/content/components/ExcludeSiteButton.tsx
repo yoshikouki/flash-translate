@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { Ban, X } from "lucide-react";
+import { useState } from "react";
 import {
-  saveSettings,
-  getSettings,
   generatePatternId,
+  getSettings,
+  saveSettings,
 } from "@/shared/storage/settings";
 
 interface ExcludeSiteButtonProps {
@@ -40,31 +40,31 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
   return (
     <>
       <button
-        className="flex items-center cursor-pointer border-none transition-colors p-1 bg-transparent text-gray-400 hover:text-red-500 hover:bg-red-200 rounded"
-        onClick={handleClick}
         aria-label="Exclude this site"
+        className="flex cursor-pointer items-center rounded border-none bg-transparent p-1 text-gray-400 transition-colors hover:bg-red-200 hover:text-red-500"
+        onClick={handleClick}
         title="Exclude this site"
         type="button"
       >
         <Ban size={14} />
       </button>
       {isConfirming && (
-        <div className="absolute inset-0 flex items-stretch justify-between px-3 py-2 bg-white border border-solid border-red-200 rounded-xl">
-          <span className="flex items-center text-xs text-gray-600">
+        <div className="absolute inset-0 flex items-stretch justify-between rounded-xl border border-red-200 border-solid bg-white px-3 py-2">
+          <span className="flex items-center text-gray-600 text-xs">
             Disable on this site?
           </span>
           <div className="flex items-stretch gap-2 py-0">
             <button
-              className="flex items-center text-xs px-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors cursor-pointer border-none"
+              className="flex cursor-pointer items-center rounded border-none bg-red-500 px-2 text-white text-xs transition-colors hover:bg-red-600"
               onClick={handleConfirm}
               type="button"
             >
               Disable
             </button>
             <button
-              className="flex items-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer bg-transparent border-none transition-colors p-1 rounded"
-              onClick={handleCancel}
               aria-label="Cancel"
+              className="flex cursor-pointer items-center rounded border-none bg-transparent p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+              onClick={handleCancel}
               type="button"
             >
               <X size={16} />

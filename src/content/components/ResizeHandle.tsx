@@ -7,19 +7,25 @@ interface ResizeHandleProps {
   side: "left" | "right";
 }
 
-export function ResizeHandle({ onMouseDown, isResizing, side }: ResizeHandleProps) {
+export function ResizeHandle({
+  onMouseDown,
+  isResizing,
+  side,
+}: ResizeHandleProps) {
   return (
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: Resize handle requires mouse interaction
+    // biome-ignore lint/a11y/noStaticElementInteractions: Custom resize handle component
     <div
+      className="absolute top-0 z-10 flex h-full w-4 cursor-ew-resize items-center justify-center"
       onMouseDown={onMouseDown}
-      className="absolute top-0 w-4 h-full cursor-ew-resize z-10 flex items-center justify-center"
       style={{ [side]: 0 }}
     >
       <GripVertical
-        size={16}
         className={cn(
           "transition-[color,opacity] duration-150",
           isResizing ? "text-blue-500 opacity-100" : "text-gray-400 opacity-70"
         )}
+        size={16}
       />
     </div>
   );

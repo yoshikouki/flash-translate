@@ -1,6 +1,6 @@
 import { Settings, X } from "lucide-react";
-import { LanguageSelector } from "./LanguageSelector";
 import { ExcludeSiteButton } from "./ExcludeSiteButton";
+import { LanguageSelector } from "./LanguageSelector";
 
 interface CardHeaderProps {
   sourceLanguage: string;
@@ -24,28 +24,31 @@ export function CardHeader({
   onExcludeSite,
 }: CardHeaderProps) {
   return (
-    <div className="relative flex items-stretch justify-between px-3 py-1 border-b border-none rounded-t-xl" style={{ minHeight: '48px' }}>
+    <div
+      className="relative flex items-stretch justify-between rounded-t-xl border-b border-none px-3 py-1"
+      style={{ minHeight: "48px" }}
+    >
       <LanguageSelector
+        onSourceChange={onSourceChange}
+        onSwap={onSwap}
+        onTargetChange={onTargetChange}
         sourceLanguage={sourceLanguage}
         targetLanguage={targetLanguage}
-        onSourceChange={onSourceChange}
-        onTargetChange={onTargetChange}
-        onSwap={onSwap}
       />
       <div className="flex items-stretch gap-1">
         <ExcludeSiteButton onExcluded={onExcludeSite} />
         <button
-          className="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 cursor-pointer bg-transparent border-none transition-colors p-1 rounded"
-          onClick={onOpenSettings}
           aria-label="Open settings"
+          className="flex cursor-pointer items-center rounded border-none bg-transparent p-1 text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
+          onClick={onOpenSettings}
           type="button"
         >
           <Settings size={14} />
         </button>
         <button
-          className="flex items-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer bg-transparent border-none transition-colors p-1 -mr-1 rounded"
-          onClick={onClose}
           aria-label="Close"
+          className="-mr-1 flex cursor-pointer items-center rounded border-none bg-transparent p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+          onClick={onClose}
           type="button"
         >
           <X size={16} />

@@ -1,15 +1,12 @@
-import { useState, useEffect } from "react";
-import {
-  getSettings,
-  saveSettings,
-} from "@/shared/storage/settings";
+import { useEffect, useState } from "react";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
+import { getSettings, saveSettings } from "@/shared/storage/settings";
 import {
   checkAllPairsToTarget,
   type LanguagePairStatus,
 } from "@/shared/utils/translator";
-import { TargetLanguageChips } from "./TargetLanguageChips";
 import { SourceLanguageChips } from "./SourceLanguageChips";
+import { TargetLanguageChips } from "./TargetLanguageChips";
 
 export function LanguageSettings() {
   const [sourceLanguage, setSourceLanguage] = useState<string>("en");
@@ -52,16 +49,16 @@ export function LanguageSettings() {
   return (
     <>
       <TargetLanguageChips
-        targetLanguage={targetLanguage}
         onChangeTargetLanguage={handleTargetLanguageChange}
+        targetLanguage={targetLanguage}
       />
       <SourceLanguageChips
-        targetLanguage={targetLanguage}
-        sourceLanguage={sourceLanguage}
-        pairs={pairs}
         isLoading={isLoadingPairs}
         onPairsChange={setPairs}
         onSourceLanguageChange={handleSourceLanguageChange}
+        pairs={pairs}
+        sourceLanguage={sourceLanguage}
+        targetLanguage={targetLanguage}
       />
     </>
   );

@@ -1,7 +1,7 @@
-import { useState, useRef } from "react";
 import { Pencil, X } from "lucide-react";
-import type { ExclusionPattern } from "@/shared/storage/settings";
+import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import type { ExclusionPattern } from "@/shared/storage/settings";
 
 interface ExclusionPatternItemProps {
   pattern: ExclusionPattern;
@@ -23,7 +23,9 @@ export function ExclusionPatternItem({
 
   const handleSaveEdit = () => {
     const newPatternValue = editInputRef.current?.value.trim();
-    if (!newPatternValue) return;
+    if (!newPatternValue) {
+      return;
+    }
 
     onPatternChange({ ...pattern, pattern: newPatternValue });
     setIsEditing(false);
@@ -46,26 +48,30 @@ export function ExclusionPatternItem({
     return (
       <div className="flex items-center gap-1.5">
         <input
+          autoFocus
+          className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+          defaultValue={pattern.pattern}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSaveEdit();
+            }
+            if (e.key === "Escape") {
+              handleCancelEdit();
+            }
+          }}
           ref={editInputRef}
           type="text"
-          defaultValue={pattern.pattern}
-          className="flex-1 text-sm bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          autoFocus
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSaveEdit();
-            if (e.key === "Escape") handleCancelEdit();
-          }}
         />
         <button
+          className="px-1.5 text-blue-600 text-xs hover:text-blue-800"
           onClick={handleSaveEdit}
-          className="text-xs text-blue-600 hover:text-blue-800 px-1.5"
           type="button"
         >
           OK
         </button>
         <button
+          className="px-1.5 text-gray-500 text-xs hover:text-gray-700"
           onClick={handleCancelEdit}
-          className="text-xs text-gray-500 hover:text-gray-700 px-1.5"
           type="button"
         >
           x
@@ -77,19 +83,19 @@ export function ExclusionPatternItem({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 px-2 py-1.5 rounded",
+        "flex items-center gap-2 rounded px-2 py-1.5",
         pattern.enabled ? "bg-gray-100" : "bg-gray-50"
       )}
     >
       <input
-        type="checkbox"
         checked={pattern.enabled}
+        className="h-3.5 w-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
         onChange={handleToggle}
-        className="w-3.5 h-3.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+        type="checkbox"
       />
       <span
         className={cn(
-          "flex-1 text-xs truncate",
+          "flex-1 truncate text-xs",
           pattern.enabled ? "text-gray-700" : "text-gray-400"
         )}
         title={pattern.pattern}
@@ -97,18 +103,18 @@ export function ExclusionPatternItem({
         {formatUrl(pattern.pattern)}
       </span>
       <button
+        className="p-0.5 text-gray-400 hover:text-blue-600"
         onClick={() => setIsEditing(true)}
-        className="text-gray-400 hover:text-blue-600 p-0.5"
-        type="button"
         title="Edit"
+        type="button"
       >
         <Pencil size={12} />
       </button>
       <button
+        className="p-0.5 text-gray-400 hover:text-red-600"
         onClick={onDelete}
-        className="text-gray-400 hover:text-red-600 p-0.5"
-        type="button"
         title="Delete"
+        type="button"
       >
         <X size={12} />
       </button>

@@ -1,5 +1,5 @@
-import type { TranslationAvailabilityStatus } from "@/shared/utils/translator";
 import { cn } from "@/lib/utils";
+import type { TranslationAvailabilityStatus } from "@/shared/utils/translator";
 
 // Extend status type to include UI-only states
 type StatusIndicatorStatus =
@@ -34,17 +34,17 @@ export function StatusIndicator({
   if (status === "after-download") {
     return (
       <button
-        type="button"
-        onClick={onClick}
-        disabled={!isClickable}
         className={cn(
           baseClass,
           "border-2 border-blue-500 bg-transparent",
           isClickable && "cursor-pointer hover:bg-blue-100"
         )}
+        disabled={!isClickable}
+        onClick={onClick}
         title={
           showDownloadHint ? "Click to download" : "Available for download"
         }
+        type="button"
       />
     );
   }
@@ -54,7 +54,7 @@ export function StatusIndicator({
       <span
         className={cn(
           baseClass,
-          "border-2 border-blue-500 border-t-transparent animate-spin"
+          "animate-spin border-2 border-blue-500 border-t-transparent"
         )}
         title="Downloading..."
       />

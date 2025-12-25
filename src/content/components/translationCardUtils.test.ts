@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
-  calculatePopupWidth,
   calculateMaxPopupWidth,
+  calculatePopupWidth,
   MIN_POPUP_WIDTH,
   POPUP_EDGE_MARGIN,
 } from "./translationCardUtils";
@@ -56,5 +56,4 @@ describe("translationCard pure functions", () => {
       expect(POPUP_EDGE_MARGIN).toBe(32);
     });
   });
-
 });

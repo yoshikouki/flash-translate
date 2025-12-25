@@ -1,24 +1,27 @@
-import { useState, useEffect } from "react";
-import { useTextSelection } from "./hooks/useTextSelection";
-import { TranslationCard } from "./components/TranslationCard";
+import { useEffect, useState } from "react";
 import {
-  getSettings,
-  subscribeToSettings,
-  shouldSkipTranslation,
-  getPageLanguage,
-  isUrlExcluded,
   type ExclusionPattern,
+  getPageLanguage,
+  getSettings,
+  isUrlExcluded,
+  shouldSkipTranslation,
+  subscribeToSettings,
 } from "@/shared/storage/settings";
+import { TranslationCard } from "./components/TranslationCard";
+import { useTextSelection } from "./hooks/useTextSelection";
 
 function getCurrentUrl(): string {
   return window.location.origin + window.location.pathname;
 }
 
 export default function App() {
-  const { selection, isVisible, dismissPopup, clearSelection } = useTextSelection();
+  const { selection, isVisible, dismissPopup, clearSelection } =
+    useTextSelection();
   const [targetLanguage, setTargetLanguage] = useState("ja");
   const [skipSameLanguage, setSkipSameLanguage] = useState(true);
-  const [exclusionPatterns, setExclusionPatterns] = useState<ExclusionPattern[]>([]);
+  const [exclusionPatterns, setExclusionPatterns] = useState<
+    ExclusionPattern[]
+  >([]);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -44,7 +47,7 @@ export default function App() {
     return null;
   }
 
-  if (!selection || !isVisible) {
+  if (!(selection && isVisible)) {
     return null;
   }
 
@@ -56,9 +59,9 @@ export default function App() {
 
   return (
     <TranslationCard
-      selection={selection}
       onClose={dismissPopup}
       onExcludeSite={clearSelection}
+      selection={selection}
     />
   );
 }

@@ -19,7 +19,7 @@ export function TranslationContent({
 }: TranslationContentProps) {
   if (availability === "unsupported") {
     return (
-      <div className="text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg">
+      <div className="rounded-lg bg-red-50 px-3 py-2 text-red-600 text-sm">
         Translator API is not supported in this browser. Please use Chrome 138+
         with the API enabled.
       </div>
@@ -28,7 +28,7 @@ export function TranslationContent({
 
   if (availability === "unavailable") {
     return (
-      <div className="text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg">
+      <div className="rounded-lg bg-red-50 px-3 py-2 text-red-600 text-sm">
         Translation from {sourceLanguage} to {targetLanguage} is not available.
       </div>
     );
@@ -36,7 +36,7 @@ export function TranslationContent({
 
   if (error) {
     return (
-      <div className="text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg">
+      <div className="rounded-lg bg-red-50 px-3 py-2 text-red-600 text-sm">
         {error.message}
       </div>
     );
@@ -45,7 +45,7 @@ export function TranslationContent({
   if (isLoading && !result) {
     return (
       <div className="flex items-center gap-3">
-        <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+        <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600" />
         <span className="text-gray-500 text-sm">
           {availability === "after-download"
             ? "Downloading translation model..."
@@ -56,10 +56,8 @@ export function TranslationContent({
   }
 
   return (
-    <div className="text-gray-800 text-base leading-relaxed whitespace-pre-wrap break-words">
-      {result || (
-        <span className="text-gray-400 italic">Translation...</span>
-      )}
+    <div className="whitespace-pre-wrap break-words text-base text-gray-800 leading-relaxed">
+      {result || <span className="text-gray-400 italic">Translation...</span>}
     </div>
   );
 }

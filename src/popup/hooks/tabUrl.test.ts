@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  parseUrlToOrigin,
-  isInternalBrowserUrl,
   getValidOrigin,
+  isInternalBrowserUrl,
+  parseUrlToOrigin,
 } from "./tabUrl";
 
 describe("parseUrlToOrigin", () => {
@@ -151,4 +151,3 @@ describe("getValidOrigin", () => {
     );
   });
 });
-

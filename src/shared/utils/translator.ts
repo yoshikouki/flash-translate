@@ -1,16 +1,16 @@
 // Using official @types/dom-chromium-ai types
 
 import {
-  mapAvailabilityStatus,
-  splitTextIntoParagraphs,
   buildStreamingResult,
-  isSameLanguagePair,
-  isEmptyParagraph,
-  filterSourceLanguages,
+  type ChromeAvailability,
+  createNotAvailableError,
   createUnavailabilityError,
   createUnsupportedError,
-  createNotAvailableError,
-  type ChromeAvailability,
+  filterSourceLanguages,
+  isEmptyParagraph,
+  isSameLanguagePair,
+  mapAvailabilityStatus,
+  splitTextIntoParagraphs,
 } from "./translatorUtils";
 
 interface CachedTranslator {
@@ -60,7 +60,7 @@ class TranslatorManager {
   ): Promise<Translator> {
     // Reuse existing instance if same language pair
     if (isSameLanguagePair(this.instance, sourceLanguage, targetLanguage)) {
-      return this.instance!.translator;
+      return this.instance?.translator;
     }
 
     // Destroy existing instance if different language pair
@@ -105,7 +105,9 @@ class TranslatorManager {
           const handleProgress = (e: ProgressEvent) => {
             if (e.lengthComputable && import.meta.env.DEV) {
               const progress = (e.loaded / e.total) * 100;
-              console.log(`Translation model download: ${progress.toFixed(1)}%`);
+              console.log(
+                `Translation model download: ${progress.toFixed(1)}%`
+              );
             }
             // Remove listener when download is complete
             if (e.loaded === e.total) {
@@ -150,6 +152,7 @@ class TranslatorManager {
     return translator.translate(text);
   }
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Streaming logic requires handling multiple paragraphs
   async *translateStreaming(
     text: string,
     sourceLanguage: string,
@@ -168,7 +171,9 @@ class TranslatorManager {
         let accumulated = "";
         while (true) {
           const { done, value } = await reader.read();
-          if (done) break;
+          if (done) {
+            break;
+          }
           accumulated += value;
           yield accumulated;
         }
@@ -179,8 +184,7 @@ class TranslatorManager {
       // Multiple paragraphs - translate each and join with line breaks
       const translatedParagraphs: string[] = [];
 
-      for (let i = 0; i < paragraphs.length; i++) {
-        const paragraph = paragraphs[i];
+      for (const paragraph of paragraphs) {
         if (isEmptyParagraph(paragraph)) {
           translatedParagraphs.push("");
           continue;
@@ -193,7 +197,9 @@ class TranslatorManager {
           let paragraphResult = "";
           while (true) {
             const { done, value } = await reader.read();
-            if (done) break;
+            if (done) {
+              break;
+            }
             paragraphResult += value;
             // Yield current progress: completed paragraphs + current paragraph
             yield buildStreamingResult(translatedParagraphs, paragraphResult);
@@ -229,7 +235,10 @@ export async function checkAllPairsToTarget(
   targetLanguage: string,
   sourceLanguages: string[]
 ): Promise<LanguagePairStatus[]> {
-  const filteredLanguages = filterSourceLanguages(sourceLanguages, targetLanguage);
+  const filteredLanguages = filterSourceLanguages(
+    sourceLanguages,
+    targetLanguage
+  );
   const results = await Promise.all(
     filteredLanguages.map(async (sourceLanguage) => {
       const status = await translatorManager.checkAvailability(
