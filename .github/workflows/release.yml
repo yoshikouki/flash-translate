@@ -72,11 +72,13 @@ jobs:
           fi
 
       - name: Check if tag exists
-        if: github.event_name == 'workflow_dispatch'
+        id: tag_check
         run: |
           if git rev-parse "${{ steps.version.outputs.tag_name }}" >/dev/null 2>&1; then
-            echo "::error::Tag ${{ steps.version.outputs.tag_name }} already exists"
-            exit 1
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Tag ${{ steps.version.outputs.tag_name }} already exists, skipping tag creation"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Lint
@@ -112,7 +114,7 @@ jobs:
           done
 
       - name: Create and push tag
-        if: github.event_name == 'workflow_dispatch'
+        if: steps.tag_check.outputs.exists == 'false'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
