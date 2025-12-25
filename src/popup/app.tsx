@@ -6,7 +6,7 @@ import { TranslationBehaviorSettings } from "./components/translation-behavior-s
 
 export default function App() {
   return (
-    <div className="flex max-h-[400px] min-w-96 flex-col overflow-y-auto bg-white/90 backdrop-blur-sm">
+    <div className="flex max-h-1/2 min-w-96 flex-col overflow-y-auto bg-white/90 backdrop-blur-sm">
       <PopupHeader />
       <div className="flex-1 divide-y divide-gray-100">
         <section className="bg-white">

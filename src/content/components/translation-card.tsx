@@ -159,7 +159,7 @@ export function TranslationCard({
       }}
     >
       <div
-        className="relative overflow-visible rounded-xl border border-stone-400/60 border-solid bg-white/80 pt-4 shadow-2xl backdrop-blur"
+        className="relative overflow-visible rounded-xl border border-stone-400/60 border-solid bg-white/90 pt-4 shadow-2xl backdrop-blur"
         style={{
           width: `${width}px`,
           minWidth: `${MIN_POPUP_WIDTH}px`,
