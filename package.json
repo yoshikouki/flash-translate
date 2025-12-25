@@ -1,7 +1,7 @@
 {
   "name": "flash-translate",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "homepage": "https://chromewebstore.google.com/detail/gibfhkdnpbinchfllkhaihmghbbollfd",
   "scripts": {
