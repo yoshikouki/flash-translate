@@ -1,5 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
+import { getMessage } from "@/shared/utils/i18n";
 
 interface LanguageSelectorProps {
   sourceLanguage: string;
@@ -30,7 +31,7 @@ export function LanguageSelector({
         ))}
       </select>
       <button
-        aria-label="Swap languages"
+        aria-label={getMessage("content_swapLanguages")}
         className="flex cursor-pointer items-center rounded border-none bg-transparent p-1 text-blue-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
         onClick={onSwap}
         type="button"

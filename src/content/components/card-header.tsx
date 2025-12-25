@@ -1,4 +1,5 @@
 import { Settings, X } from "lucide-react";
+import { getMessage } from "@/shared/utils/i18n";
 import { ExcludeSiteButton } from "./exclude-site-button";
 import { LanguageSelector } from "./language-selector";
 
@@ -38,7 +39,7 @@ export function CardHeader({
       <div className="flex items-stretch gap-1">
         <ExcludeSiteButton onExcluded={onExcludeSite} />
         <button
-          aria-label="Open settings"
+          aria-label={getMessage("content_openSettings")}
           className="flex cursor-pointer items-center rounded border-none bg-transparent p-1 text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
           onClick={onOpenSettings}
           type="button"
@@ -46,7 +47,7 @@ export function CardHeader({
           <Settings size={14} />
         </button>
         <button
-          aria-label="Close"
+          aria-label={getMessage("content_close")}
           className="-mr-1 flex cursor-pointer items-center rounded border-none bg-transparent p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
           onClick={onClose}
           type="button"

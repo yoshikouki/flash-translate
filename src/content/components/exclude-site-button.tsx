@@ -5,6 +5,7 @@ import {
   getSettings,
   saveSettings,
 } from "@/shared/storage/settings";
+import { getMessage } from "@/shared/utils/i18n";
 
 interface ExcludeSiteButtonProps {
   onExcluded: () => void;
@@ -40,10 +41,10 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
   return (
     <>
       <button
-        aria-label="Exclude this site"
+        aria-label={getMessage("content_excludeSite")}
         className="flex cursor-pointer items-center rounded border-none bg-transparent p-1 text-gray-400 transition-colors hover:bg-red-200 hover:text-red-500"
         onClick={handleClick}
-        title="Exclude this site"
+        title={getMessage("content_excludeSite")}
         type="button"
       >
         <Ban size={14} />
@@ -51,7 +52,7 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
       {isConfirming && (
         <div className="absolute inset-0 flex items-stretch justify-between rounded-xl border border-red-200 border-solid bg-white px-3 py-2">
           <span className="flex items-center text-gray-600 text-xs">
-            Disable on this site?
+            {getMessage("content_disableOnSite")}
           </span>
           <div className="flex items-stretch gap-2 py-0">
             <button
@@ -59,10 +60,10 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
               onClick={handleConfirm}
               type="button"
             >
-              Disable
+              {getMessage("content_disable")}
             </button>
             <button
-              aria-label="Cancel"
+              aria-label={getMessage("content_cancel")}
               className="flex cursor-pointer items-center rounded border-none bg-transparent p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
               onClick={handleCancel}
               type="button"

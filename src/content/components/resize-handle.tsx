@@ -1,5 +1,6 @@
 import { GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getMessage } from "@/shared/utils/i18n";
 
 interface ResizeHandleProps {
   onMouseDown: (e: React.MouseEvent) => void;
@@ -15,7 +16,11 @@ export function ResizeHandle({
   return (
     // biome-ignore lint/a11y/useSemanticElements: <hr> is not appropriate for resize handle
     <div
-      aria-label={`${side === "left" ? "左" : "右"}リサイズハンドル`}
+      aria-label={
+        side === "left"
+          ? getMessage("content_resizeHandleLeft")
+          : getMessage("content_resizeHandleRight")
+      }
       aria-orientation="vertical"
       aria-valuemax={100}
       aria-valuemin={0}

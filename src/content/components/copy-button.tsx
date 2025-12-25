@@ -1,6 +1,7 @@
 import { Check, Copy, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { getMessage } from "@/shared/utils/i18n";
 
 interface CopyButtonProps {
   text: string | null;
@@ -28,7 +29,11 @@ export function CopyButton({ text }: CopyButtonProps) {
 
   return (
     <button
-      aria-label={state === "error" ? "Copy failed" : "Copy translation"}
+      aria-label={
+        state === "error"
+          ? getMessage("content_copyFailed")
+          : getMessage("content_copyTranslation")
+      }
       className={cn(
         "flex cursor-pointer items-center rounded border-none bg-transparent p-1 transition-colors hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent",
         state === "idle" && "text-gray-400 hover:text-blue-600",

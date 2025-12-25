@@ -1,3 +1,4 @@
+import { getMessage } from "@/shared/utils/i18n";
 import type { TranslationAvailabilityStatus } from "@/shared/utils/translator";
 
 interface TranslationContentProps {
@@ -20,8 +21,7 @@ export function TranslationContent({
   if (availability === "unsupported") {
     return (
       <div className="rounded-lg bg-red-50 px-3 py-2 text-red-600 text-sm">
-        Translator API is not supported in this browser. Please use Chrome 138+
-        with the API enabled.
+        {getMessage("content_translatorUnsupported")}
       </div>
     );
   }
@@ -29,7 +29,10 @@ export function TranslationContent({
   if (availability === "unavailable") {
     return (
       <div className="rounded-lg bg-red-50 px-3 py-2 text-red-600 text-sm">
-        Translation from {sourceLanguage} to {targetLanguage} is not available.
+        {getMessage("content_translationUnavailable", [
+          sourceLanguage,
+          targetLanguage,
+        ])}
       </div>
     );
   }
@@ -48,8 +51,8 @@ export function TranslationContent({
         <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600" />
         <span className="text-gray-500 text-sm">
           {availability === "after-download"
-            ? "Downloading translation model..."
-            : "Translating..."}
+            ? getMessage("content_downloadingModel")
+            : getMessage("content_translating")}
         </span>
       </div>
     );
@@ -57,7 +60,11 @@ export function TranslationContent({
 
   return (
     <div className="whitespace-pre-wrap break-words text-base text-gray-800 leading-relaxed">
-      {result || <span className="text-gray-400 italic">Translation...</span>}
+      {result || (
+        <span className="text-gray-400 italic">
+          {getMessage("content_translationPlaceholder")}
+        </span>
+      )}
     </div>
   );
 }
