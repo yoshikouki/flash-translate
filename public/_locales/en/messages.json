@@ -1,0 +1,179 @@
+{
+  "ext_name": {
+    "message": "Flash Translate",
+    "description": "Extension name displayed in Chrome"
+  },
+  "ext_description": {
+    "message": "Translate selected text instantly, without leaving the page. All processing happens on your device.",
+    "description": "Extension description for Chrome Web Store"
+  },
+  "ext_actionTitle": {
+    "message": "Flash Translate",
+    "description": "Tooltip for extension icon"
+  },
+
+  "popup_header_title": {
+    "message": "Flash Translate"
+  },
+
+  "popup_behavior_skipSameLanguage": {
+    "message": "Skip same language"
+  },
+  "popup_behavior_skipSameLanguageDesc": {
+    "message": "Don't show popup when page language matches target"
+  },
+
+  "popup_exclusion_title": {
+    "message": "Excluded Sites"
+  },
+  "popup_exclusion_noSites": {
+    "message": "No excluded sites"
+  },
+  "popup_exclusion_excluded": {
+    "message": "Excluded"
+  },
+  "popup_exclusion_ok": {
+    "message": "OK"
+  },
+
+  "popup_source_label": {
+    "message": "Source"
+  },
+  "popup_source_loading": {
+    "message": "Loading languages..."
+  },
+  "popup_source_languagesAvailable": {
+    "message": "$COUNT$ language(s) available",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "popup_source_noLanguages": {
+    "message": "No languages available"
+  },
+
+  "popup_target_label": {
+    "message": "Target"
+  },
+  "popup_target_loading": {
+    "message": "Loading languages..."
+  },
+
+  "popup_footer_supportTitle": {
+    "message": "Support & Feedback"
+  },
+  "popup_footer_support": {
+    "message": "Support"
+  },
+  "popup_footer_chromeWebStore": {
+    "message": "Chrome Web Store"
+  },
+  "popup_footer_githubRepository": {
+    "message": "GitHub Repository"
+  },
+  "popup_footer_shared": {
+    "message": "Shared!"
+  },
+  "popup_footer_shareExtension": {
+    "message": "Share this extension"
+  },
+  "popup_footer_shareText": {
+    "message": "Fast translation extension using Chrome's built-in Translator API"
+  },
+
+  "popup_error_generic": {
+    "message": "An error occurred"
+  },
+
+  "status_downloaded": {
+    "message": "Downloaded"
+  },
+  "status_clickToDownload": {
+    "message": "Click to download"
+  },
+  "status_availableForDownload": {
+    "message": "Available for download"
+  },
+  "status_downloading": {
+    "message": "Downloading..."
+  },
+  "status_downloadFailed": {
+    "message": "Download failed - click to retry"
+  },
+  "status_unavailable": {
+    "message": "Unavailable"
+  },
+
+  "content_openSettings": {
+    "message": "Open settings"
+  },
+  "content_close": {
+    "message": "Close"
+  },
+  "content_swapLanguages": {
+    "message": "Swap languages"
+  },
+  "content_copyFailed": {
+    "message": "Copy failed"
+  },
+  "content_copyTranslation": {
+    "message": "Copy translation"
+  },
+  "content_excludeSite": {
+    "message": "Exclude this site"
+  },
+  "content_disableOnSite": {
+    "message": "Disable on this site?"
+  },
+  "content_disable": {
+    "message": "Disable"
+  },
+  "content_cancel": {
+    "message": "Cancel"
+  },
+  "content_movePopup": {
+    "message": "Move popup"
+  },
+  "content_resizeHandleLeft": {
+    "message": "Left resize handle"
+  },
+  "content_resizeHandleRight": {
+    "message": "Right resize handle"
+  },
+
+  "content_translatorUnsupported": {
+    "message": "Translator API is not supported in this browser. Please use Chrome 138+ with the API enabled."
+  },
+  "content_translationUnavailable": {
+    "message": "Translation from $SOURCE$ to $TARGET$ is not available.",
+    "placeholders": {
+      "source": {
+        "content": "$1",
+        "example": "English"
+      },
+      "target": {
+        "content": "$2",
+        "example": "Japanese"
+      }
+    }
+  },
+  "content_downloadingModel": {
+    "message": "Downloading translation model..."
+  },
+  "content_translating": {
+    "message": "Translating..."
+  },
+  "content_translationPlaceholder": {
+    "message": "Translation..."
+  },
+
+  "action_edit": {
+    "message": "Edit"
+  },
+  "action_delete": {
+    "message": "Delete"
+  }
+}

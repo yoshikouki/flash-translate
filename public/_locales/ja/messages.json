@@ -1,0 +1,179 @@
+{
+  "ext_name": {
+    "message": "Flash Translate",
+    "description": "Chrome に表示される拡張機能名"
+  },
+  "ext_description": {
+    "message": "選択したテキストをページを離れることなく即座に翻訳。すべての処理はデバイス上で行われます。",
+    "description": "Chrome Web Store の拡張機能説明"
+  },
+  "ext_actionTitle": {
+    "message": "Flash Translate",
+    "description": "拡張機能アイコンのツールチップ"
+  },
+
+  "popup_header_title": {
+    "message": "Flash Translate"
+  },
+
+  "popup_behavior_skipSameLanguage": {
+    "message": "同じ言語をスキップ"
+  },
+  "popup_behavior_skipSameLanguageDesc": {
+    "message": "ページの言語がターゲットと一致する場合、ポップアップを表示しない"
+  },
+
+  "popup_exclusion_title": {
+    "message": "除外サイト"
+  },
+  "popup_exclusion_noSites": {
+    "message": "除外サイトはありません"
+  },
+  "popup_exclusion_excluded": {
+    "message": "除外済み"
+  },
+  "popup_exclusion_ok": {
+    "message": "OK"
+  },
+
+  "popup_source_label": {
+    "message": "翻訳元"
+  },
+  "popup_source_loading": {
+    "message": "言語を読み込み中..."
+  },
+  "popup_source_languagesAvailable": {
+    "message": "$COUNT$言語が利用可能",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "popup_source_noLanguages": {
+    "message": "利用可能な言語がありません"
+  },
+
+  "popup_target_label": {
+    "message": "翻訳先"
+  },
+  "popup_target_loading": {
+    "message": "言語を読み込み中..."
+  },
+
+  "popup_footer_supportTitle": {
+    "message": "サポート・フィードバック"
+  },
+  "popup_footer_support": {
+    "message": "サポート"
+  },
+  "popup_footer_chromeWebStore": {
+    "message": "Chrome Web Store"
+  },
+  "popup_footer_githubRepository": {
+    "message": "GitHub リポジトリ"
+  },
+  "popup_footer_shared": {
+    "message": "共有しました！"
+  },
+  "popup_footer_shareExtension": {
+    "message": "この拡張機能を共有"
+  },
+  "popup_footer_shareText": {
+    "message": "Chrome の組み込み翻訳 API を使った高速翻訳拡張機能"
+  },
+
+  "popup_error_generic": {
+    "message": "エラーが発生しました"
+  },
+
+  "status_downloaded": {
+    "message": "ダウンロード済み"
+  },
+  "status_clickToDownload": {
+    "message": "クリックしてダウンロード"
+  },
+  "status_availableForDownload": {
+    "message": "ダウンロード可能"
+  },
+  "status_downloading": {
+    "message": "ダウンロード中..."
+  },
+  "status_downloadFailed": {
+    "message": "ダウンロード失敗 - クリックして再試行"
+  },
+  "status_unavailable": {
+    "message": "利用不可"
+  },
+
+  "content_openSettings": {
+    "message": "設定を開く"
+  },
+  "content_close": {
+    "message": "閉じる"
+  },
+  "content_swapLanguages": {
+    "message": "言語を入れ替え"
+  },
+  "content_copyFailed": {
+    "message": "コピー失敗"
+  },
+  "content_copyTranslation": {
+    "message": "翻訳をコピー"
+  },
+  "content_excludeSite": {
+    "message": "このサイトを除外"
+  },
+  "content_disableOnSite": {
+    "message": "このサイトで無効にしますか？"
+  },
+  "content_disable": {
+    "message": "無効にする"
+  },
+  "content_cancel": {
+    "message": "キャンセル"
+  },
+  "content_movePopup": {
+    "message": "ポップアップを移動"
+  },
+  "content_resizeHandleLeft": {
+    "message": "左リサイズハンドル"
+  },
+  "content_resizeHandleRight": {
+    "message": "右リサイズハンドル"
+  },
+
+  "content_translatorUnsupported": {
+    "message": "Translator API はこのブラウザでサポートされていません。API を有効にした Chrome 138 以降をお使いください。"
+  },
+  "content_translationUnavailable": {
+    "message": "$SOURCE$ から $TARGET$ への翻訳は利用できません。",
+    "placeholders": {
+      "source": {
+        "content": "$1",
+        "example": "英語"
+      },
+      "target": {
+        "content": "$2",
+        "example": "日本語"
+      }
+    }
+  },
+  "content_downloadingModel": {
+    "message": "翻訳モデルをダウンロード中..."
+  },
+  "content_translating": {
+    "message": "翻訳中..."
+  },
+  "content_translationPlaceholder": {
+    "message": "翻訳..."
+  },
+
+  "action_edit": {
+    "message": "編集"
+  },
+  "action_delete": {
+    "message": "削除"
+  }
+}

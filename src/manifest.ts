@@ -3,10 +3,10 @@ import packageJson from "../package.json";
 
 export default defineManifest({
   manifest_version: 3,
-  name: "Flash Translate",
+  name: "__MSG_ext_name__",
   version: packageJson.version,
-  description:
-    "Translate selected text instantly, without leaving the page. All processing happens on your device.",
+  description: "__MSG_ext_description__",
+  default_locale: "en",
 
   icons: {
     16: "icons/icon-16.png",
@@ -19,7 +19,7 @@ export default defineManifest({
 
   action: {
     default_popup: "src/popup/index.html",
-    default_title: "Flash Translate",
+    default_title: "__MSG_ext_actionTitle__",
     default_icon: {
       16: "icons/icon-16.png",
       32: "icons/icon-32.png",
