@@ -73,7 +73,10 @@ export async function executeStreamingTranslation(
     }
     return {
       type: "error",
-      error: error instanceof Error ? error : new Error(String(error)),
+      error:
+        error instanceof Error
+          ? error
+          : new Error(`Unknown error: ${String(error)}`),
     };
   }
 }
@@ -103,7 +106,10 @@ export async function executeNonStreamingTranslation(
     }
     return {
       type: "error",
-      error: error instanceof Error ? error : new Error(String(error)),
+      error:
+        error instanceof Error
+          ? error
+          : new Error(`Unknown error: ${String(error)}`),
     };
   }
 }
