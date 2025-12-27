@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { htmlToMarkdown } from "@/lib/html-to-markdown";
 import {
   DEFAULT_SOURCE_LANGUAGE,
   DEFAULT_TARGET_LANGUAGE,
@@ -146,10 +147,19 @@ export function TranslationCard({
   // Translate when selection or language changes
   // biome-ignore lint/correctness/useExhaustiveDependencies: translate is intentionally excluded to avoid infinite loops (it captures sourceLanguage/targetLanguage)
   useEffect(() => {
-    if (selection.text) {
-      translate(selection.text);
-    }
-  }, [selection.text, sourceLanguage, targetLanguage]);
+    const translateWithMarkdown = async () => {
+      if (!selection.text) return;
+
+      // Convert HTML to Markdown for better translation context
+      const textToTranslate = selection.html
+        ? await htmlToMarkdown(selection.html)
+        : selection.text;
+
+      translate(textToTranslate);
+    };
+
+    translateWithMarkdown();
+  }, [selection.text, selection.html, sourceLanguage, targetLanguage]);
 
   if (!position) {
     return null;

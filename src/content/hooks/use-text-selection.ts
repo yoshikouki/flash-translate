@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  documentFragmentToHtml,
   getValidSelectionText,
   isClickInsideShadowHost,
   isValidRect,
@@ -30,6 +31,7 @@ export function useTextSelection() {
       }
 
       let rect: DOMRect;
+      let html = "";
       try {
         const range = windowSelection?.getRangeAt(0);
         const rangeRect = range?.getBoundingClientRect();
@@ -37,9 +39,16 @@ export function useTextSelection() {
           return;
         }
         rect = rangeRect;
+
+        // Extract HTML from the selection range
+        if (range) {
+          const fragment = range.cloneContents();
+          html = documentFragmentToHtml(fragment);
+        }
       } catch {
         // Fallback to body rect if range fails
         rect = document.body.getBoundingClientRect();
+        html = validText; // Fallback to plain text
       }
 
       if (
@@ -48,7 +57,7 @@ export function useTextSelection() {
         setIsVisible(true);
       }
       lastSelectionTextRef.current = validText;
-      setSelection({ text: validText, rect });
+      setSelection({ text: validText, html: html || validText, rect });
     }, SELECTION_DELAY_MS);
   };
 
