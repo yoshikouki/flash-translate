@@ -148,7 +148,9 @@ export function TranslationCard({
   // biome-ignore lint/correctness/useExhaustiveDependencies: translate is intentionally excluded to avoid infinite loops (it captures sourceLanguage/targetLanguage)
   useEffect(() => {
     const translateWithMarkdown = async () => {
-      if (!selection.text) return;
+      if (!selection.text) {
+        return;
+      }
 
       // Convert HTML to Markdown for better translation context
       const textToTranslate = selection.html
