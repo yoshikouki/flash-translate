@@ -4,10 +4,32 @@
  * selection.textと一致する部分のみを抽出する
  */
 
-import type { Node, Parent, Text } from "hast";
+import type { Element, Node, Parent, Text } from "hast";
 import rehypeParse from "rehype-parse";
 import rehypeStringify from "rehype-stringify";
 import { unified } from "unified";
+
+/**
+ * ブロック要素のセット
+ * これらの要素の後に改行を挿入してブラウザの selection.toString() と一致させる
+ */
+const BLOCK_ELEMENTS = new Set([
+  "p",
+  "div",
+  "li",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "blockquote",
+  "pre",
+  "br",
+  "tr",
+  "dt",
+  "dd",
+]);
 
 /**
  * HTMLからテキスト内容を抽出
@@ -24,10 +46,21 @@ export function getTextFromHtml(html: string): string {
 
 /**
  * HASTノードからテキストを抽出
+ * ブロック要素の後に改行を追加してブラウザのselection.toString()と一致させる
  */
 function extractText(node: Node): string {
   if (node.type === "text") {
     return (node as Text).value;
+  }
+
+  if (node.type === "element") {
+    const element = node as Element;
+    const childText = element.children.map(extractText).join("");
+    // ブロック要素の後に改行を追加
+    if (BLOCK_ELEMENTS.has(element.tagName)) {
+      return `${childText}\n`;
+    }
+    return childText;
   }
 
   if ("children" in node) {
@@ -137,6 +170,7 @@ interface TextNodeInfo {
 
 /**
  * HASTツリー内のテキストノードとその文字位置をマッピング
+ * extractText()で追加されるブロック要素後の改行も考慮する
  */
 function collectTextNodes(node: Node, currentPos = 0): TextNodeInfo[] {
   const nodes: TextNodeInfo[] = [];
@@ -149,17 +183,43 @@ function collectTextNodes(node: Node, currentPos = 0): TextNodeInfo[] {
       start: currentPos,
       end: currentPos + length,
     });
+  } else if (node.type === "element") {
+    const element = node as Element;
+    let pos = currentPos;
+    for (const child of element.children) {
+      const childNodes = collectTextNodes(child, pos);
+      nodes.push(...childNodes);
+      for (const { end } of childNodes) {
+        pos = Math.max(pos, end);
+      }
+      if (childNodes.length === 0 && child.type === "text") {
+        pos += (child as Text).value.length;
+      }
+      // ブロック要素の後に改行が追加される
+      if (
+        child.type === "element" &&
+        BLOCK_ELEMENTS.has((child as Element).tagName)
+      ) {
+        pos += 1; // 改行文字分
+      }
+    }
   } else if ("children" in node) {
     let pos = currentPos;
     for (const child of (node as Parent).children) {
       const childNodes = collectTextNodes(child, pos);
       nodes.push(...childNodes);
-      for (const { start, end } of childNodes) {
+      for (const { end } of childNodes) {
         pos = Math.max(pos, end);
       }
-      // 子ノードがなかった場合でもテキスト長を加算
       if (childNodes.length === 0 && child.type === "text") {
         pos += (child as Text).value.length;
+      }
+      // ブロック要素の後に改行が追加される
+      if (
+        child.type === "element" &&
+        BLOCK_ELEMENTS.has((child as Element).tagName)
+      ) {
+        pos += 1; // 改行文字分
       }
     }
   }
@@ -209,6 +269,7 @@ export function trimHtmlByRange(
 
 /**
  * 空のノードを再帰的に削除
+ * 空のブロック要素（h1-h6, div, p など）も削除する
  */
 function removeEmptyNodes(node: Node): boolean {
   if (node.type === "text") {
@@ -220,11 +281,29 @@ function removeEmptyNodes(node: Node): boolean {
     parent.children = parent.children.filter((child) =>
       removeEmptyNodes(child)
     );
-    // 要素ノードは子がなくても残す（空の要素タグは許容）
+    // rootノード以外で子がない場合は削除
     return parent.children.length > 0 || node.type === "root";
   }
 
   return true;
+}
+
+/**
+ * HTMLから空のブロック要素を削除
+ */
+export function removeEmptyBlockElements(html: string): string {
+  if (!html) {
+    return "";
+  }
+
+  const processor = unified()
+    .use(rehypeParse, { fragment: true })
+    .use(rehypeStringify);
+
+  const tree = processor.parse(html);
+  removeEmptyNodes(tree);
+
+  return processor.stringify(tree);
 }
 
 /**
@@ -242,9 +321,9 @@ export function trimHtmlToMatchText(
 
   const htmlText = getTextFromHtml(html);
 
-  // 正規化して比較
+  // 正規化して比較 - 一致してもまず空要素を削除
   if (normalizeText(htmlText) === normalizeText(expectedText)) {
-    return html;
+    return removeEmptyBlockElements(html);
   }
 
   // 範囲を検索
