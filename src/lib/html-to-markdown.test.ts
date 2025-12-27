@@ -41,9 +41,16 @@ describe("htmlToMarkdown", () => {
       expect(await htmlToMarkdown("<code>code</code>")).toBe("`code`");
     });
 
-    it("aタグをMarkdownリンクに変換", async () => {
+    it("aタグをテキストのみに変換（デフォルト）", async () => {
       expect(
         await htmlToMarkdown('<a href="https://example.com">link</a>')
+      ).toBe("link");
+    });
+
+    it("a: true でaタグをMarkdownリンクに変換", async () => {
+      const options = { handlers: { a: true as const } };
+      expect(
+        await htmlToMarkdown('<a href="https://example.com">link</a>', options)
       ).toBe("[link](https://example.com)");
     });
   });
@@ -136,10 +143,20 @@ describe("htmlToMarkdown", () => {
       expect(result).toContain("Para 2");
     });
 
-    it("リスト内のリンクを変換", async () => {
+    it("リスト内のリンクをテキストのみに変換（デフォルト）", async () => {
       const html =
         '<ul><li><a href="https://a.com">Link A</a></li><li><a href="https://b.com">Link B</a></li></ul>';
       const result = await htmlToMarkdown(html);
+      expect(result).toContain("* Link A");
+      expect(result).toContain("* Link B");
+      expect(result).not.toContain("https://");
+    });
+
+    it("a: true でリスト内のリンクをMarkdownに変換", async () => {
+      const html =
+        '<ul><li><a href="https://a.com">Link A</a></li><li><a href="https://b.com">Link B</a></li></ul>';
+      const options = { handlers: { a: true as const } };
+      const result = await htmlToMarkdown(html, options);
       expect(result).toContain("[Link A](https://a.com)");
       expect(result).toContain("[Link B](https://b.com)");
     });
@@ -185,9 +202,9 @@ describe("htmlToMarkdownSync", () => {
 });
 
 describe("DEFAULT_OPTIONS", () => {
-  it("全ての要素がtrueに設定されている", () => {
+  it("aタグ以外の要素がtrueに設定されている", () => {
     const handlers = DEFAULT_OPTIONS.handlers;
-    expect(handlers?.a).toBe(true);
+    expect(handlers?.a).toBe(false);
     expect(handlers?.strong).toBe(true);
     expect(handlers?.em).toBe(true);
     expect(handlers?.code).toBe(true);

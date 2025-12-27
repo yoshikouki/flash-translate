@@ -44,7 +44,7 @@ export interface HtmlToMarkdownOptions {
  */
 export const DEFAULT_OPTIONS: HtmlToMarkdownOptions = {
   handlers: {
-    a: true,
+    a: false,
     strong: true,
     em: true,
     code: true,
