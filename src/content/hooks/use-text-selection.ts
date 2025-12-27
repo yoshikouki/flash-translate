@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { trimHtmlToMatchText } from "@/lib/html-trimmer";
 import {
   documentFragmentToHtml,
   getValidSelectionText,
@@ -40,10 +41,11 @@ export function useTextSelection() {
         }
         rect = rangeRect;
 
-        // Extract HTML from the selection range
+        // Extract HTML from the selection range and trim to match text
         if (range) {
           const fragment = range.cloneContents();
-          html = documentFragmentToHtml(fragment);
+          const rawHtml = documentFragmentToHtml(fragment);
+          html = trimHtmlToMatchText(rawHtml, validText);
         }
       } catch {
         // Fallback to body rect if range fails

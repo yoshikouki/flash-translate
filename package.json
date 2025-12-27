@@ -21,6 +21,7 @@
     "react-dom": "^19.2.0",
     "rehype-parse": "^9.0.1",
     "rehype-remark": "^10.0.1",
+    "rehype-stringify": "^10.0.1",
     "remark-stringify": "^11.0.0",
     "tailwind-merge": "^3.4.0",
     "unified": "^11.0.5"
