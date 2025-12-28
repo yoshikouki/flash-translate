@@ -76,10 +76,14 @@ export function useTranslator({
     );
 
     if (executionResult.type === "aborted") {
+      // Clean up the aborted controller reference
+      abortControllerRef.current = null;
       return;
     }
 
     if (executionResult.type === "error") {
+      // Clean up the controller reference to prevent memory accumulation
+      abortControllerRef.current = null;
       setState((prev) => ({
         ...prev,
         result: "",
@@ -89,6 +93,8 @@ export function useTranslator({
       return;
     }
 
+    // Clean up after successful completion
+    abortControllerRef.current = null;
     setState((prev) => ({
       ...prev,
       result: executionResult.result,
@@ -100,6 +106,7 @@ export function useTranslator({
   const reset = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
+      abortControllerRef.current = null;
     }
     setState((prev) => ({
       ...prev,
