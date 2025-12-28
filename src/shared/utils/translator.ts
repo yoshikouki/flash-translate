@@ -74,8 +74,12 @@ class TranslatorManager {
 
     // Destroy existing instance if different language pair
     if (this.instance) {
-      this.instance.translator.destroy();
-      this.instance = null;
+      try {
+        this.instance.translator.destroy();
+      } finally {
+        // Ensure instance reference is cleared even if destroy() throws
+        this.instance = null;
+      }
     }
 
     // Queue request if already creating
@@ -139,12 +143,14 @@ class TranslatorManager {
 
       return translator;
     } catch (error) {
-      // Reject pending requests
+      // Reject pending requests with properly typed error
+      const normalizedError =
+        error instanceof Error ? error : new Error(String(error));
       for (const { reject } of this.pendingRequests) {
-        reject(error as Error);
+        reject(normalizedError);
       }
       this.pendingRequests = [];
-      throw error;
+      throw normalizedError;
     } finally {
       this.isCreating = false;
     }
