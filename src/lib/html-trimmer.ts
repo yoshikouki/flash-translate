@@ -208,6 +208,26 @@ export function trimHtmlByRange(
 }
 
 /**
+ * Void elements (self-closing tags) that are valid without children
+ */
+const VOID_ELEMENTS = new Set([
+  "area",
+  "base",
+  "br",
+  "col",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr",
+]);
+
+/**
  * 空のノードを再帰的に削除
  */
 function removeEmptyNodes(node: Node): boolean {
@@ -220,8 +240,23 @@ function removeEmptyNodes(node: Node): boolean {
     parent.children = parent.children.filter((child) =>
       removeEmptyNodes(child)
     );
-    // 要素ノードは子がなくても残す（空の要素タグは許容）
-    return parent.children.length > 0 || node.type === "root";
+
+    // Root node is always kept
+    if (node.type === "root") {
+      return true;
+    }
+
+    // Void elements are valid without children
+    if (
+      node.type === "element" &&
+      "tagName" in node &&
+      VOID_ELEMENTS.has((node as { tagName: string }).tagName)
+    ) {
+      return true;
+    }
+
+    // Other elements need children to be kept
+    return parent.children.length > 0;
   }
 
   return true;
@@ -242,19 +277,20 @@ export function trimHtmlToMatchText(
 
   const htmlText = getTextFromHtml(html);
 
-  // 正規化して比較
-  if (normalizeText(htmlText) === normalizeText(expectedText)) {
-    return html;
-  }
+  // 正規化して比較 - 一致する場合も空要素削除のためトリミング処理を実行
+  const normalizedMatch =
+    normalizeText(htmlText) === normalizeText(expectedText);
 
-  // 範囲を検索
-  const range = findTextRange(htmlText, expectedText);
+  // 範囲を決定
+  const range = normalizedMatch
+    ? { start: 0, end: htmlText.length }
+    : findTextRange(htmlText, expectedText);
 
   if (!range) {
     // 見つからない場合はプレーンテキストにフォールバック
     return expectedText;
   }
 
-  // 範囲に基づいてトリミング
+  // 範囲に基づいてトリミング（空要素も削除される）
   return trimHtmlByRange(html, range);
 }
