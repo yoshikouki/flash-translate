@@ -19,12 +19,14 @@ export function Markdown({ content }: MarkdownProps) {
         ),
         p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
         ul: ({ children }) => (
-          <ul className="mb-2 list-inside list-disc">{children}</ul>
+          <ul className="mb-2 ml-4 list-outside list-disc">{children}</ul>
         ),
         ol: ({ children }) => (
-          <ol className="mb-2 list-inside list-decimal">{children}</ol>
+          <ol className="mb-2 ml-4 list-outside list-decimal">{children}</ol>
         ),
-        li: ({ children }) => <li className="mb-1">{children}</li>,
+        li: ({ children }) => (
+          <li className="mb-1 [&>p]:mb-0 [&>p]:inline">{children}</li>
+        ),
         code: ({ children }) => (
           <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm">
             {children}
