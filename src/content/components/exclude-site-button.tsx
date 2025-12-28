@@ -1,5 +1,5 @@
 import { Ban, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   generatePatternId,
   getSettings,
@@ -13,12 +13,21 @@ interface ExcludeSiteButtonProps {
 
 export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
   const [isConfirming, setIsConfirming] = useState(false);
+  const confirmButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogTitleId = "exclude-site-dialog-title";
 
   const handleClick = () => {
     setIsConfirming(true);
     // Auto-reset after 3 seconds
     setTimeout(() => setIsConfirming(false), 3000);
   };
+
+  // Focus confirm button when dialog opens
+  useEffect(() => {
+    if (isConfirming && confirmButtonRef.current) {
+      confirmButtonRef.current.focus();
+    }
+  }, [isConfirming]);
 
   const handleConfirm = async () => {
     const currentOrigin = window.location.origin;
@@ -38,6 +47,12 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
     setIsConfirming(false);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      handleCancel();
+    }
+  };
+
   return (
     <>
       <button
@@ -50,14 +65,24 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
         <Ban size={14} />
       </button>
       {isConfirming && (
-        <div className="absolute inset-0 flex items-stretch justify-between rounded-xl border border-red-200 border-solid bg-white px-3 py-2">
-          <span className="flex items-center text-gray-600 text-xs">
+        <div
+          aria-labelledby={dialogTitleId}
+          aria-modal="true"
+          className="absolute inset-0 flex items-stretch justify-between rounded-xl border border-red-200 border-solid bg-white px-3 py-2"
+          onKeyDown={handleKeyDown}
+          role="dialog"
+        >
+          <span
+            className="flex items-center text-gray-600 text-xs"
+            id={dialogTitleId}
+          >
             {getMessage("content_disableOnSite")}
           </span>
           <div className="flex items-stretch gap-2 py-0">
             <button
               className="flex cursor-pointer items-center rounded border-none bg-red-500 px-2 text-white text-xs transition-colors hover:bg-red-600"
               onClick={handleConfirm}
+              ref={confirmButtonRef}
               type="button"
             >
               {getMessage("content_disable")}

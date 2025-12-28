@@ -20,6 +20,7 @@ export function LanguageSelector({
   return (
     <div className="flex items-stretch gap-1">
       <select
+        aria-label={getMessage("content_sourceLanguage")}
         className="flex cursor-pointer appearance-none items-center rounded border-none bg-transparent px-1 font-medium text-blue-700 text-xs transition-colors hover:bg-blue-50 hover:text-blue-900 focus:outline-none"
         onChange={(e) => onSourceChange(e.target.value)}
         value={sourceLanguage}
@@ -39,6 +40,7 @@ export function LanguageSelector({
         <ChevronRight size={12} />
       </button>
       <select
+        aria-label={getMessage("content_targetLanguage")}
         className="flex cursor-pointer appearance-none items-center rounded border-none bg-transparent px-1 font-medium text-blue-700 text-xs transition-colors hover:bg-blue-50 hover:text-blue-900 focus:outline-none"
         onChange={(e) => onTargetChange(e.target.value)}
         value={targetLanguage}

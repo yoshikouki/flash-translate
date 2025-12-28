@@ -143,6 +143,12 @@
   "content_resizeHandleRight": {
     "message": "Right resize handle"
   },
+  "content_sourceLanguage": {
+    "message": "Source language"
+  },
+  "content_targetLanguage": {
+    "message": "Target language"
+  },
 
   "content_translatorUnsupported": {
     "message": "Translator API is not supported in this browser. Please use Chrome 138+ with the API enabled."

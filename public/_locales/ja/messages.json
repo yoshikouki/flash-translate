@@ -143,6 +143,12 @@
   "content_resizeHandleRight": {
     "message": "右リサイズハンドル"
   },
+  "content_sourceLanguage": {
+    "message": "翻訳元言語"
+  },
+  "content_targetLanguage": {
+    "message": "翻訳先言語"
+  },
 
   "content_translatorUnsupported": {
     "message": "Translator API はこのブラウザでサポートされていません。API を有効にした Chrome 138 以降をお使いください。"
