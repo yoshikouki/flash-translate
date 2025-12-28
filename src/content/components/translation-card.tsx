@@ -47,13 +47,20 @@ export function TranslationCard({
     maxPopupWidth
   );
 
-  // Update max width on window resize
+  // Update max width on window resize with debounce
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
     const handleResize = () => {
-      setMaxPopupWidth(calculateMaxPopupWidth(window.innerWidth));
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setMaxPopupWidth(calculateMaxPopupWidth(window.innerWidth));
+      }, 100);
     };
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   // Load initial settings and subscribe to changes
