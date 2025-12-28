@@ -157,17 +157,6 @@ class TranslatorManager {
     }
   }
 
-  async translate(
-    text: string,
-    sourceLanguage: string,
-    targetLanguage: string
-  ): Promise<string> {
-    const translator = await this.getTranslator(sourceLanguage, targetLanguage);
-    const preserved = preserveNewlines(text);
-    const result = await translator.translate(preserved);
-    return restoreNewlines(result);
-  }
-
   async *translateStreaming(
     text: string,
     sourceLanguage: string,
