@@ -25,12 +25,59 @@ const DEFAULT_SETTINGS: TranslationSettings = {
   skipSameLanguage: true,
 };
 
+// Type guard for ExclusionPattern
+function isExclusionPattern(value: unknown): value is ExclusionPattern {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as ExclusionPattern).id === "string" &&
+    typeof (value as ExclusionPattern).pattern === "string" &&
+    typeof (value as ExclusionPattern).enabled === "boolean"
+  );
+}
+
+// Validate and normalize settings from storage
+function validateSettings(data: unknown): Partial<TranslationSettings> {
+  if (typeof data !== "object" || data === null) {
+    return {};
+  }
+
+  const result: Partial<TranslationSettings> = {};
+  const obj = data as Record<string, unknown>;
+
+  if (typeof obj.sourceLanguage === "string") {
+    result.sourceLanguage = obj.sourceLanguage;
+  }
+  if (typeof obj.targetLanguage === "string") {
+    result.targetLanguage = obj.targetLanguage;
+  }
+  if (typeof obj.skipSameLanguage === "boolean") {
+    result.skipSameLanguage = obj.skipSameLanguage;
+  }
+  if (Array.isArray(obj.exclusionPatterns)) {
+    result.exclusionPatterns = obj.exclusionPatterns.filter(isExclusionPattern);
+  }
+
+  return result;
+}
+
 // Helper to check if a URL matches any enabled exclusion pattern
+// Uses stricter matching to prevent false positives (e.g., example.com.evil.com)
 export function isUrlExcluded(
   url: string,
   patterns: ExclusionPattern[]
 ): boolean {
-  return patterns.some((p) => p.enabled && url.startsWith(p.pattern));
+  return patterns.some((p) => {
+    if (!p.enabled) return false;
+    // Exact match or path prefix match (with / boundary)
+    if (url === p.pattern) return true;
+    // Ensure pattern ends with / or url has / after pattern
+    if (url.startsWith(p.pattern)) {
+      const nextChar = url[p.pattern.length];
+      return nextChar === undefined || nextChar === "/" || nextChar === "?";
+    }
+    return false;
+  });
 }
 
 // Pure function: Normalize language code (e.g., "ja-JP" -> "ja", "zh-CN" -> "zh")
@@ -91,10 +138,9 @@ export async function getSettings(): Promise<TranslationSettings> {
 
   try {
     const result = await chrome.storage.sync.get([STORAGE_KEY]);
-    const settings = result[STORAGE_KEY] as
-      | Partial<TranslationSettings>
-      | undefined;
-    return { ...DEFAULT_SETTINGS, ...settings };
+    const rawSettings = result[STORAGE_KEY];
+    const validatedSettings = validateSettings(rawSettings);
+    return { ...DEFAULT_SETTINGS, ...validatedSettings };
   } catch (error) {
     log.error("Failed to get settings:", error);
     return DEFAULT_SETTINGS;
@@ -133,7 +179,9 @@ export function subscribeToSettings(
       return;
     }
     if (areaName === "sync" && changes[STORAGE_KEY]) {
-      callback(changes[STORAGE_KEY].newValue as TranslationSettings);
+      const rawSettings = changes[STORAGE_KEY].newValue;
+      const validatedSettings = validateSettings(rawSettings);
+      callback({ ...DEFAULT_SETTINGS, ...validatedSettings });
     }
   };
 
