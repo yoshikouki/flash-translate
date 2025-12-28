@@ -1,10 +1,8 @@
 // Using official @types/dom-chromium-ai types
 
+import { preserveNewlines, restoreNewlines } from "@/lib/newline-preserver";
 import { createPrefixedLogger } from "./logger";
-import {
-  readStreamAccumulated,
-  streamMultipleParagraphs,
-} from "./translator-streaming";
+import { readStreamAccumulated } from "./translator-streaming";
 
 const log = createPrefixedLogger("translator");
 
@@ -16,7 +14,6 @@ import {
   filterSourceLanguages,
   isSameLanguagePair,
   mapAvailabilityStatus,
-  splitTextIntoParagraphs,
 } from "./translator-utils";
 
 interface CachedTranslator {
@@ -160,22 +157,29 @@ class TranslatorManager {
     }
   }
 
+  async translate(
+    text: string,
+    sourceLanguage: string,
+    targetLanguage: string
+  ): Promise<string> {
+    const translator = await this.getTranslator(sourceLanguage, targetLanguage);
+    const preserved = preserveNewlines(text);
+    const result = await translator.translate(preserved);
+    return restoreNewlines(result);
+  }
+
   async *translateStreaming(
     text: string,
     sourceLanguage: string,
     targetLanguage: string
   ): AsyncGenerator<string> {
     const translator = await this.getTranslator(sourceLanguage, targetLanguage);
-    const paragraphs = splitTextIntoParagraphs(text);
+    const preserved = preserveNewlines(text);
 
-    if (paragraphs.length === 1) {
-      // Single paragraph - stream normally
-      yield* readStreamAccumulated(translator.translateStreaming(text));
-    } else {
-      // Multiple paragraphs - translate each and join with line breaks
-      yield* streamMultipleParagraphs(paragraphs, (paragraph) =>
-        translator.translateStreaming(paragraph)
-      );
+    for await (const chunk of readStreamAccumulated(
+      translator.translateStreaming(preserved)
+    )) {
+      yield restoreNewlines(chunk);
     }
   }
 
