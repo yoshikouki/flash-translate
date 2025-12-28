@@ -68,9 +68,13 @@ export function isUrlExcluded(
   patterns: ExclusionPattern[]
 ): boolean {
   return patterns.some((p) => {
-    if (!p.enabled) return false;
+    if (!p.enabled) {
+      return false;
+    }
     // Exact match or path prefix match (with / boundary)
-    if (url === p.pattern) return true;
+    if (url === p.pattern) {
+      return true;
+    }
     // Ensure pattern ends with / or url has / after pattern
     if (url.startsWith(p.pattern)) {
       const nextChar = url[p.pattern.length];
