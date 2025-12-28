@@ -154,7 +154,7 @@ function collectTextNodes(node: Node, currentPos = 0): TextNodeInfo[] {
     for (const child of (node as Parent).children) {
       const childNodes = collectTextNodes(child, pos);
       nodes.push(...childNodes);
-      for (const { start, end } of childNodes) {
+      for (const { end } of childNodes) {
         pos = Math.max(pos, end);
       }
       // 子ノードがなかった場合でもテキスト長を加算
