@@ -37,6 +37,9 @@ export function useResizable({
     popupLeft: 0,
     popupRight: 0,
   });
+  // Track current width for mouseup handler without causing effect re-runs
+  const currentWidthRef = useRef(width);
+  currentWidthRef.current = width;
 
   // Update width when initialWidth changes (e.g., from settings)
   useEffect(() => {
@@ -132,7 +135,8 @@ export function useResizable({
 
     const handleMouseUp = () => {
       setIsResizing(false);
-      onResizeEnd?.(width);
+      // Use ref to get latest width without dependency
+      onResizeEnd?.(currentWidthRef.current);
     };
 
     document.addEventListener("mousemove", handleMouseMove);
@@ -142,7 +146,7 @@ export function useResizable({
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isResizing, minWidth, maxWidth, edgeMargin, onResizeEnd, width]);
+  }, [isResizing, minWidth, maxWidth, edgeMargin, onResizeEnd]);
 
   return {
     width,

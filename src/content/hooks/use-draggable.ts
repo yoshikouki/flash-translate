@@ -18,6 +18,9 @@ export function useDraggable({
   const [isDragging, setIsDragging] = useState(false);
   const startMouseRef = useRef({ x: 0, y: 0 });
   const startOffsetRef = useRef({ x: 0, y: 0 });
+  // Track current offset for mouseup handler without causing effect re-runs
+  const currentOffsetRef = useRef(offset);
+  currentOffsetRef.current = offset;
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -47,7 +50,8 @@ export function useDraggable({
 
     const handleMouseUp = () => {
       setIsDragging(false);
-      onDragEnd?.(offset);
+      // Use ref to get latest offset without dependency
+      onDragEnd?.(currentOffsetRef.current);
     };
 
     document.addEventListener("mousemove", handleMouseMove);
@@ -57,7 +61,7 @@ export function useDraggable({
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging, onDragEnd, offset]);
+  }, [isDragging, onDragEnd]);
 
   return {
     offset,
