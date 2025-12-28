@@ -93,44 +93,6 @@ describe("htmlToMarkdown", () => {
     });
   });
 
-  describe("looseリスト変換", () => {
-    it("ulリストをloose形式（アイテム間に空行）で出力", async () => {
-      const html = "<ul><li>item 1</li><li>item 2</li></ul>";
-      const result = await htmlToMarkdown(html);
-      // loose リストはアイテム間に空行（\n\n）がある
-      expect(result).toBe("* item 1\n\n* item 2");
-    });
-
-    it("olリストをloose形式で出力", async () => {
-      const html = "<ol><li>first</li><li>second</li></ol>";
-      const result = await htmlToMarkdown(html);
-      expect(result).toBe("1. first\n\n2. second");
-    });
-
-    it("見出し + リスト + blockquoteの組み合わせでリストがloose形式", async () => {
-      const html =
-        "<h6>Notes</h6><ul><li>item 1</li><li>item 2</li></ul><blockquote>note</blockquote>";
-      const result = await htmlToMarkdown(html);
-      // リストアイテム間に空行があることを確認
-      expect(result).toContain("* item 1\n\n* item 2");
-    });
-
-    it("インライン要素を含むリストもloose形式", async () => {
-      const html =
-        "<ul><li>text with <em>emphasis</em></li><li>text with <code>code</code></li></ul>";
-      const result = await htmlToMarkdown(html);
-      expect(result).toContain("\n\n*");
-    });
-
-    it("ネストされたリストもloose形式", async () => {
-      const html =
-        "<ul><li>parent 1<ul><li>child 1</li><li>child 2</li></ul></li><li>parent 2</li></ul>";
-      const result = await htmlToMarkdown(html);
-      // ネストされたリストも空行で区切られる
-      expect(result).toContain("\n\n  *");
-    });
-  });
-
   describe("オプション設定", () => {
     it("a: false でリンクをテキストのみに", async () => {
       const html = '<a href="https://example.com">link</a>';

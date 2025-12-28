@@ -124,23 +124,6 @@ function buildOptions(options: HtmlToMarkdownOptions): Options | undefined {
 }
 
 /**
- * すべてのリストを loose（アイテム間に空行あり）に変換するプラグイン
- * 翻訳 API が tight リストの改行を削除する問題を回避
- */
-function remarkLooseList() {
-  return (tree: import("mdast").Root) => {
-    const { visit } =
-      require("unist-util-visit") as typeof import("unist-util-visit");
-    visit(tree, "list", (node: import("mdast").List) => {
-      node.spread = true;
-    });
-    visit(tree, "listItem", (node: import("mdast").ListItem) => {
-      node.spread = true;
-    });
-  };
-}
-
-/**
  * HTML文字列をMarkdownに変換
  * 純粋関数としてテスト可能
  */
@@ -157,7 +140,6 @@ export async function htmlToMarkdown(
   const processor = unified()
     .use(rehypeParse, { fragment: !options.document })
     .use(rehypeRemark, rehypeRemarkOptions)
-    .use(remarkLooseList)
     .use(remarkStringify);
 
   const result = await processor.process(html);
@@ -181,7 +163,6 @@ export function htmlToMarkdownSync(
   const processor = unified()
     .use(rehypeParse, { fragment: !options.document })
     .use(rehypeRemark, rehypeRemarkOptions)
-    .use(remarkLooseList)
     .use(remarkStringify);
 
   const result = processor.processSync(html);

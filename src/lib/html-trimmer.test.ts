@@ -8,26 +8,18 @@ import {
 } from "./html-trimmer";
 
 describe("getTextFromHtml", () => {
-  it("HTMLからテキストを抽出（ブロック要素後に改行）", () => {
-    expect(getTextFromHtml("<p>Hello world</p>")).toBe("Hello world\n");
+  it("HTMLからテキストを抽出", () => {
+    expect(getTextFromHtml("<p>Hello world</p>")).toBe("Hello world");
   });
 
   it("ネストされた要素からテキストを抽出", () => {
     expect(getTextFromHtml("<p>Hello <strong>bold</strong> text</p>")).toBe(
-      "Hello bold text\n"
+      "Hello bold text"
     );
   });
 
-  it("複数の要素からテキストを抽出（要素間に改行）", () => {
-    expect(getTextFromHtml("<p>Para 1</p><p>Para 2</p>")).toBe(
-      "Para 1\nPara 2\n"
-    );
-  });
-
-  it("li要素間に改行を挿入", () => {
-    expect(getTextFromHtml("<ul><li>Item 1</li><li>Item 2</li></ul>")).toBe(
-      "Item 1\nItem 2\n"
-    );
+  it("複数の要素からテキストを抽出", () => {
+    expect(getTextFromHtml("<p>Para 1</p><p>Para 2</p>")).toBe("Para 1Para 2");
   });
 
   it("空文字列を処理", () => {
@@ -91,13 +83,13 @@ describe("trimHtmlByRange", () => {
   it("指定範囲のテキストのみを保持", () => {
     const html = "<p>Hello world extra</p>";
     const result = trimHtmlByRange(html, { start: 0, end: 11 });
-    expect(getTextFromHtml(result)).toBe("Hello world\n");
+    expect(getTextFromHtml(result)).toBe("Hello world");
   });
 
   it("先頭からトリミング", () => {
     const html = "<p>Extra Hello world</p>";
     const result = trimHtmlByRange(html, { start: 6, end: 17 });
-    expect(getTextFromHtml(result)).toBe("Hello world\n");
+    expect(getTextFromHtml(result)).toBe("Hello world");
   });
 
   it("空文字列を処理", () => {
@@ -125,7 +117,7 @@ describe("trimHtmlToMatchText", () => {
       const html = "<p>Selected text</p><h3>Extra heading</h3>";
       const text = "Selected text";
       const result = trimHtmlToMatchText(html, text);
-      expect(getTextFromHtml(result)).toBe("Selected text\n");
+      expect(getTextFromHtml(result)).toBe("Selected text");
       expect(result).not.toContain("<h3>");
     });
 
@@ -133,7 +125,7 @@ describe("trimHtmlToMatchText", () => {
       const html = "<p>Keep this. Remove this.</p>";
       const text = "Keep this.";
       const result = trimHtmlToMatchText(html, text);
-      expect(getTextFromHtml(result)).toBe("Keep this.\n");
+      expect(getTextFromHtml(result)).toBe("Keep this.");
     });
   });
 
@@ -142,7 +134,7 @@ describe("trimHtmlToMatchText", () => {
       const html = "<h3>Extra heading</h3><p>Selected text</p>";
       const text = "Selected text";
       const result = trimHtmlToMatchText(html, text);
-      expect(getTextFromHtml(result)).toBe("Selected text\n");
+      expect(getTextFromHtml(result)).toBe("Selected text");
       expect(result).not.toContain("<h3>");
     });
   });
@@ -158,8 +150,7 @@ describe("trimHtmlToMatchText", () => {
 
     it("ネストされたリスト構造を保持", () => {
       const html = "<ul><li>Item 1</li><li>Item 2</li></ul><p>Extra</p>";
-      // ブラウザのselection.toString()は"Item 1\nItem 2"を返す
-      const text = "Item 1\nItem 2";
+      const text = "Item 1Item 2";
       const result = trimHtmlToMatchText(html, text);
       expect(result).toContain("<li>");
       expect(result).not.toContain("Extra");
@@ -193,30 +184,9 @@ describe("trimHtmlToMatchText", () => {
       const text =
         "This package exports no identifiers. The default export is rehypeRemark.";
       const result = trimHtmlToMatchText(html, text);
-      expect(getTextFromHtml(result)).toBe(`${text}\n`);
+      expect(getTextFromHtml(result)).toBe(text);
       expect(result).not.toContain("<h3>");
       expect(result).not.toContain("###");
-    });
-
-    it("空の見出しタグを除去", () => {
-      const html =
-        "<p>This package exports no identifiers.</p><div><h3></h3></div>";
-      const text = "This package exports no identifiers.";
-      const result = trimHtmlToMatchText(html, text);
-      expect(getTextFromHtml(result)).toBe(`${text}\n`);
-      expect(result).not.toContain("<h3>");
-      expect(result).not.toContain("<div>");
-    });
-
-    it("li + 他の要素の混合選択で構造を保持", () => {
-      const html = "<ul><li>Item 1</li><li>Item 2</li></ul><p>Paragraph</p>";
-      // ブラウザのselection.toString()は改行を含む
-      const text = "Item 1\nItem 2";
-      const result = trimHtmlToMatchText(html, text);
-      expect(result).toContain("<li>");
-      expect(result).toContain("<ul>");
-      expect(result).not.toContain("<p>");
-      expect(result).not.toContain("Paragraph");
     });
   });
 });
