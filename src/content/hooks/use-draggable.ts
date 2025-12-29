@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useLatestRef } from "@/shared/hooks/use-latest-ref";
 
 interface UseDraggableOptions {
   onDragEnd?: (offset: { x: number; y: number }) => void;
@@ -19,8 +20,7 @@ export function useDraggable({
   const startMouseRef = useRef({ x: 0, y: 0 });
   const startOffsetRef = useRef({ x: 0, y: 0 });
   // Track current offset for mouseup handler without causing effect re-runs
-  const currentOffsetRef = useRef(offset);
-  currentOffsetRef.current = offset;
+  const currentOffsetRef = useLatestRef(offset);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();

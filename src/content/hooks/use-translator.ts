@@ -75,32 +75,30 @@ export function useTranslator({
       }
     );
 
+    // Clean up the controller reference after execution completes
+    abortControllerRef.current = null;
+
+    // Handle aborted translation (new translation started)
     if (executionResult.type === "aborted") {
-      // Clean up the aborted controller reference
-      abortControllerRef.current = null;
       return;
     }
 
+    // Update state based on result
     if (executionResult.type === "error") {
-      // Clean up the controller reference to prevent memory accumulation
-      abortControllerRef.current = null;
       setState((prev) => ({
         ...prev,
         result: "",
         isLoading: false,
         error: executionResult.error,
       }));
-      return;
+    } else {
+      setState((prev) => ({
+        ...prev,
+        result: executionResult.result,
+        isLoading: false,
+        error: null,
+      }));
     }
-
-    // Clean up after successful completion
-    abortControllerRef.current = null;
-    setState((prev) => ({
-      ...prev,
-      result: executionResult.result,
-      isLoading: false,
-      error: null,
-    }));
   };
 
   const reset = () => {

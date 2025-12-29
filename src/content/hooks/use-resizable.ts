@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useLatestRef } from "@/shared/hooks/use-latest-ref";
 import { calculateLeftResize, calculateRightResize } from "./resizable";
 
 interface UseResizableOptions {
@@ -38,8 +39,7 @@ export function useResizable({
     popupRight: 0,
   });
   // Track current width for mouseup handler without causing effect re-runs
-  const currentWidthRef = useRef(width);
-  currentWidthRef.current = width;
+  const currentWidthRef = useLatestRef(width);
 
   // Update width when initialWidth changes (e.g., from settings)
   useEffect(() => {
