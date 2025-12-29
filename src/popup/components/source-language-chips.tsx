@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef } from "react";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import { getMessage } from "@/shared/utils/i18n";
 import { createPrefixedLogger } from "@/shared/utils/logger";
@@ -8,7 +7,9 @@ import {
   type LanguagePairStatus,
   translatorManager,
 } from "@/shared/utils/translator";
-import { StatusIndicator } from "./status-indicator";
+import { useDownloadState } from "../hooks/use-download-state";
+import { LanguageChip } from "./language-chip";
+import { LanguageDownloadDropdown } from "./language-download-dropdown";
 
 const log = createPrefixedLogger("SourceLanguageChips");
 
@@ -29,87 +30,57 @@ export function SourceLanguageChips({
   onPairsChange,
   onSourceLanguageChange,
 }: SourceLanguageChipsProps) {
-  const [downloadingPairs, setDownloadingPairs] = useState<Set<string>>(
-    new Set()
+  const { getStatus, startDownload, finishDownload, clearDownloadError } =
+    useDownloadState();
+
+  // Track error clear timeouts for cleanup
+  const errorTimeoutsRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(
+    new Map()
   );
-  const [downloadErrors, setDownloadErrors] = useState<Set<string>>(new Set());
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState<"left" | "right">(
-    "left"
-  );
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // Cleanup all pending timeouts on unmount
+  useEffect(() => {
+    const timeouts = errorTimeoutsRef.current;
+    return () => {
+      for (const timeout of timeouts.values()) {
+        clearTimeout(timeout);
+      }
+      timeouts.clear();
+    };
+  }, []);
 
   const availablePairs = pairs.filter((p) => p.status === "available");
   const downloadablePairs = pairs.filter((p) => p.status === "after-download");
 
-  // Calculate dropdown position to avoid overflow
-  useEffect(() => {
-    if (isDropdownOpen && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      const viewportWidth = window.innerWidth;
-      // If right edge would overflow, align to right
-      if (rect.left + 128 > viewportWidth - 16) {
-        setDropdownPosition("right");
-      } else {
-        setDropdownPosition("left");
-      }
-    }
-  }, [isDropdownOpen]);
-
-  const getLanguageCode = (code: string) => {
-    return code.toUpperCase();
-  };
-
-  const getLanguageName = (code: string) => {
-    return SUPPORTED_LANGUAGES.find((l) => l.code === code)?.nativeName || code;
-  };
-
   const handleDownload = async (sourceLang: string) => {
     const pairKey = `${sourceLang}-${targetLanguage}`;
-    // Clear any previous error for this pair
-    setDownloadErrors((prev) => {
-      const next = new Set(prev);
-      next.delete(pairKey);
-      return next;
-    });
-    setDownloadingPairs((prev) => new Set(prev).add(pairKey));
-    setIsDropdownOpen(false);
+
+    // Clear any existing timeout for this pair
+    const existingTimeout = errorTimeoutsRef.current.get(pairKey);
+    if (existingTimeout) {
+      clearTimeout(existingTimeout);
+      errorTimeoutsRef.current.delete(pairKey);
+    }
+
+    startDownload(sourceLang, targetLanguage);
 
     try {
       await translatorManager.getTranslator(sourceLang, targetLanguage);
       const sourceCodes = SUPPORTED_LANGUAGES.map((l) => l.code);
       const statuses = await checkAllPairsToTarget(targetLanguage, sourceCodes);
       onPairsChange(statuses);
+      finishDownload(sourceLang, targetLanguage, false);
     } catch (error) {
       log.error("Download failed:", error);
-      setDownloadErrors((prev) => new Set(prev).add(pairKey));
-      // Auto-clear error after 5 seconds
-      setTimeout(() => {
-        setDownloadErrors((prev) => {
-          const next = new Set(prev);
-          next.delete(pairKey);
-          return next;
-        });
-      }, 5000);
-    } finally {
-      setDownloadingPairs((prev) => {
-        const next = new Set(prev);
-        next.delete(pairKey);
-        return next;
-      });
-    }
-  };
+      finishDownload(sourceLang, targetLanguage, true);
 
-  const getStatus = (sourceLang: string) => {
-    const pairKey = `${sourceLang}-${targetLanguage}`;
-    if (downloadErrors.has(pairKey)) {
-      return "error" as const;
+      // Auto-clear error after 5 seconds with proper cleanup tracking
+      const timeoutId = setTimeout(() => {
+        clearDownloadError(sourceLang, targetLanguage);
+        errorTimeoutsRef.current.delete(pairKey);
+      }, 5000);
+      errorTimeoutsRef.current.set(pairKey, timeoutId);
     }
-    if (downloadingPairs.has(pairKey)) {
-      return "downloading" as const;
-    }
-    return pairs.find((p) => p.sourceLanguage === sourceLang)?.status;
   };
 
   if (isLoading) {
@@ -137,86 +108,19 @@ export function SourceLanguageChips({
           {getMessage("popup_source_label")}
         </span>
         <div className="flex flex-1 flex-wrap gap-1.5">
-          {availablePairs.map((pair) => {
-            const isSelected = pair.sourceLanguage === sourceLanguage;
-            return (
-              <button
-                className={cn(
-                  "inline-flex items-center gap-1 rounded px-2 py-1 text-xs transition-all duration-150",
-                  isSelected
-                    ? "bg-blue-500 text-white shadow-sm"
-                    : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
-                )}
-                key={pair.sourceLanguage}
-                onClick={() => onSourceLanguageChange(pair.sourceLanguage)}
-                title={getLanguageName(pair.sourceLanguage)}
-                type="button"
-              >
-                <span>{getLanguageCode(pair.sourceLanguage)}</span>
-                <StatusIndicator
-                  status={getStatus(pair.sourceLanguage) || "available"}
-                />
-              </button>
-            );
-          })}
-
-          {/* Add button with dropdown */}
-          <div className="relative">
-            <button
-              className={cn(
-                "inline-flex h-7 w-7 items-center justify-center rounded border border-dashed transition-all duration-150",
-                downloadablePairs.length > 0
-                  ? "border-blue-400 text-blue-500 hover:bg-blue-50"
-                  : "cursor-not-allowed border-gray-300 text-gray-400"
-              )}
-              disabled={downloadablePairs.length === 0}
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              ref={buttonRef}
-              title={
-                downloadablePairs.length > 0
-                  ? getMessage(
-                      "popup_source_languagesAvailable",
-                      String(downloadablePairs.length)
-                    )
-                  : getMessage("popup_source_noLanguages")
-              }
-              type="button"
-            >
-              +
-            </button>
-
-            {isDropdownOpen && downloadablePairs.length > 0 && (
-              <>
-                {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: Backdrop click to close */}
-                {/* biome-ignore lint/a11y/noStaticElementInteractions: Backdrop overlay */}
-                {/* biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard handled by Escape key */}
-                <div
-                  className="fixed inset-0"
-                  onClick={() => setIsDropdownOpen(false)}
-                />
-                <div
-                  className={cn(
-                    "absolute top-full z-10 mt-1 max-h-48 min-w-32 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg",
-                    "fade-in-0 slide-in-from-top-2 animate-in duration-150",
-                    dropdownPosition === "left" ? "left-0" : "right-0"
-                  )}
-                  ref={dropdownRef}
-                >
-                  {downloadablePairs.map((pair) => (
-                    <button
-                      className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50"
-                      key={pair.sourceLanguage}
-                      onClick={() => handleDownload(pair.sourceLanguage)}
-                      type="button"
-                    >
-                      <span>{getLanguageName(pair.sourceLanguage)}</span>
-                      <StatusIndicator status="after-download" />
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
+          {availablePairs.map((pair) => (
+            <LanguageChip
+              isSelected={pair.sourceLanguage === sourceLanguage}
+              key={pair.sourceLanguage}
+              languageCode={pair.sourceLanguage}
+              onClick={() => onSourceLanguageChange(pair.sourceLanguage)}
+              status={getStatus(pair.sourceLanguage, targetLanguage, pairs)}
+            />
+          ))}
+          <LanguageDownloadDropdown
+            downloadablePairs={downloadablePairs}
+            onDownload={handleDownload}
+          />
         </div>
       </div>
     </div>

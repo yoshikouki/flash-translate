@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
+  getAllLanguageCodes,
   getLanguageByCode,
   getLanguageDisplayName,
+  getLanguageEnglishName,
+  getLanguageNativeName,
+  getLanguageUpperCode,
   SUPPORTED_LANGUAGES,
 } from "./languages";
 
@@ -70,6 +74,74 @@ describe("SUPPORTED_LANGUAGES", () => {
       expect(lang.code).toBeTruthy();
       expect(lang.name).toBeTruthy();
       expect(lang.nativeName).toBeTruthy();
+    }
+  });
+});
+
+describe("getLanguageUpperCode", () => {
+  it("returns uppercase language code", () => {
+    expect(getLanguageUpperCode("en")).toBe("EN");
+    expect(getLanguageUpperCode("ja")).toBe("JA");
+    expect(getLanguageUpperCode("zh")).toBe("ZH");
+  });
+
+  it("handles already uppercase input", () => {
+    expect(getLanguageUpperCode("EN")).toBe("EN");
+    expect(getLanguageUpperCode("JA")).toBe("JA");
+  });
+
+  it("handles mixed case input", () => {
+    expect(getLanguageUpperCode("En")).toBe("EN");
+    expect(getLanguageUpperCode("jA")).toBe("JA");
+  });
+});
+
+describe("getLanguageNativeName", () => {
+  it("returns native name for valid code", () => {
+    expect(getLanguageNativeName("en")).toBe("English");
+    expect(getLanguageNativeName("ja")).toBe("日本語");
+    expect(getLanguageNativeName("zh")).toBe("中文");
+    expect(getLanguageNativeName("ko")).toBe("한국어");
+  });
+
+  it("returns code as fallback for invalid code", () => {
+    expect(getLanguageNativeName("invalid")).toBe("invalid");
+    expect(getLanguageNativeName("xyz")).toBe("xyz");
+  });
+});
+
+describe("getLanguageEnglishName", () => {
+  it("returns English name for valid code", () => {
+    expect(getLanguageEnglishName("en")).toBe("English");
+    expect(getLanguageEnglishName("ja")).toBe("Japanese");
+    expect(getLanguageEnglishName("zh")).toBe("Chinese");
+    expect(getLanguageEnglishName("ko")).toBe("Korean");
+  });
+
+  it("returns code as fallback for invalid code", () => {
+    expect(getLanguageEnglishName("invalid")).toBe("invalid");
+    expect(getLanguageEnglishName("xyz")).toBe("xyz");
+  });
+});
+
+describe("getAllLanguageCodes", () => {
+  it("returns array of all language codes", () => {
+    const codes = getAllLanguageCodes();
+    expect(codes).toContain("en");
+    expect(codes).toContain("ja");
+    expect(codes).toContain("zh");
+    expect(codes).toContain("ko");
+  });
+
+  it("returns same length as SUPPORTED_LANGUAGES", () => {
+    const codes = getAllLanguageCodes();
+    expect(codes.length).toBe(SUPPORTED_LANGUAGES.length);
+  });
+
+  it("returns only codes, not objects", () => {
+    const codes = getAllLanguageCodes();
+    for (const code of codes) {
+      expect(typeof code).toBe("string");
     }
   });
 });
