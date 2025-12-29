@@ -91,6 +91,8 @@ export function TranslationCard({
     offsetX: resizeOffsetX,
     handleLeftMouseDown,
     handleRightMouseDown,
+    handleLeftKeyDown,
+    handleRightKeyDown,
   } = useResizable({
     initialWidth: selectionBasedWidth,
     minWidth: MIN_POPUP_WIDTH,
@@ -101,6 +103,7 @@ export function TranslationCard({
     offset,
     isDragging,
     handleMouseDown: handleDragMouseDown,
+    handleKeyDown: handleDragKeyDown,
   } = useDraggable();
 
   const { result, isLoading, error, translate, availability } = useTranslator({
@@ -176,15 +179,20 @@ export function TranslationCard({
           maxWidth: `${maxPopupWidth}px`,
         }}
       >
-        {/* TODO: Add onKeyDown handlers for keyboard-based drag/resize (arrow keys support) */}
-        <DragHandle isDragging={isDragging} onMouseDown={handleDragMouseDown} />
+        <DragHandle
+          isDragging={isDragging}
+          onKeyDown={handleDragKeyDown}
+          onMouseDown={handleDragMouseDown}
+        />
         <ResizeHandle
           isResizing={isResizing}
+          onKeyDown={handleLeftKeyDown}
           onMouseDown={handleLeftMouseDown}
           side="left"
         />
         <ResizeHandle
           isResizing={isResizing}
+          onKeyDown={handleRightKeyDown}
           onMouseDown={handleRightMouseDown}
           side="right"
         />

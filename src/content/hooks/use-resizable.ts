@@ -8,6 +8,8 @@ interface UseResizableOptions {
   maxWidth?: number;
   edgeMargin?: number;
   onResizeEnd?: (width: number) => void;
+  /** Pixels to resize per arrow key press (default: 10) */
+  keyboardStep?: number;
 }
 
 interface UseResizableReturn {
@@ -16,6 +18,8 @@ interface UseResizableReturn {
   offsetX: number;
   handleLeftMouseDown: (e: React.MouseEvent) => void;
   handleRightMouseDown: (e: React.MouseEvent) => void;
+  handleLeftKeyDown: (e: React.KeyboardEvent) => void;
+  handleRightKeyDown: (e: React.KeyboardEvent) => void;
 }
 
 export function useResizable({
@@ -24,6 +28,7 @@ export function useResizable({
   maxWidth = 600,
   edgeMargin = 8,
   onResizeEnd,
+  keyboardStep = 10,
 }: UseResizableOptions): UseResizableReturn {
   const [width, setWidth] = useState(initialWidth);
   const [offsetX, setOffsetX] = useState(0);
@@ -94,6 +99,50 @@ export function useResizable({
     setIsResizing(true);
   };
 
+  const handleLeftKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setWidth(initialWidth);
+      setOffsetX(0);
+      onResizeEnd?.(initialWidth);
+      return;
+    }
+
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") {
+      return;
+    }
+
+    e.preventDefault();
+    // Left handle: ArrowLeft expands (decreases offset, increases width)
+    const delta = e.key === "ArrowLeft" ? keyboardStep : -keyboardStep;
+    const newWidth = Math.max(minWidth, Math.min(maxWidth, width + delta));
+    const widthChange = newWidth - width;
+    const newOffsetX = offsetX - widthChange;
+
+    setWidth(newWidth);
+    setOffsetX(newOffsetX);
+    onResizeEnd?.(newWidth);
+  };
+
+  const handleRightKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setWidth(initialWidth);
+      onResizeEnd?.(initialWidth);
+      return;
+    }
+
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") {
+      return;
+    }
+
+    e.preventDefault();
+    // Right handle: ArrowRight expands
+    const delta = e.key === "ArrowRight" ? keyboardStep : -keyboardStep;
+    const newWidth = Math.max(minWidth, Math.min(maxWidth, width + delta));
+
+    setWidth(newWidth);
+    onResizeEnd?.(newWidth);
+  };
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: currentWidthRef.current is intentionally excluded - useLatestRef ensures we always have the latest value without causing effect re-runs
   useEffect(() => {
     if (!isResizing) {
@@ -155,5 +204,7 @@ export function useResizable({
     offsetX,
     handleLeftMouseDown,
     handleRightMouseDown,
+    handleLeftKeyDown,
+    handleRightKeyDown,
   };
 }

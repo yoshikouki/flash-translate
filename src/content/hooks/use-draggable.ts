@@ -3,17 +3,21 @@ import { useLatestRef } from "@/shared/hooks/use-latest-ref";
 
 interface UseDraggableOptions {
   onDragEnd?: (offset: { x: number; y: number }) => void;
+  /** Pixels to move per arrow key press (default: 10) */
+  keyboardStep?: number;
 }
 
 interface UseDraggableReturn {
   offset: { x: number; y: number };
   isDragging: boolean;
   handleMouseDown: (e: React.MouseEvent) => void;
+  handleKeyDown: (e: React.KeyboardEvent) => void;
   resetOffset: () => void;
 }
 
 export function useDraggable({
   onDragEnd,
+  keyboardStep = 10,
 }: UseDraggableOptions = {}): UseDraggableReturn {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -28,6 +32,37 @@ export function useDraggable({
     setIsDragging(true);
     startMouseRef.current = { x: e.clientX, y: e.clientY };
     startOffsetRef.current = offset;
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    let deltaX = 0;
+    let deltaY = 0;
+
+    switch (e.key) {
+      case "ArrowUp":
+        deltaY = -keyboardStep;
+        break;
+      case "ArrowDown":
+        deltaY = keyboardStep;
+        break;
+      case "ArrowLeft":
+        deltaX = -keyboardStep;
+        break;
+      case "ArrowRight":
+        deltaX = keyboardStep;
+        break;
+      case "Escape":
+        resetOffset();
+        onDragEnd?.({ x: 0, y: 0 });
+        return;
+      default:
+        return;
+    }
+
+    e.preventDefault();
+    const newOffset = { x: offset.x + deltaX, y: offset.y + deltaY };
+    setOffset(newOffset);
+    onDragEnd?.(newOffset);
   };
 
   const resetOffset = () => {
@@ -68,6 +103,7 @@ export function useDraggable({
     offset,
     isDragging,
     handleMouseDown,
+    handleKeyDown,
     resetOffset,
   };
 }
