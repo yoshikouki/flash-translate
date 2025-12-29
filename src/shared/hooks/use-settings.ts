@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getSettings, subscribeToSettings } from "../storage/settings";
 import type { SettingsSelector } from "../storage/settings-selectors";
 
@@ -29,13 +29,19 @@ export function useSettings<T>(
   const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Stabilize selector reference to prevent unnecessary re-subscriptions
+  const selectorRef = useRef(selector);
+  useEffect(() => {
+    selectorRef.current = selector;
+  });
+
   useEffect(() => {
     let isMounted = true;
 
     const loadSettings = async () => {
       const settings = await getSettings();
       if (isMounted) {
-        setData(selector(settings));
+        setData(selectorRef.current(settings));
         setIsLoading(false);
       }
     };
@@ -47,7 +53,7 @@ export function useSettings<T>(
     if (subscribe) {
       unsubscribe = subscribeToSettings((settings) => {
         if (isMounted) {
-          setData(selector(settings));
+          setData(selectorRef.current(settings));
         }
       });
     }
@@ -56,7 +62,7 @@ export function useSettings<T>(
       isMounted = false;
       unsubscribe?.();
     };
-  }, [selector, subscribe]);
+  }, [subscribe]);
 
   return [data, isLoading];
 }

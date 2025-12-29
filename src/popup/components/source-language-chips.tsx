@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import { getMessage } from "@/shared/utils/i18n";
 import { createPrefixedLogger } from "@/shared/utils/logger";
@@ -32,10 +33,35 @@ export function SourceLanguageChips({
   const { getStatus, startDownload, finishDownload, clearDownloadError } =
     useDownloadState();
 
+  // Track error clear timeouts for cleanup
+  const errorTimeoutsRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(
+    new Map()
+  );
+
+  // Cleanup all pending timeouts on unmount
+  useEffect(() => {
+    const timeouts = errorTimeoutsRef.current;
+    return () => {
+      for (const timeout of timeouts.values()) {
+        clearTimeout(timeout);
+      }
+      timeouts.clear();
+    };
+  }, []);
+
   const availablePairs = pairs.filter((p) => p.status === "available");
   const downloadablePairs = pairs.filter((p) => p.status === "after-download");
 
   const handleDownload = async (sourceLang: string) => {
+    const pairKey = `${sourceLang}-${targetLanguage}`;
+
+    // Clear any existing timeout for this pair
+    const existingTimeout = errorTimeoutsRef.current.get(pairKey);
+    if (existingTimeout) {
+      clearTimeout(existingTimeout);
+      errorTimeoutsRef.current.delete(pairKey);
+    }
+
     startDownload(sourceLang, targetLanguage);
 
     try {
@@ -47,10 +73,13 @@ export function SourceLanguageChips({
     } catch (error) {
       log.error("Download failed:", error);
       finishDownload(sourceLang, targetLanguage, true);
-      // Auto-clear error after 5 seconds
-      setTimeout(() => {
+
+      // Auto-clear error after 5 seconds with proper cleanup tracking
+      const timeoutId = setTimeout(() => {
         clearDownloadError(sourceLang, targetLanguage);
+        errorTimeoutsRef.current.delete(pairKey);
       }, 5000);
+      errorTimeoutsRef.current.set(pairKey, timeoutId);
     }
   };
 

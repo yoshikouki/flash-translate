@@ -30,6 +30,22 @@ export function LanguageDownloadDropdown({
     }
   }, [isOpen]);
 
+  // Handle Escape key to close dropdown
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen]);
+
   const handleDownloadClick = (sourceLanguage: string) => {
     onDownload(sourceLanguage);
     setIsOpen(false);
@@ -66,7 +82,7 @@ export function LanguageDownloadDropdown({
         <>
           {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: Backdrop click to close */}
           {/* biome-ignore lint/a11y/noStaticElementInteractions: Backdrop overlay */}
-          {/* biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard handled by Escape key */}
+          {/* biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard handled by document-level Escape key listener */}
           <div className="fixed inset-0" onClick={() => setIsOpen(false)} />
           <div
             className={cn(
