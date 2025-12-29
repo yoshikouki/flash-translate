@@ -49,16 +49,20 @@ export function TranslationCard({
 
   // Update max width on window resize with debounce
   useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     const handleResize = () => {
-      clearTimeout(timeoutId);
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
       timeoutId = setTimeout(() => {
         setMaxPopupWidth(calculateMaxPopupWidth(window.innerWidth));
       }, 100);
     };
     window.addEventListener("resize", handleResize);
     return () => {
-      clearTimeout(timeoutId);
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
       window.removeEventListener("resize", handleResize);
     };
   }, []);
@@ -172,6 +176,7 @@ export function TranslationCard({
           maxWidth: `${maxPopupWidth}px`,
         }}
       >
+        {/* TODO: Add onKeyDown handlers for keyboard-based drag/resize (arrow keys support) */}
         <DragHandle isDragging={isDragging} onMouseDown={handleDragMouseDown} />
         <ResizeHandle
           isResizing={isResizing}

@@ -14,7 +14,7 @@ import { useRef } from "react";
  * @param value The value to keep current
  * @returns A ref object that always contains the latest value
  */
-export function useLatestRef<T>(value: T): React.RefObject<T> {
+export function useLatestRef<T>(value: T): React.MutableRefObject<T> {
   const ref = useRef(value);
   ref.current = value;
   return ref;
