@@ -55,11 +55,13 @@ class TranslatorManager {
       });
 
       return mapAvailabilityStatus(result as ChromeAvailability);
-    } catch {
+    } catch (error) {
+      log.error("Failed to check translator availability:", error);
       return "unsupported";
     }
   }
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: This function manages translator lifecycle with necessary error handling and state management
   async getTranslator(
     sourceLanguage: string,
     targetLanguage: string
@@ -74,8 +76,14 @@ class TranslatorManager {
 
     // Destroy existing instance if different language pair
     if (this.instance) {
-      this.instance.translator.destroy();
-      this.instance = null;
+      try {
+        this.instance.translator.destroy();
+      } catch (error) {
+        log.error("Failed to destroy translator instance:", error);
+      } finally {
+        // Ensure instance reference is cleared even if destroy() throws
+        this.instance = null;
+      }
     }
 
     // Queue request if already creating
@@ -139,24 +147,17 @@ class TranslatorManager {
 
       return translator;
     } catch (error) {
-      // Reject pending requests
+      // Reject pending requests with properly typed error
+      const normalizedError =
+        error instanceof Error ? error : new Error(String(error));
       for (const { reject } of this.pendingRequests) {
-        reject(error as Error);
+        reject(normalizedError);
       }
       this.pendingRequests = [];
-      throw error;
+      throw normalizedError;
     } finally {
       this.isCreating = false;
     }
-  }
-
-  async translate(
-    text: string,
-    sourceLanguage: string,
-    targetLanguage: string
-  ): Promise<string> {
-    const translator = await this.getTranslator(sourceLanguage, targetLanguage);
-    return translator.translate(text);
   }
 
   async *translateStreaming(
@@ -180,8 +181,13 @@ class TranslatorManager {
 
   destroy(): void {
     if (this.instance) {
-      this.instance.translator.destroy();
-      this.instance = null;
+      try {
+        this.instance.translator.destroy();
+      } catch (error) {
+        log.error("Failed to destroy translator instance:", error);
+      } finally {
+        this.instance = null;
+      }
     }
   }
 }

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useLatestRef } from "@/shared/hooks/use-latest-ref";
 import { calculateLeftResize, calculateRightResize } from "./resizable";
 
 interface UseResizableOptions {
@@ -7,6 +8,8 @@ interface UseResizableOptions {
   maxWidth?: number;
   edgeMargin?: number;
   onResizeEnd?: (width: number) => void;
+  /** Pixels to resize per arrow key press (default: 10) */
+  keyboardStep?: number;
 }
 
 interface UseResizableReturn {
@@ -15,6 +18,8 @@ interface UseResizableReturn {
   offsetX: number;
   handleLeftMouseDown: (e: React.MouseEvent) => void;
   handleRightMouseDown: (e: React.MouseEvent) => void;
+  handleLeftKeyDown: (e: React.KeyboardEvent) => void;
+  handleRightKeyDown: (e: React.KeyboardEvent) => void;
 }
 
 export function useResizable({
@@ -23,6 +28,7 @@ export function useResizable({
   maxWidth = 600,
   edgeMargin = 8,
   onResizeEnd,
+  keyboardStep = 10,
 }: UseResizableOptions): UseResizableReturn {
   const [width, setWidth] = useState(initialWidth);
   const [offsetX, setOffsetX] = useState(0);
@@ -37,6 +43,8 @@ export function useResizable({
     popupLeft: 0,
     popupRight: 0,
   });
+  // Track current width for mouseup handler without causing effect re-runs
+  const currentWidthRef = useLatestRef(width);
 
   // Update width when initialWidth changes (e.g., from settings)
   useEffect(() => {
@@ -91,6 +99,51 @@ export function useResizable({
     setIsResizing(true);
   };
 
+  const handleLeftKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setWidth(initialWidth);
+      setOffsetX(0);
+      onResizeEnd?.(initialWidth);
+      return;
+    }
+
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") {
+      return;
+    }
+
+    e.preventDefault();
+    // Left handle: ArrowLeft expands (decreases offset, increases width)
+    const delta = e.key === "ArrowLeft" ? keyboardStep : -keyboardStep;
+    const newWidth = Math.max(minWidth, Math.min(maxWidth, width + delta));
+    const widthChange = newWidth - width;
+    const newOffsetX = offsetX - widthChange;
+
+    setWidth(newWidth);
+    setOffsetX(newOffsetX);
+    onResizeEnd?.(newWidth);
+  };
+
+  const handleRightKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setWidth(initialWidth);
+      onResizeEnd?.(initialWidth);
+      return;
+    }
+
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") {
+      return;
+    }
+
+    e.preventDefault();
+    // Right handle: ArrowRight expands
+    const delta = e.key === "ArrowRight" ? keyboardStep : -keyboardStep;
+    const newWidth = Math.max(minWidth, Math.min(maxWidth, width + delta));
+
+    setWidth(newWidth);
+    onResizeEnd?.(newWidth);
+  };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: currentWidthRef.current is intentionally excluded - useLatestRef ensures we always have the latest value without causing effect re-runs
   useEffect(() => {
     if (!isResizing) {
       return;
@@ -132,7 +185,8 @@ export function useResizable({
 
     const handleMouseUp = () => {
       setIsResizing(false);
-      onResizeEnd?.(width);
+      // Use ref to get latest width without dependency
+      onResizeEnd?.(currentWidthRef.current);
     };
 
     document.addEventListener("mousemove", handleMouseMove);
@@ -142,7 +196,7 @@ export function useResizable({
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isResizing, minWidth, maxWidth, edgeMargin, onResizeEnd, width]);
+  }, [isResizing, minWidth, maxWidth, edgeMargin, onResizeEnd]);
 
   return {
     width,
@@ -150,5 +204,7 @@ export function useResizable({
     offsetX,
     handleLeftMouseDown,
     handleRightMouseDown,
+    handleLeftKeyDown,
+    handleRightKeyDown,
   };
 }

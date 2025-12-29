@@ -4,15 +4,11 @@ import {
   translatorManager,
 } from "@/shared/utils/translator";
 import { isValidTranslationText } from "@/shared/utils/translator-utils";
-import {
-  executeNonStreamingTranslation,
-  executeStreamingTranslation,
-} from "./translator-executor";
+import { executeStreamingTranslation } from "./translator-executor";
 
 interface UseTranslatorOptions {
   sourceLanguage: string;
   targetLanguage: string;
-  streaming?: boolean;
 }
 
 interface TranslatorState {
@@ -25,7 +21,6 @@ interface TranslatorState {
 export function useTranslator({
   sourceLanguage,
   targetLanguage,
-  streaming = true,
 }: UseTranslatorOptions) {
   const [state, setState] = useState<TranslatorState>({
     result: "",
@@ -72,16 +67,23 @@ export function useTranslator({
       signal: abortControllerRef.current.signal,
     };
 
-    const executionResult = streaming
-      ? await executeStreamingTranslation(options, translatorManager, {
-          onChunk: (result) => setState((prev) => ({ ...prev, result })),
-        })
-      : await executeNonStreamingTranslation(options, translatorManager);
+    const executionResult = await executeStreamingTranslation(
+      options,
+      translatorManager,
+      {
+        onChunk: (result) => setState((prev) => ({ ...prev, result })),
+      }
+    );
 
+    // Clean up the controller reference after execution completes
+    abortControllerRef.current = null;
+
+    // Handle aborted translation (new translation started)
     if (executionResult.type === "aborted") {
       return;
     }
 
+    // Update state based on result
     if (executionResult.type === "error") {
       setState((prev) => ({
         ...prev,
@@ -89,20 +91,20 @@ export function useTranslator({
         isLoading: false,
         error: executionResult.error,
       }));
-      return;
+    } else {
+      setState((prev) => ({
+        ...prev,
+        result: executionResult.result,
+        isLoading: false,
+        error: null,
+      }));
     }
-
-    setState((prev) => ({
-      ...prev,
-      result: executionResult.result,
-      isLoading: false,
-      error: null,
-    }));
   };
 
   const reset = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
+      abortControllerRef.current = null;
     }
     setState((prev) => ({
       ...prev,

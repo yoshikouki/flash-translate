@@ -47,13 +47,24 @@ export function TranslationCard({
     maxPopupWidth
   );
 
-  // Update max width on window resize
+  // Update max width on window resize with debounce
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     const handleResize = () => {
-      setMaxPopupWidth(calculateMaxPopupWidth(window.innerWidth));
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        setMaxPopupWidth(calculateMaxPopupWidth(window.innerWidth));
+      }, 100);
     };
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   // Load initial settings and subscribe to changes
@@ -80,6 +91,8 @@ export function TranslationCard({
     offsetX: resizeOffsetX,
     handleLeftMouseDown,
     handleRightMouseDown,
+    handleLeftKeyDown,
+    handleRightKeyDown,
   } = useResizable({
     initialWidth: selectionBasedWidth,
     minWidth: MIN_POPUP_WIDTH,
@@ -90,12 +103,12 @@ export function TranslationCard({
     offset,
     isDragging,
     handleMouseDown: handleDragMouseDown,
+    handleKeyDown: handleDragKeyDown,
   } = useDraggable();
 
   const { result, isLoading, error, translate, availability } = useTranslator({
     sourceLanguage,
     targetLanguage,
-    streaming: true,
   });
 
   const handleOpenSettings = () => {
@@ -166,14 +179,20 @@ export function TranslationCard({
           maxWidth: `${maxPopupWidth}px`,
         }}
       >
-        <DragHandle isDragging={isDragging} onMouseDown={handleDragMouseDown} />
+        <DragHandle
+          isDragging={isDragging}
+          onKeyDown={handleDragKeyDown}
+          onMouseDown={handleDragMouseDown}
+        />
         <ResizeHandle
           isResizing={isResizing}
+          onKeyDown={handleLeftKeyDown}
           onMouseDown={handleLeftMouseDown}
           side="left"
         />
         <ResizeHandle
           isResizing={isResizing}
+          onKeyDown={handleRightKeyDown}
           onMouseDown={handleRightMouseDown}
           side="right"
         />

@@ -110,4 +110,39 @@ describe("isUrlExcluded", () => {
     expect(isUrlExcluded("https://example.com/admin", patterns)).toBe(true);
     expect(isUrlExcluded("https://example.com/other", patterns)).toBe(false);
   });
+
+  it("prevents false positives with similar domain names", () => {
+    // Should NOT match example.com.evil.com when pattern is example.com
+    const domainPatterns: ExclusionPattern[] = [
+      { id: "1", pattern: "https://example.com", enabled: true },
+    ];
+    expect(isUrlExcluded("https://example.com.evil.com", domainPatterns)).toBe(
+      false
+    );
+    expect(
+      isUrlExcluded("https://example.com.evil.com/page", domainPatterns)
+    ).toBe(false);
+  });
+
+  it("matches URLs with query parameters", () => {
+    expect(isUrlExcluded("https://example.com/admin?page=1", patterns)).toBe(
+      true
+    );
+    expect(isUrlExcluded("https://blocked.com?query=test", patterns)).toBe(
+      true
+    );
+  });
+
+  it("matches exact pattern without trailing content", () => {
+    const exactPatterns: ExclusionPattern[] = [
+      { id: "1", pattern: "https://example.com/page", enabled: true },
+    ];
+    expect(isUrlExcluded("https://example.com/page", exactPatterns)).toBe(true);
+    expect(isUrlExcluded("https://example.com/page/", exactPatterns)).toBe(
+      true
+    );
+    expect(isUrlExcluded("https://example.com/page2", exactPatterns)).toBe(
+      false
+    );
+  });
 });
