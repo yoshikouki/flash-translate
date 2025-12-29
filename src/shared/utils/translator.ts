@@ -55,7 +55,8 @@ class TranslatorManager {
       });
 
       return mapAvailabilityStatus(result as ChromeAvailability);
-    } catch {
+    } catch (error) {
+      log.error("Failed to check translator availability:", error);
       return "unsupported";
     }
   }
@@ -76,6 +77,8 @@ class TranslatorManager {
     if (this.instance) {
       try {
         this.instance.translator.destroy();
+      } catch (error) {
+        log.error("Failed to destroy translator instance:", error);
       } finally {
         // Ensure instance reference is cleared even if destroy() throws
         this.instance = null;
@@ -186,8 +189,13 @@ class TranslatorManager {
 
   destroy(): void {
     if (this.instance) {
-      this.instance.translator.destroy();
-      this.instance = null;
+      try {
+        this.instance.translator.destroy();
+      } catch (error) {
+        log.error("Failed to destroy translator instance:", error);
+      } finally {
+        this.instance = null;
+      }
     }
   }
 }
