@@ -4,7 +4,7 @@
 /**
  * List of internal browser URL prefixes that should be excluded
  */
-export const INTERNAL_URL_PREFIXES = [
+const INTERNAL_URL_PREFIXES = [
   "chrome",
   "chrome-extension",
   "edge",

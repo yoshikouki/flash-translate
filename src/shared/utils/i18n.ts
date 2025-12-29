@@ -21,18 +21,3 @@ export function getMessage(
 
   return message;
 }
-
-/**
- * Get current UI language
- */
-export function getUILanguage(): string {
-  return chrome.i18n.getUILanguage();
-}
-
-/**
- * Check if current locale matches a specific language
- */
-export function isLocale(locale: string): boolean {
-  const uiLang = getUILanguage();
-  return uiLang.startsWith(locale);
-}
