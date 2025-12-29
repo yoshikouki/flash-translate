@@ -43,8 +43,9 @@ To test the extension: Load `dist/` folder as unpacked extension in `chrome://ex
 ### Key Abstractions
 - **TranslatorManager**: Singleton managing Translator API lifecycle, handles model downloads and caching
 - **useTranslator**: React hook for translation with abort support, streaming, and availability states
-- **usePopupPosition**: Calculates popup position relative to text selection
-- **useResizable/useDraggable**: Hooks for popup resize (left/right handles) and drag interactions
+- **useTranslationCardState**: Manages settings, translation, and window resize for TranslationCard
+- **usePopupInteraction**: Combines resize, drag, and position calculation for popup
+- **useLatestRef**: Utility hook for tracking latest values in refs without causing effect re-runs
 
 ### Site Exclusion
 - URL patterns stored in settings to disable translation on specific sites
