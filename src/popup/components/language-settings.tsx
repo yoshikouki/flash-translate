@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
-import { getSettings, saveSettings } from "@/shared/storage/settings";
+import { useSettings } from "@/shared/hooks/use-settings";
+import { saveSettings } from "@/shared/storage/settings";
+import { selectLanguageSettings } from "@/shared/storage/settings-selectors";
 import {
   checkAllPairsToTarget,
   type LanguagePairStatus,
@@ -9,20 +11,22 @@ import { SourceLanguageChips } from "./source-language-chips";
 import { TargetLanguageChips } from "./target-language-chips";
 
 export function LanguageSettings() {
+  const [initialSettings, isLoading] = useSettings(selectLanguageSettings, {
+    subscribe: false,
+  });
+
   const [sourceLanguage, setSourceLanguage] = useState<string>("en");
   const [targetLanguage, setTargetLanguage] = useState<string>("ja");
   const [pairs, setPairs] = useState<LanguagePairStatus[]>([]);
   const [isLoadingPairs, setIsLoadingPairs] = useState(false);
 
-  // Load initial settings
+  // Apply initial settings when loaded
   useEffect(() => {
-    const init = async () => {
-      const settings = await getSettings();
-      setSourceLanguage(settings.sourceLanguage);
-      setTargetLanguage(settings.targetLanguage);
-    };
-    init();
-  }, []);
+    if (initialSettings) {
+      setSourceLanguage(initialSettings.sourceLanguage);
+      setTargetLanguage(initialSettings.targetLanguage);
+    }
+  }, [initialSettings]);
 
   // Load pairs when target language changes
   useEffect(() => {
@@ -45,6 +49,10 @@ export function LanguageSettings() {
     setTargetLanguage(code);
     await saveSettings({ targetLanguage: code });
   };
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <>

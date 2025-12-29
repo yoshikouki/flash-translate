@@ -8,7 +8,7 @@ export interface ExclusionPattern {
   enabled: boolean;
 }
 
-interface TranslationSettings {
+export interface TranslationSettings {
   sourceLanguage: string;
   targetLanguage: string;
   exclusionPatterns: ExclusionPattern[];

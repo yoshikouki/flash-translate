@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useSettings } from "@/shared/hooks/use-settings";
 import {
-  type ExclusionPattern,
   getPageLanguage,
-  getSettings,
   isUrlExcluded,
   shouldSkipTranslation,
-  subscribeToSettings,
 } from "@/shared/storage/settings";
+import { selectContentAppSettings } from "@/shared/storage/settings-selectors";
 import { TranslationCard } from "./components/translation-card";
 import { useTextSelection } from "./hooks/use-text-selection";
 
@@ -17,30 +15,14 @@ function getCurrentUrl(): string {
 export default function App() {
   const { selection, isVisible, dismissPopup, clearSelection } =
     useTextSelection();
-  const [targetLanguage, setTargetLanguage] = useState("ja");
-  const [skipSameLanguage, setSkipSameLanguage] = useState(true);
-  const [exclusionPatterns, setExclusionPatterns] = useState<
-    ExclusionPattern[]
-  >([]);
+  const [settings, isLoading] = useSettings(selectContentAppSettings);
 
-  useEffect(() => {
-    const loadSettings = async () => {
-      const settings = await getSettings();
-      setTargetLanguage(settings.targetLanguage);
-      setSkipSameLanguage(settings.skipSameLanguage);
-      setExclusionPatterns(settings.exclusionPatterns);
-    };
+  // Wait for settings to load
+  if (isLoading || !settings) {
+    return null;
+  }
 
-    loadSettings();
-
-    const unsubscribe = subscribeToSettings((settings) => {
-      setTargetLanguage(settings.targetLanguage);
-      setSkipSameLanguage(settings.skipSameLanguage);
-      setExclusionPatterns(settings.exclusionPatterns);
-    });
-
-    return unsubscribe;
-  }, []);
+  const { targetLanguage, skipSameLanguage, exclusionPatterns } = settings;
 
   // Check if current URL is excluded
   if (isUrlExcluded(getCurrentUrl(), exclusionPatterns)) {
