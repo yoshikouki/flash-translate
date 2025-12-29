@@ -24,7 +24,7 @@ export const selectExclusionPatterns: SettingsSelector<ExclusionPattern[]> = (
 /**
  * Settings needed by content/app.tsx
  */
-export interface ContentAppSettings {
+interface ContentAppSettings {
   targetLanguage: string;
   skipSameLanguage: boolean;
   exclusionPatterns: ExclusionPattern[];
@@ -41,7 +41,7 @@ export const selectContentAppSettings: SettingsSelector<ContentAppSettings> = (
 /**
  * Settings needed by language-settings.tsx
  */
-export interface LanguageSettingsData {
+interface LanguageSettingsData {
   sourceLanguage: string;
   targetLanguage: string;
 }

@@ -28,11 +28,6 @@ function createLogger(prefix?: string) {
 }
 
 /**
- * Default logger without prefix
- */
-export const logger = createLogger();
-
-/**
  * Create a logger with a custom prefix
  * @example
  * const log = createPrefixedLogger("i18n");
