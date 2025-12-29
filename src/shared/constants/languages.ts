@@ -32,3 +32,33 @@ export function getLanguageDisplayName(code: string): string {
   const language = getLanguageByCode(code);
   return language ? `${language.nativeName} (${language.name})` : code;
 }
+
+/**
+ * Returns uppercase language code (e.g., "en" -> "EN")
+ */
+export function getLanguageUpperCode(code: string): string {
+  return code.toUpperCase();
+}
+
+/**
+ * Returns native name for a language code
+ * Falls back to the code itself if not found
+ */
+export function getLanguageNativeName(code: string): string {
+  return getLanguageByCode(code)?.nativeName ?? code;
+}
+
+/**
+ * Returns English name for a language code
+ * Falls back to the code itself if not found
+ */
+export function getLanguageEnglishName(code: string): string {
+  return getLanguageByCode(code)?.name ?? code;
+}
+
+/**
+ * Get all language codes as an array
+ */
+export function getAllLanguageCodes(): string[] {
+  return SUPPORTED_LANGUAGES.map((l) => l.code);
+}

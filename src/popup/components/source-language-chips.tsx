@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
+import {
+  getLanguageNativeName,
+  getLanguageUpperCode,
+  SUPPORTED_LANGUAGES,
+} from "@/shared/constants/languages";
 import { getMessage } from "@/shared/utils/i18n";
 import { createPrefixedLogger } from "@/shared/utils/logger";
 import {
@@ -56,14 +60,6 @@ export function SourceLanguageChips({
       }
     }
   }, [isDropdownOpen]);
-
-  const getLanguageCode = (code: string) => {
-    return code.toUpperCase();
-  };
-
-  const getLanguageName = (code: string) => {
-    return SUPPORTED_LANGUAGES.find((l) => l.code === code)?.nativeName || code;
-  };
 
   const handleDownload = async (sourceLang: string) => {
     const pairKey = `${sourceLang}-${targetLanguage}`;
@@ -149,10 +145,10 @@ export function SourceLanguageChips({
                 )}
                 key={pair.sourceLanguage}
                 onClick={() => onSourceLanguageChange(pair.sourceLanguage)}
-                title={getLanguageName(pair.sourceLanguage)}
+                title={getLanguageNativeName(pair.sourceLanguage)}
                 type="button"
               >
-                <span>{getLanguageCode(pair.sourceLanguage)}</span>
+                <span>{getLanguageUpperCode(pair.sourceLanguage)}</span>
                 <StatusIndicator
                   status={getStatus(pair.sourceLanguage) || "available"}
                 />
@@ -209,7 +205,7 @@ export function SourceLanguageChips({
                       onClick={() => handleDownload(pair.sourceLanguage)}
                       type="button"
                     >
-                      <span>{getLanguageName(pair.sourceLanguage)}</span>
+                      <span>{getLanguageNativeName(pair.sourceLanguage)}</span>
                       <StatusIndicator status="after-download" />
                     </button>
                   ))}

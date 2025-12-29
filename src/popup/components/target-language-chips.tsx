@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
+import {
+  getLanguageNativeName,
+  getLanguageUpperCode,
+  SUPPORTED_LANGUAGES,
+} from "@/shared/constants/languages";
 import { getMessage } from "@/shared/utils/i18n";
 import {
   type TranslationAvailabilityStatus,
@@ -46,14 +50,6 @@ export function TargetLanguageChips({
     checkAllTargets();
   }, []);
 
-  const getLanguageCode = (code: string) => {
-    return code.toUpperCase();
-  };
-
-  const getLanguageName = (code: string) => {
-    return SUPPORTED_LANGUAGES.find((l) => l.code === code)?.nativeName || code;
-  };
-
   const getStatus = (code: string): TranslationAvailabilityStatus => {
     return statuses.find((s) => s.code === code)?.status || "unavailable";
   };
@@ -97,10 +93,10 @@ export function TargetLanguageChips({
                 )}
                 key={lang.code}
                 onClick={() => onChangeTargetLanguage(lang.code)}
-                title={getLanguageName(lang.code)}
+                title={getLanguageNativeName(lang.code)}
                 type="button"
               >
-                <span>{getLanguageCode(lang.code)}</span>
+                <span>{getLanguageUpperCode(lang.code)}</span>
                 <StatusIndicator size="sm" status={status} />
               </button>
             );
