@@ -61,6 +61,7 @@ class TranslatorManager {
     }
   }
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: This function manages translator lifecycle with necessary error handling and state management
   async getTranslator(
     sourceLanguage: string,
     targetLanguage: string

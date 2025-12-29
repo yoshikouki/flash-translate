@@ -22,11 +22,26 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
     setTimeout(() => setIsConfirming(false), 3000);
   };
 
-  // Focus confirm button when dialog opens
+  // Focus confirm button when dialog opens and handle Escape key
   useEffect(() => {
-    if (isConfirming && confirmButtonRef.current) {
+    if (!isConfirming) {
+      return;
+    }
+
+    if (confirmButtonRef.current) {
       confirmButtonRef.current.focus();
     }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsConfirming(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [isConfirming]);
 
   const handleConfirm = async () => {
@@ -47,12 +62,6 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
     setIsConfirming(false);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") {
-      handleCancel();
-    }
-  };
-
   return (
     <>
       <button
@@ -69,7 +78,6 @@ export function ExcludeSiteButton({ onExcluded }: ExcludeSiteButtonProps) {
           aria-labelledby={dialogTitleId}
           aria-modal="true"
           className="absolute inset-0 flex items-stretch justify-between rounded-xl border border-red-200 border-solid bg-white px-3 py-2"
-          onKeyDown={handleKeyDown}
           role="dialog"
         >
           <span

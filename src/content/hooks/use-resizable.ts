@@ -94,6 +94,7 @@ export function useResizable({
     setIsResizing(true);
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: currentWidthRef.current is intentionally excluded - useLatestRef ensures we always have the latest value without causing effect re-runs
   useEffect(() => {
     if (!isResizing) {
       return;

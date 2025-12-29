@@ -34,6 +34,7 @@ export function useDraggable({
     setOffset({ x: 0, y: 0 });
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: currentOffsetRef.current is intentionally excluded - useLatestRef ensures we always have the latest value without causing effect re-runs
   useEffect(() => {
     if (!isDragging) {
       return;
