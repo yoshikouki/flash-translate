@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 import {
-  executeNonStreamingTranslation,
   executeStreamingTranslation,
   type TranslationFunctions,
 } from "./translator-executor";
@@ -9,7 +8,6 @@ function createMockTranslator(
   overrides: Partial<TranslationFunctions> = {}
 ): TranslationFunctions {
   return {
-    translate: vi.fn().mockResolvedValue("translated text"),
     // biome-ignore lint/suspicious/useAwait: AsyncIterable requires async generator
     translateStreaming: vi.fn().mockImplementation(async function* () {
       yield "chunk1";
@@ -132,91 +130,5 @@ describe("executeStreamingTranslation", () => {
     );
 
     expect(result).toEqual({ type: "aborted" });
-  });
-});
-
-describe("executeNonStreamingTranslation", () => {
-  const baseOptions = {
-    text: "hello",
-    sourceLanguage: "en",
-    targetLanguage: "ja",
-  };
-
-  it("returns success with translated result", async () => {
-    const translator = createMockTranslator({
-      translate: vi.fn().mockResolvedValue("こんにちは"),
-    });
-    const controller = createAbortController();
-
-    const result = await executeNonStreamingTranslation(
-      { ...baseOptions, signal: controller.signal },
-      translator
-    );
-
-    expect(result).toEqual({ type: "success", result: "こんにちは" });
-    expect(translator.translate).toHaveBeenCalledWith("hello", "en", "ja");
-  });
-
-  it("returns aborted when signal is already aborted", async () => {
-    const translator = createMockTranslator();
-    const controller = createAbortController(true);
-
-    const result = await executeNonStreamingTranslation(
-      { ...baseOptions, signal: controller.signal },
-      translator
-    );
-
-    expect(result).toEqual({ type: "aborted" });
-    expect(translator.translate).not.toHaveBeenCalled();
-  });
-
-  it("returns error when translation throws", async () => {
-    const translator = createMockTranslator({
-      translate: vi.fn().mockRejectedValue(new Error("API error")),
-    });
-    const controller = createAbortController();
-
-    const result = await executeNonStreamingTranslation(
-      { ...baseOptions, signal: controller.signal },
-      translator
-    );
-
-    expect(result.type).toBe("error");
-    if (result.type === "error") {
-      expect(result.error.message).toBe("API error");
-    }
-  });
-
-  it("returns aborted when AbortError is thrown", async () => {
-    const abortError = new DOMException("Aborted", "AbortError");
-    const translator = createMockTranslator({
-      translate: vi.fn().mockRejectedValue(abortError),
-    });
-    const controller = createAbortController();
-
-    const result = await executeNonStreamingTranslation(
-      { ...baseOptions, signal: controller.signal },
-      translator
-    );
-
-    expect(result).toEqual({ type: "aborted" });
-  });
-
-  it("converts non-Error thrown values to Error", async () => {
-    const translator = createMockTranslator({
-      translate: vi.fn().mockRejectedValue("string error"),
-    });
-    const controller = createAbortController();
-
-    const result = await executeNonStreamingTranslation(
-      { ...baseOptions, signal: controller.signal },
-      translator
-    );
-
-    expect(result.type).toBe("error");
-    if (result.type === "error") {
-      expect(result.error).toBeInstanceOf(Error);
-      expect(result.error.message).toBe("Unknown error: string error");
-    }
   });
 });

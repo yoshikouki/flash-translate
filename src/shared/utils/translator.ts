@@ -159,15 +159,6 @@ class TranslatorManager {
     }
   }
 
-  async translate(
-    text: string,
-    sourceLanguage: string,
-    targetLanguage: string
-  ): Promise<string> {
-    const translator = await this.getTranslator(sourceLanguage, targetLanguage);
-    return translator.translate(text);
-  }
-
   async *translateStreaming(
     text: string,
     sourceLanguage: string,

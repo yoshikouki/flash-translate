@@ -95,7 +95,6 @@ export function TranslationCard({
   const { result, isLoading, error, translate, availability } = useTranslator({
     sourceLanguage,
     targetLanguage,
-    streaming: true,
   });
 
   const handleOpenSettings = () => {

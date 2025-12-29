@@ -30,11 +30,6 @@ export interface StreamingCallbacks {
  * Interface for translation functions (dependency injection)
  */
 export interface TranslationFunctions {
-  translate: (
-    text: string,
-    sourceLanguage: string,
-    targetLanguage: string
-  ) => Promise<string>;
   translateStreaming: (
     text: string,
     sourceLanguage: string,
@@ -66,39 +61,6 @@ export async function executeStreamingTranslation(
       result = chunk;
       callbacks.onChunk(result);
     }
-    return { type: "success", result };
-  } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
-      return { type: "aborted" };
-    }
-    return {
-      type: "error",
-      error:
-        error instanceof Error
-          ? error
-          : new Error(`Unknown error: ${String(error)}`),
-    };
-  }
-}
-
-/**
- * Execute non-streaming translation
- */
-export async function executeNonStreamingTranslation(
-  options: TranslationExecutionOptions,
-  translator: TranslationFunctions
-): Promise<TranslationExecutionResult> {
-  const { text, sourceLanguage, targetLanguage, signal } = options;
-
-  try {
-    if (signal.aborted) {
-      return { type: "aborted" };
-    }
-    const result = await translator.translate(
-      text,
-      sourceLanguage,
-      targetLanguage
-    );
     return { type: "success", result };
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {

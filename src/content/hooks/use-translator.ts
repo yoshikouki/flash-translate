@@ -4,15 +4,11 @@ import {
   translatorManager,
 } from "@/shared/utils/translator";
 import { isValidTranslationText } from "@/shared/utils/translator-utils";
-import {
-  executeNonStreamingTranslation,
-  executeStreamingTranslation,
-} from "./translator-executor";
+import { executeStreamingTranslation } from "./translator-executor";
 
 interface UseTranslatorOptions {
   sourceLanguage: string;
   targetLanguage: string;
-  streaming?: boolean;
 }
 
 interface TranslatorState {
@@ -25,7 +21,6 @@ interface TranslatorState {
 export function useTranslator({
   sourceLanguage,
   targetLanguage,
-  streaming = true,
 }: UseTranslatorOptions) {
   const [state, setState] = useState<TranslatorState>({
     result: "",
@@ -72,11 +67,13 @@ export function useTranslator({
       signal: abortControllerRef.current.signal,
     };
 
-    const executionResult = streaming
-      ? await executeStreamingTranslation(options, translatorManager, {
-          onChunk: (result) => setState((prev) => ({ ...prev, result })),
-        })
-      : await executeNonStreamingTranslation(options, translatorManager);
+    const executionResult = await executeStreamingTranslation(
+      options,
+      translatorManager,
+      {
+        onChunk: (result) => setState((prev) => ({ ...prev, result })),
+      }
+    );
 
     if (executionResult.type === "aborted") {
       return;
