@@ -13,10 +13,10 @@ import { usePopupPosition } from "../hooks/use-popup-position";
 import { useResizable } from "../hooks/use-resizable";
 import type { SelectionInfo } from "../hooks/use-text-selection";
 import { useTranslator } from "../hooks/use-translator";
-import { CardFooter } from "./card-footer";
-import { CardHeader } from "./card-header";
 import { DragHandle } from "./drag-handle";
 import { ResizeHandle } from "./resize-handle";
+import { TranslationCardFooter } from "./translation-card-footer";
+import { TranslationCardHeader } from "./translation-card-header";
 import {
   calculateMaxPopupWidth,
   calculatePopupWidth,
@@ -196,7 +196,7 @@ export function TranslationCard({
           onMouseDown={handleRightMouseDown}
           side="right"
         />
-        <CardHeader
+        <TranslationCardHeader
           onClose={onClose}
           onExcludeSite={onExcludeSite}
           onOpenSettings={handleOpenSettings}
@@ -224,7 +224,7 @@ export function TranslationCard({
           />
         </div>
 
-        <CardFooter result={result} />
+        <TranslationCardFooter result={result} />
       </div>
     </div>
   );

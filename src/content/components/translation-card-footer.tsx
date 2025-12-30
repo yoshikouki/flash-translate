@@ -1,10 +1,10 @@
 import { CopyButton } from "./copy-button";
 
-interface CardFooterProps {
+interface TranslationCardFooterProps {
   result: string | null;
 }
 
-export function CardFooter({ result }: CardFooterProps) {
+export function TranslationCardFooter({ result }: TranslationCardFooterProps) {
   return (
     <div
       className="flex items-stretch rounded-b-xl border-t border-none px-3"

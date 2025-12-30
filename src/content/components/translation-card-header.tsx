@@ -3,7 +3,7 @@ import { getMessage } from "@/shared/utils/i18n";
 import { ExcludeSiteButton } from "./exclude-site-button";
 import { LanguageSelector } from "./language-selector";
 
-interface CardHeaderProps {
+interface TranslationCardHeaderProps {
   sourceLanguage: string;
   targetLanguage: string;
   onSourceChange: (lang: string) => void;
@@ -14,7 +14,7 @@ interface CardHeaderProps {
   onExcludeSite: () => void;
 }
 
-export function CardHeader({
+export function TranslationCardHeader({
   sourceLanguage,
   targetLanguage,
   onSourceChange,
@@ -23,7 +23,7 @@ export function CardHeader({
   onOpenSettings,
   onClose,
   onExcludeSite,
-}: CardHeaderProps) {
+}: TranslationCardHeaderProps) {
   return (
     <div
       className="relative flex items-stretch justify-between rounded-t-xl border-b border-none px-3 py-1"
