@@ -1,27 +1,11 @@
-import { useEffect, useState } from "react";
-import {
-  DEFAULT_SOURCE_LANGUAGE,
-  DEFAULT_TARGET_LANGUAGE,
-} from "@/shared/constants/languages";
-import {
-  getSettings,
-  saveSettings,
-  subscribeToSettings,
-} from "@/shared/storage/settings";
-import { useDraggable } from "../hooks/use-draggable";
-import { usePopupPosition } from "../hooks/use-popup-position";
-import { useResizable } from "../hooks/use-resizable";
+import { usePopupInteraction } from "../hooks/use-popup-interaction";
 import type { SelectionInfo } from "../hooks/use-text-selection";
-import { useTranslator } from "../hooks/use-translator";
+import { useTranslationCardState } from "../hooks/use-translation-card-state";
 import { CardFooter } from "./card-footer";
 import { CardHeader } from "./card-header";
 import { DragHandle } from "./drag-handle";
 import { ResizeHandle } from "./resize-handle";
-import {
-  calculateMaxPopupWidth,
-  calculatePopupWidth,
-  MIN_POPUP_WIDTH,
-} from "./translation-card-utils";
+import { MIN_POPUP_WIDTH } from "./translation-card-utils";
 import { TranslationContent } from "./translation-content";
 
 interface TranslationCardProps {
@@ -35,121 +19,40 @@ export function TranslationCard({
   onClose,
   onExcludeSite,
 }: TranslationCardProps) {
-  const [sourceLanguage, setSourceLanguage] = useState(DEFAULT_SOURCE_LANGUAGE);
-  const [targetLanguage, setTargetLanguage] = useState(DEFAULT_TARGET_LANGUAGE);
-  const [maxPopupWidth, setMaxPopupWidth] = useState(() =>
-    calculateMaxPopupWidth(window.innerWidth)
-  );
-
-  // Calculate popup width based on selection width (clamped to min/max)
-  const selectionBasedWidth = calculatePopupWidth(
-    selection.rect.width,
-    maxPopupWidth
-  );
-
-  // Update max width on window resize with debounce
-  useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-    const handleResize = () => {
-      if (timeoutId !== undefined) {
-        clearTimeout(timeoutId);
-      }
-      timeoutId = setTimeout(() => {
-        setMaxPopupWidth(calculateMaxPopupWidth(window.innerWidth));
-      }, 100);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      if (timeoutId !== undefined) {
-        clearTimeout(timeoutId);
-      }
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  // Load initial settings and subscribe to changes
-  useEffect(() => {
-    const loadSettings = async () => {
-      const settings = await getSettings();
-      setSourceLanguage(settings.sourceLanguage);
-      setTargetLanguage(settings.targetLanguage);
-    };
-
-    loadSettings();
-
-    const unsubscribe = subscribeToSettings((settings) => {
-      setSourceLanguage(settings.sourceLanguage);
-      setTargetLanguage(settings.targetLanguage);
-    });
-
-    return unsubscribe;
-  }, []);
-
+  // Translation state and settings management
   const {
-    width,
-    isResizing,
-    offsetX: resizeOffsetX,
-    handleLeftMouseDown,
-    handleRightMouseDown,
-    handleLeftKeyDown,
-    handleRightKeyDown,
-  } = useResizable({
-    initialWidth: selectionBasedWidth,
-    minWidth: MIN_POPUP_WIDTH,
-    maxWidth: maxPopupWidth,
-  });
-
-  const {
-    offset,
-    isDragging,
-    handleMouseDown: handleDragMouseDown,
-    handleKeyDown: handleDragKeyDown,
-  } = useDraggable();
-
-  const { result, isLoading, error, translate, availability } = useTranslator({
     sourceLanguage,
     targetLanguage,
+    handleSourceChange,
+    handleTargetChange,
+    handleSwap,
+    result,
+    isLoading,
+    error,
+    availability,
+    maxPopupWidth,
+  } = useTranslationCardState({ selection });
+
+  // Popup interaction (resize, drag, position)
+  const {
+    position,
+    finalLeft,
+    finalTop,
+    width,
+    isResizing,
+    isDragging,
+    handleLeftMouseDown,
+    handleRightMouseDown,
+    handleDragMouseDown,
+  } = usePopupInteraction({
+    selectionRect: selection.rect,
+    maxPopupWidth,
   });
 
   const handleOpenSettings = () => {
     const settingsUrl = chrome.runtime.getURL("src/popup/index.html");
     window.open(settingsUrl, "_blank");
   };
-
-  const handleSourceChange = async (lang: string) => {
-    setSourceLanguage(lang);
-    await saveSettings({ sourceLanguage: lang });
-  };
-
-  const handleTargetChange = async (lang: string) => {
-    setTargetLanguage(lang);
-    await saveSettings({ targetLanguage: lang });
-  };
-
-  const handleSwap = async () => {
-    const newSource = targetLanguage;
-    const newTarget = sourceLanguage;
-    setSourceLanguage(newSource);
-    setTargetLanguage(newTarget);
-    await saveSettings({
-      sourceLanguage: newSource,
-      targetLanguage: newTarget,
-    });
-  };
-
-  const position = usePopupPosition({
-    selectionRect: selection.rect,
-    popupWidth: selectionBasedWidth,
-    popupHeight: 180,
-  });
-
-  // Translate when selection or language changes
-  // biome-ignore lint/correctness/useExhaustiveDependencies: translate is intentionally excluded to avoid infinite loops (it captures sourceLanguage/targetLanguage)
-  useEffect(() => {
-    if (selection.text) {
-      translate(selection.text);
-    }
-  }, [selection.text, sourceLanguage, targetLanguage]);
 
   if (!position) {
     return null;
@@ -166,8 +69,8 @@ export function TranslationCard({
     <div
       className="fixed font-sans text-gray-800 text-sm leading-normal"
       style={{
-        left: `${position.x + offset.x + resizeOffsetX}px`,
-        top: `${position.y + offset.y}px`,
+        left: `${finalLeft}px`,
+        top: `${finalTop}px`,
         zIndex: 2_147_483_647,
       }}
     >

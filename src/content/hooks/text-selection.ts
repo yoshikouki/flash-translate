@@ -10,6 +10,7 @@ interface RectLike {
 
 export interface SelectionInfo {
   text: string;
+  html: string;
   rect: DOMRect;
 }
 
@@ -61,4 +62,31 @@ export function isClickInsideShadowHost(
   hostId: string
 ): boolean {
   return eventPath.some((el) => el instanceof HTMLElement && el.id === hostId);
+}
+
+/**
+ * Converts a DocumentFragment to an HTML string
+ * Used to extract HTML from a selection range
+ */
+export function documentFragmentToHtml(fragment: DocumentFragment): string {
+  const tempDiv = document.createElement("div");
+  tempDiv.appendChild(fragment.cloneNode(true));
+  return tempDiv.innerHTML;
+}
+
+/**
+ * Validates HTML string
+ * Returns trimmed HTML if valid, null otherwise
+ */
+export function getValidSelectionHtml(
+  html: string | undefined | null
+): string | null {
+  if (!html) {
+    return null;
+  }
+  const trimmed = html.trim();
+  if (trimmed.length === 0) {
+    return null;
+  }
+  return trimmed;
 }

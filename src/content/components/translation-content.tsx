@@ -1,5 +1,6 @@
 import { getMessage } from "@/shared/utils/i18n";
 import type { TranslationAvailabilityStatus } from "@/shared/utils/translator";
+import { Markdown } from "./markdown";
 
 interface TranslationContentProps {
   availability: TranslationAvailabilityStatus;
@@ -59,8 +60,10 @@ export function TranslationContent({
   }
 
   return (
-    <div className="whitespace-pre-wrap break-words text-base text-gray-800 leading-relaxed">
-      {result || (
+    <div className="wrap-break-words text-base text-gray-800 leading-relaxed">
+      {result ? (
+        <Markdown content={result} />
+      ) : (
         <span className="text-gray-400 italic">
           {getMessage("content_translationPlaceholder")}
         </span>
