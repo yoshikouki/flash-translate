@@ -1,6 +1,10 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { describe, expect, it } from "vitest";
 import {
   getValidSelectionText,
+  isNodeInContentEditable,
   isValidRect,
   MAX_SELECTION_LENGTH,
   shouldShowPopupForSelection,
@@ -87,5 +91,61 @@ describe("shouldShowPopupForSelection", () => {
 
   it("is case-sensitive", () => {
     expect(shouldShowPopupForSelection("Hello", "hello")).toBe(true);
+  });
+});
+
+describe("isNodeInContentEditable", () => {
+  it("returns false for null", () => {
+    expect(isNodeInContentEditable(null)).toBe(false);
+  });
+
+  it("returns false for regular element", () => {
+    const div = document.createElement("div");
+    const textNode = document.createTextNode("hello");
+    div.appendChild(textNode);
+    expect(isNodeInContentEditable(textNode)).toBe(false);
+  });
+
+  it("returns true for element with contenteditable=true", () => {
+    const div = document.createElement("div");
+    div.setAttribute("contenteditable", "true");
+    const textNode = document.createTextNode("hello");
+    div.appendChild(textNode);
+    expect(isNodeInContentEditable(textNode)).toBe(true);
+  });
+
+  it("returns true for element with contenteditable (empty string)", () => {
+    const div = document.createElement("div");
+    div.setAttribute("contenteditable", "");
+    const textNode = document.createTextNode("hello");
+    div.appendChild(textNode);
+    expect(isNodeInContentEditable(textNode)).toBe(true);
+  });
+
+  it("returns true for nested element inside contenteditable", () => {
+    const outer = document.createElement("div");
+    outer.setAttribute("contenteditable", "true");
+    const inner = document.createElement("span");
+    const textNode = document.createTextNode("hello");
+    inner.appendChild(textNode);
+    outer.appendChild(inner);
+    expect(isNodeInContentEditable(textNode)).toBe(true);
+  });
+
+  it("returns false when contenteditable=false explicitly set", () => {
+    const outer = document.createElement("div");
+    outer.setAttribute("contenteditable", "true");
+    const inner = document.createElement("span");
+    inner.setAttribute("contenteditable", "false");
+    const textNode = document.createTextNode("hello");
+    inner.appendChild(textNode);
+    outer.appendChild(inner);
+    expect(isNodeInContentEditable(textNode)).toBe(false);
+  });
+
+  it("returns true for direct contenteditable element", () => {
+    const div = document.createElement("div");
+    div.setAttribute("contenteditable", "true");
+    expect(isNodeInContentEditable(div)).toBe(true);
   });
 });

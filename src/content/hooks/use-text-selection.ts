@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   getValidSelectionText,
   isClickInsideShadowHost,
+  isNodeInContentEditable,
   isValidRect,
   type SelectionInfo,
   shouldShowPopupForSelection,
@@ -21,6 +22,12 @@ export function useTextSelection() {
     // Delay to ensure selection is complete
     setTimeout(() => {
       const windowSelection = window.getSelection();
+
+      // Skip translation for contenteditable elements (text inputs, editors, etc.)
+      if (isNodeInContentEditable(windowSelection?.anchorNode ?? null)) {
+        return;
+      }
+
       const rawText = windowSelection?.toString();
 
       // Validate and normalize (trim) in pure function

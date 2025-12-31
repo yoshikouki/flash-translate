@@ -62,3 +62,31 @@ export function isClickInsideShadowHost(
 ): boolean {
   return eventPath.some((el) => el instanceof HTMLElement && el.id === hostId);
 }
+
+/**
+ * Checks if a node is inside a contenteditable element.
+ * Returns true if the node or any of its ancestors has contenteditable="true".
+ */
+export function isNodeInContentEditable(node: Node | null): boolean {
+  if (!node) {
+    return false;
+  }
+
+  let current: Node | null = node;
+  while (current) {
+    if (current instanceof HTMLElement) {
+      // Check for contenteditable attribute
+      const contentEditable = current.getAttribute("contenteditable");
+      if (contentEditable === "true" || contentEditable === "") {
+        return true;
+      }
+      // If explicitly set to false, stop checking ancestors
+      if (contentEditable === "false") {
+        return false;
+      }
+    }
+    current = current.parentNode;
+  }
+
+  return false;
+}
