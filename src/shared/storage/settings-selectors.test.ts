@@ -69,15 +69,19 @@ describe("selectContentAppSettings", () => {
   it("returns combined settings for content app", () => {
     const result = selectContentAppSettings(mockSettings);
     expect(result).toEqual({
+      sourceLanguage: "en",
       targetLanguage: "ja",
       skipSameLanguage: true,
       exclusionPatterns: mockSettings.exclusionPatterns,
     });
   });
 
-  it("does not include sourceLanguage", () => {
+  it("includes all required fields for content app", () => {
     const result = selectContentAppSettings(mockSettings);
-    expect(result).not.toHaveProperty("sourceLanguage");
+    expect(result).toHaveProperty("sourceLanguage");
+    expect(result).toHaveProperty("targetLanguage");
+    expect(result).toHaveProperty("skipSameLanguage");
+    expect(result).toHaveProperty("exclusionPatterns");
   });
 });
 
