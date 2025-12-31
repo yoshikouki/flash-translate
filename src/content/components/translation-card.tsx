@@ -1,13 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  DEFAULT_SOURCE_LANGUAGE,
-  DEFAULT_TARGET_LANGUAGE,
-} from "@/shared/constants/languages";
-import {
-  getSettings,
-  saveSettings,
-  subscribeToSettings,
-} from "@/shared/storage/settings";
+import { saveSettings } from "@/shared/storage/settings";
 import { calculatePopupPosition } from "../hooks/popup-position";
 import { useDraggable } from "../hooks/use-draggable";
 import { useResizable } from "../hooks/use-resizable";
@@ -26,17 +18,19 @@ import { TranslationContent } from "./translation-content";
 
 interface TranslationCardProps {
   selection: SelectionInfo;
+  sourceLanguage: string;
+  targetLanguage: string;
   onClose: () => void;
   onExcludeSite: () => void;
 }
 
 export function TranslationCard({
   selection,
+  sourceLanguage,
+  targetLanguage,
   onClose,
   onExcludeSite,
 }: TranslationCardProps) {
-  const [sourceLanguage, setSourceLanguage] = useState(DEFAULT_SOURCE_LANGUAGE);
-  const [targetLanguage, setTargetLanguage] = useState(DEFAULT_TARGET_LANGUAGE);
   const [maxPopupWidth, setMaxPopupWidth] = useState(() =>
     calculateMaxPopupWidth(window.innerWidth)
   );
@@ -65,24 +59,6 @@ export function TranslationCard({
       }
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
-
-  // Load initial settings and subscribe to changes
-  useEffect(() => {
-    const loadSettings = async () => {
-      const settings = await getSettings();
-      setSourceLanguage(settings.sourceLanguage);
-      setTargetLanguage(settings.targetLanguage);
-    };
-
-    loadSettings();
-
-    const unsubscribe = subscribeToSettings((settings) => {
-      setSourceLanguage(settings.sourceLanguage);
-      setTargetLanguage(settings.targetLanguage);
-    });
-
-    return unsubscribe;
   }, []);
 
   const {
@@ -117,23 +93,17 @@ export function TranslationCard({
   };
 
   const handleSourceChange = async (lang: string) => {
-    setSourceLanguage(lang);
     await saveSettings({ sourceLanguage: lang });
   };
 
   const handleTargetChange = async (lang: string) => {
-    setTargetLanguage(lang);
     await saveSettings({ targetLanguage: lang });
   };
 
   const handleSwap = async () => {
-    const newSource = targetLanguage;
-    const newTarget = sourceLanguage;
-    setSourceLanguage(newSource);
-    setTargetLanguage(newTarget);
     await saveSettings({
-      sourceLanguage: newSource,
-      targetLanguage: newTarget,
+      sourceLanguage: targetLanguage,
+      targetLanguage: sourceLanguage,
     });
   };
 

@@ -22,9 +22,10 @@ export const selectExclusionPatterns: SettingsSelector<ExclusionPattern[]> = (
 // Composite selectors for specific use cases
 
 /**
- * Settings needed by content/app.tsx
+ * Settings needed by content/app.tsx and TranslationCard
  */
 interface ContentAppSettings {
+  sourceLanguage: string;
   targetLanguage: string;
   skipSameLanguage: boolean;
   exclusionPatterns: ExclusionPattern[];
@@ -33,6 +34,7 @@ interface ContentAppSettings {
 export const selectContentAppSettings: SettingsSelector<ContentAppSettings> = (
   s
 ) => ({
+  sourceLanguage: s.sourceLanguage,
   targetLanguage: s.targetLanguage,
   skipSameLanguage: s.skipSameLanguage,
   exclusionPatterns: s.exclusionPatterns,

@@ -22,7 +22,12 @@ export default function App() {
     return null;
   }
 
-  const { targetLanguage, skipSameLanguage, exclusionPatterns } = settings;
+  const {
+    sourceLanguage,
+    targetLanguage,
+    skipSameLanguage,
+    exclusionPatterns,
+  } = settings;
 
   // Check if current URL is excluded
   if (isUrlExcluded(getCurrentUrl(), exclusionPatterns)) {
@@ -44,6 +49,8 @@ export default function App() {
       onClose={dismissPopup}
       onExcludeSite={clearSelection}
       selection={selection}
+      sourceLanguage={sourceLanguage}
+      targetLanguage={targetLanguage}
     />
   );
 }
