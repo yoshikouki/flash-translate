@@ -151,10 +151,6 @@ export function TranslationCard({
     }
   }, [selection.text, sourceLanguage, targetLanguage]);
 
-  if (!position) {
-    return null;
-  }
-
   const headerHeight = 40;
   const contentPadding = 24;
   const maxContentHeight = Math.max(
