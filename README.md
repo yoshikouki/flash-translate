@@ -4,6 +4,8 @@
 
 A Chrome extension for instant translation using the browser's built-in Translator API.
 
+[![Demo Video](https://img.youtube.com/vi/KhFbv0te2Ck/maxresdefault.jpg)](https://www.youtube.com/watch?v=KhFbv0te2Ck)
+
 ## Features
 
 - **Instant translation on text selection**: Select text to view translations immediately
