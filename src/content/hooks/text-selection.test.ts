@@ -3,6 +3,7 @@
  */
 import { describe, expect, it } from "vitest";
 import {
+  getSelectionRect,
   getValidSelectionText,
   isNodeInContentEditable,
   isValidRect,
@@ -147,5 +148,46 @@ describe("isNodeInContentEditable", () => {
     const div = document.createElement("div");
     div.setAttribute("contenteditable", "true");
     expect(isNodeInContentEditable(div)).toBe(true);
+  });
+});
+
+describe("getSelectionRect", () => {
+  const createFallbackRect = (): DOMRect => new DOMRect(0, 0, 100, 100);
+
+  it("returns null for null selection", () => {
+    const fallback = createFallbackRect();
+    expect(getSelectionRect(null, fallback)).toBeNull();
+  });
+
+  it("returns rect for valid selection", () => {
+    const div = document.createElement("div");
+    div.textContent = "Hello World";
+    document.body.appendChild(div);
+
+    const range = document.createRange();
+    range.selectNodeContents(div);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+
+    const fallback = createFallbackRect();
+    const result = getSelectionRect(selection, fallback);
+
+    expect(result).not.toBeNull();
+
+    document.body.removeChild(div);
+  });
+
+  it("returns fallback rect when getRangeAt throws", () => {
+    const mockSelection = {
+      getRangeAt: () => {
+        throw new Error("No range");
+      },
+    } as unknown as Selection;
+
+    const fallback = createFallbackRect();
+    const result = getSelectionRect(mockSelection, fallback);
+
+    expect(result).toBe(fallback);
   });
 });

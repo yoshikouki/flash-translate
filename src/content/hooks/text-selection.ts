@@ -43,6 +43,31 @@ export function isValidRect<T extends RectLike>(
 }
 
 /**
+ * Gets the bounding rectangle for a selection.
+ * Returns null if the selection has no valid range or rect.
+ */
+export function getSelectionRect(
+  selection: Selection | null,
+  fallbackRect: DOMRect
+): DOMRect | null {
+  if (!selection) {
+    return null;
+  }
+
+  try {
+    const range = selection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    if (isValidRect(rect)) {
+      return rect;
+    }
+    return null;
+  } catch {
+    // Fallback to provided rect if range fails
+    return fallbackRect;
+  }
+}
+
+/**
  * Determines if the popup should be shown for a new selection
  * Returns true if the text is different from the last selection
  */

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  getSelectionRect,
   getValidSelectionText,
   isClickInsideShadowHost,
   isNodeInContentEditable,
-  isValidRect,
   type SelectionInfo,
   shouldShowPopupForSelection,
 } from "./text-selection";
@@ -36,17 +36,12 @@ export function useTextSelection() {
         return;
       }
 
-      let rect: DOMRect;
-      try {
-        const range = windowSelection?.getRangeAt(0);
-        const rangeRect = range?.getBoundingClientRect();
-        if (!isValidRect(rangeRect)) {
-          return;
-        }
-        rect = rangeRect;
-      } catch {
-        // Fallback to body rect if range fails
-        rect = document.body.getBoundingClientRect();
+      const rect = getSelectionRect(
+        windowSelection,
+        document.body.getBoundingClientRect()
+      );
+      if (!rect) {
+        return;
       }
 
       if (
