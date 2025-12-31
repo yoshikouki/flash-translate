@@ -112,8 +112,8 @@ const handleMouseUp = () => {
 ### Test Commands
 
 ```bash
-bun run test        # Watch mode
-bun run test:run    # Single run (CI)
+bun run test          # Single run (CI)
+bun run test:watch    # Watch mode
 ```
 
 ### Examples in Codebase
