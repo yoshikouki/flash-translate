@@ -7,7 +7,6 @@ import {
   getValidSelectionText,
   isNodeInContentEditable,
   isValidRect,
-  MAX_SELECTION_LENGTH,
   shouldShowPopupForSelection,
 } from "./text-selection";
 
@@ -36,14 +35,9 @@ describe("getValidSelectionText", () => {
     expect(getValidSelectionText("\n hello \t")).toBe("hello");
   });
 
-  it("returns null for text exceeding max length", () => {
-    const longText = "a".repeat(MAX_SELECTION_LENGTH);
-    expect(getValidSelectionText(longText)).toBeNull();
-  });
-
-  it("returns text at max length - 1", () => {
-    const maxText = "a".repeat(MAX_SELECTION_LENGTH - 1);
-    expect(getValidSelectionText(maxText)).toBe(maxText);
+  it("accepts long text without length limit", () => {
+    const longText = "a".repeat(100_000);
+    expect(getValidSelectionText(longText)).toBe(longText);
   });
 });
 

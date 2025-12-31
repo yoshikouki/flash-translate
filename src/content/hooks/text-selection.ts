@@ -1,8 +1,6 @@
 // Pure functions for text selection logic
 // These are extracted from useTextSelection hook for testability
 
-export const MAX_SELECTION_LENGTH = 5000;
-
 interface RectLike {
   width: number;
   height: number;
@@ -24,7 +22,7 @@ export function getValidSelectionText(
     return null;
   }
   const trimmed = text.trim();
-  if (trimmed.length === 0 || trimmed.length >= MAX_SELECTION_LENGTH) {
+  if (trimmed.length === 0) {
     return null;
   }
   return trimmed;
