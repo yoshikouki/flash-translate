@@ -8,8 +8,8 @@ import {
   saveSettings,
   subscribeToSettings,
 } from "@/shared/storage/settings";
+import { calculatePopupPosition } from "../hooks/popup-position";
 import { useDraggable } from "../hooks/use-draggable";
-import { usePopupPosition } from "../hooks/use-popup-position";
 import { useResizable } from "../hooks/use-resizable";
 import type { SelectionInfo } from "../hooks/use-text-selection";
 import { useTranslator } from "../hooks/use-translator";
@@ -137,11 +137,11 @@ export function TranslationCard({
     });
   };
 
-  const position = usePopupPosition({
-    selectionRect: selection.rect,
-    popupWidth: selectionBasedWidth,
-    popupHeight: 180,
-  });
+  const position = calculatePopupPosition(
+    selection.rect,
+    { popupWidth: selectionBasedWidth, popupHeight: 180, margin: 8 },
+    { width: window.innerWidth, height: window.innerHeight }
+  );
 
   // Translate when selection or language changes
   // biome-ignore lint/correctness/useExhaustiveDependencies: translate is intentionally excluded to avoid infinite loops (it captures sourceLanguage/targetLanguage)

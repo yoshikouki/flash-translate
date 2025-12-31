@@ -1,5 +1,4 @@
 // Pure functions for popup position calculation
-// These are extracted from usePopupPosition hook for testability
 
 /**
  * Minimum popup height constraint
