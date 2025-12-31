@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { saveSettings } from "@/shared/storage/settings";
 import { calculatePopupPosition } from "../hooks/popup-position";
 import { useDraggable } from "../hooks/use-draggable";
 import { useResizable } from "../hooks/use-resizable";
@@ -31,6 +30,19 @@ export function TranslationCard({
   onClose,
   onExcludeSite,
 }: TranslationCardProps) {
+  const { result, isLoading, error, translate, availability } = useTranslator({
+    sourceLanguage,
+    targetLanguage,
+  });
+
+  // Translate when selection or language changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: translate is intentionally excluded to avoid infinite loops (it captures sourceLanguage/targetLanguage)
+  useEffect(() => {
+    if (selection.text) {
+      translate(selection.text);
+    }
+  }, [selection.text, sourceLanguage, targetLanguage]);
+
   const [maxPopupWidth, setMaxPopupWidth] = useState(() =>
     calculateMaxPopupWidth(window.innerWidth)
   );
@@ -82,44 +94,11 @@ export function TranslationCard({
     handleKeyDown: handleDragKeyDown,
   } = useDraggable();
 
-  const { result, isLoading, error, translate, availability } = useTranslator({
-    sourceLanguage,
-    targetLanguage,
-  });
-
-  const handleOpenSettings = () => {
-    const settingsUrl = chrome.runtime.getURL("src/popup/index.html");
-    window.open(settingsUrl, "_blank");
-  };
-
-  const handleSourceChange = async (lang: string) => {
-    await saveSettings({ sourceLanguage: lang });
-  };
-
-  const handleTargetChange = async (lang: string) => {
-    await saveSettings({ targetLanguage: lang });
-  };
-
-  const handleSwap = async () => {
-    await saveSettings({
-      sourceLanguage: targetLanguage,
-      targetLanguage: sourceLanguage,
-    });
-  };
-
   const position = calculatePopupPosition(
     selection.rect,
     { popupWidth: selectionBasedWidth, popupHeight: 180, margin: 8 },
     { width: window.innerWidth, height: window.innerHeight }
   );
-
-  // Translate when selection or language changes
-  // biome-ignore lint/correctness/useExhaustiveDependencies: translate is intentionally excluded to avoid infinite loops (it captures sourceLanguage/targetLanguage)
-  useEffect(() => {
-    if (selection.text) {
-      translate(selection.text);
-    }
-  }, [selection.text, sourceLanguage, targetLanguage]);
 
   const headerHeight = 40;
   const contentPadding = 24;
@@ -127,13 +106,15 @@ export function TranslationCard({
     position.maxHeight - headerHeight - contentPadding,
     64
   );
+  const cardLeft = position.x + offset.x + resizeOffsetX;
+  const cardTop = position.y + offset.y;
 
   return (
     <div
       className="fixed font-sans text-gray-800 text-sm leading-normal"
       style={{
-        left: `${position.x + offset.x + resizeOffsetX}px`,
-        top: `${position.y + offset.y}px`,
+        left: `${cardLeft}px`,
+        top: `${cardTop}px`,
         zIndex: 2_147_483_647,
       }}
     >
@@ -165,10 +146,6 @@ export function TranslationCard({
         <TranslationCardHeader
           onClose={onClose}
           onExcludeSite={onExcludeSite}
-          onOpenSettings={handleOpenSettings}
-          onSourceChange={handleSourceChange}
-          onSwap={handleSwap}
-          onTargetChange={handleTargetChange}
           sourceLanguage={sourceLanguage}
           targetLanguage={targetLanguage}
         />

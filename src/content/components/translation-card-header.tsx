@@ -1,4 +1,5 @@
 import { Settings, X } from "lucide-react";
+import { saveSettings } from "@/shared/storage/settings";
 import { getMessage } from "@/shared/utils/i18n";
 import { ExcludeSiteButton } from "./exclude-site-button";
 import { LanguageSelector } from "./language-selector";
@@ -6,10 +7,6 @@ import { LanguageSelector } from "./language-selector";
 interface TranslationCardHeaderProps {
   sourceLanguage: string;
   targetLanguage: string;
-  onSourceChange: (lang: string) => void;
-  onTargetChange: (lang: string) => void;
-  onSwap: () => void;
-  onOpenSettings: () => void;
   onClose: () => void;
   onExcludeSite: () => void;
 }
@@ -17,13 +14,29 @@ interface TranslationCardHeaderProps {
 export function TranslationCardHeader({
   sourceLanguage,
   targetLanguage,
-  onSourceChange,
-  onTargetChange,
-  onSwap,
-  onOpenSettings,
   onClose,
   onExcludeSite,
 }: TranslationCardHeaderProps) {
+  const onOpenSettings = () => {
+    const settingsUrl = chrome.runtime.getURL("src/popup/index.html");
+    window.open(settingsUrl, "_blank");
+  };
+
+  const onSourceChange = async (lang: string) => {
+    await saveSettings({ sourceLanguage: lang });
+  };
+
+  const onTargetChange = async (lang: string) => {
+    await saveSettings({ targetLanguage: lang });
+  };
+
+  const onSwap = async () => {
+    await saveSettings({
+      sourceLanguage: targetLanguage,
+      targetLanguage: sourceLanguage,
+    });
+  };
+
   return (
     <div
       className="relative flex items-stretch justify-between rounded-t-xl border-b border-none px-3 py-1"
