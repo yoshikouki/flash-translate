@@ -16,7 +16,7 @@
         "@crxjs/vite-plugin": "^2.7.1",
         "@tailwindcss/vite": "^4.3.3",
         "@types/chrome": "^0.2.2",
-        "@types/dom-chromium-ai": "0.0.17",
+        "@types/dom-chromium-ai": "0.0.18",
         "@types/node": "^26.1.1",
         "@types/react": "^19.2.17",
         "@types/react-dom": "^19.2.3",
@@ -228,7 +228,7 @@
 
     "@types/deep-eql": ["@types/deep-eql@4.0.2", "https://npm.flatt.tech/@types/deep-eql/-/deep-eql-4.0.2.tgz", {}, "sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw=="],
 
-    "@types/dom-chromium-ai": ["@types/dom-chromium-ai@0.0.17", "https://npm.flatt.tech/@types/dom-chromium-ai/-/dom-chromium-ai-0.0.17.tgz", {}, "sha512-UnSAIVKONaY2vTAM4TkPpwdKeGgg3tPCwNP3KxR+U8bLYC2rQU7UrgW9LIVx0B02dKZxuPA6a0Q5wvyW5Rk6nw=="],
+    "@types/dom-chromium-ai": ["@types/dom-chromium-ai@0.0.18", "", {}, "sha512-/ZITAMdViQlLmEs56d/ET9qJ42EfnrBrLw5gRB4p0raDoavGDacqP9VITK8wNM0f9bPmnddHZeJ+FWIkWi6JlQ=="],
 
     "@types/esrecurse": ["@types/esrecurse@4.3.1", "https://npm.flatt.tech/@types/esrecurse/-/esrecurse-4.3.1.tgz", {}, "sha512-xJBAbDifo5hpffDBuHl0Y8ywswbiAp/Wi7Y/GtAgSlZyIABppyurxVueOPE8LUQOxdlgi6Zqce7uoEpqNTeiUw=="],
 
