@@ -55,7 +55,7 @@ export function TranslationCard({
 
   return (
     <div
-      className="fixed font-sans text-gray-800 text-sm leading-normal transition-[left,top] duration-150 ease-out"
+      className="fixed font-sans text-sm leading-normal text-gray-800 transition-[left,top] duration-150 ease-out"
       style={{
         left: `${layout.left}px`,
         top: `${layout.top}px`,
@@ -63,7 +63,7 @@ export function TranslationCard({
       }}
     >
       <div
-        className="relative flex animate-card-expand flex-col overflow-hidden rounded-xl border border-stone-400/60 border-solid bg-white/75 pt-3 shadow-2xl backdrop-blur-md transition-[width,height] duration-150 ease-out"
+        className="animate-card-expand relative flex flex-col overflow-hidden rounded-xl border border-solid border-stone-400/60 bg-white/75 pt-3 shadow-2xl backdrop-blur-md transition-[width,height] duration-150 ease-out"
         style={{
           width: `${layout.width}px`,
           height: `${layout.height}px`,

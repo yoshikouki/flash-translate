@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "tsc -b && rm -rf dist && vite build",
     "lint": "bun x ultracite check",
-    "format": "bun x ultracite fix",
+    "format": "biome check --write",
     "format:unsafe": "bun x ultracite fix --unsafe",
     "preview": "vite preview",
     "zip": "bun run build && mkdir -p releases && cd dist && zip -r ../releases/flash-translate-v$npm_package_version.zip .",
@@ -24,7 +24,7 @@
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.8",
+    "@biomejs/biome": "2.6.7",
     "@crxjs/vite-plugin": "^2.7.1",
     "@tailwindcss/vite": "^4.3.3",
     "@types/chrome": "^0.2.2",
@@ -38,7 +38,7 @@
     "jsdom": "^29.1.1",
     "tailwindcss": "^4.3.3",
     "typescript": "~7.0.2",
-    "ultracite": "7.9.4",
+    "ultracite": "8.2.0",
     "vite": "^8.3.6",
     "vite-plugin-babel": "^1.7.3",
     "vitest": "^5.1.0"

@@ -3,11 +3,11 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (e.g., 1.0.2). Leave empty to use package.json version.'
+        description: "Release version (e.g., 1.0.2). Leave empty to use package.json version."
         required: false
         type: string
 

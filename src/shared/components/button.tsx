@@ -69,7 +69,7 @@ export function Button({
       <span
         aria-hidden="true"
         className={cn(
-          "pointer-events-none absolute z-50 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 font-medium text-white text-xs opacity-0 shadow-sm transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100",
+          "pointer-events-none absolute z-50 rounded-md bg-gray-900 px-2 py-1 text-xs font-medium whitespace-nowrap text-white opacity-0 shadow-sm transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100",
           tooltipAlignStyles[tooltipAlign],
           tooltipSideStyles[tooltipSide]
         )}

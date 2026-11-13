@@ -20,7 +20,7 @@ export function TranslationContent({
 }: TranslationContentProps) {
   if (availability === "unsupported") {
     return (
-      <div className="rounded-lg bg-red-50 px-3 py-2 text-red-600 text-sm">
+      <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
         {getMessage("content_translatorUnsupported")}
       </div>
     );
@@ -28,7 +28,7 @@ export function TranslationContent({
 
   if (availability === "unavailable") {
     return (
-      <div className="rounded-lg bg-red-50 px-3 py-2 text-red-600 text-sm">
+      <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
         {getMessage("content_translationUnavailable", [
           sourceLanguage,
           targetLanguage,
@@ -39,7 +39,7 @@ export function TranslationContent({
 
   if (error) {
     return (
-      <div className="rounded-lg bg-red-50 px-3 py-2 text-red-600 text-sm">
+      <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
         {error.message}
       </div>
     );
@@ -49,7 +49,7 @@ export function TranslationContent({
     return (
       <div className="flex items-center gap-3">
         <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600" />
-        <span className="text-gray-500 text-sm">
+        <span className="text-sm text-gray-500">
           {availability === "after-download"
             ? getMessage("content_downloadingModel")
             : getMessage("content_translating")}
@@ -59,7 +59,7 @@ export function TranslationContent({
   }
 
   return (
-    <div className="wrap-break-word whitespace-pre-wrap pb-10 text-base text-gray-800 leading-relaxed">
+    <div className="pb-10 text-base leading-relaxed wrap-break-word whitespace-pre-wrap text-gray-800">
       {result || (
         <span className="text-gray-400 italic">
           {getMessage("content_translationPlaceholder")}

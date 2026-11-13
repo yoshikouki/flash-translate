@@ -46,10 +46,10 @@ export function Footer() {
   };
 
   return (
-    <footer className="flex items-center justify-between gap-4 border-gray-100 border-t bg-gray-50/80 px-4 py-3">
+    <footer className="flex items-center justify-between gap-4 border-t border-gray-100 bg-gray-50/80 px-4 py-3">
       <div className="flex items-center justify-center gap-4">
         <a
-          className="flex items-center gap-1.5 text-gray-500 text-xs transition-colors hover:text-gray-700"
+          className="flex items-center gap-1.5 text-xs text-gray-500 transition-colors hover:text-gray-700"
           href={urls.support}
           rel="noopener noreferrer"
           target="_blank"
@@ -61,7 +61,7 @@ export function Footer() {
       </div>
       <div className="flex items-center justify-center gap-3">
         <a
-          className="flex items-center gap-1.5 text-gray-500 text-xs transition-colors hover:text-gray-700"
+          className="flex items-center gap-1.5 text-xs text-gray-500 transition-colors hover:text-gray-700"
           href={urls.chromeWebStore}
           rel="noopener noreferrer"
           target="_blank"
@@ -70,7 +70,7 @@ export function Footer() {
           <ExternalLinkIcon size={18} />
         </a>
         <a
-          className="flex items-center gap-1.5 text-gray-500 text-xs transition-colors hover:text-gray-700"
+          className="flex items-center gap-1.5 text-xs text-gray-500 transition-colors hover:text-gray-700"
           href={urls.repository}
           rel="noopener noreferrer"
           target="_blank"
