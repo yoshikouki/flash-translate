@@ -50,7 +50,7 @@ export function TranslationBehaviorSettings() {
   const effectiveSkipSameLanguage = autoDetectEnabled ? true : skipSameLanguage;
 
   return (
-    <div className="border-gray-100 border-t px-3 py-2.5">
+    <div className="border-t border-gray-100 px-3 py-2.5">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex-1 pr-3">
           <span
@@ -84,7 +84,7 @@ export function TranslationBehaviorSettings() {
           >
             {getMessage("popup_behavior_skipSameLanguage")}
           </span>
-          <p className="mt-0.5 text-gray-400 text-xs">
+          <p className="mt-0.5 text-xs text-gray-400">
             {autoDetectEnabled
               ? getMessage("popup_behavior_skipSameLanguageAutoDetectNote")
               : getMessage("popup_behavior_skipSameLanguageDesc")}
@@ -114,13 +114,13 @@ function AutoDetectDescription({
   onCopyFlagsUrl,
 }: AutoDetectDescriptionProps) {
   if (isLoading) {
-    return <p className="mt-0.5 text-gray-400 text-xs">...</p>;
+    return <p className="mt-0.5 text-xs text-gray-400">...</p>;
   }
 
   if (isDetectorUnavailable) {
     return (
       <div className="mt-1">
-        <p className="text-amber-600 text-xs">
+        <p className="text-xs text-amber-600">
           {getMessage("popup_behavior_autoDetectUnavailable")}
         </p>
         <button
@@ -141,7 +141,7 @@ function AutoDetectDescription({
   }
 
   return (
-    <p className="mt-0.5 text-gray-400 text-xs">
+    <p className="mt-0.5 text-xs text-gray-400">
       {getMessage("popup_behavior_autoDetectLanguageDesc")}
     </p>
   );

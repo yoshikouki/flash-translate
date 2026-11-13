@@ -1,17 +1,36 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": ["ultracite/biome/core", "ultracite/biome/react"],
+  "extends": [
+    "ultracite/biome/core",
+    "ultracite/biome/react",
+    "ultracite/biome/vitest"
+  ],
   "assist": {
     "actions": {
       "source": {
-        // Preserve semantic grouping instead of enforcing alphabetical member and prop order.
+        // Only class/className sorting (linter: useTailwindSortedClasses) is enabled.
+        "organizeImports": "off",
         "useSortedAttributes": "off",
-        "useSortedInterfaceMembers": "off",
         "useSortedKeys": "off",
+        "useSortedEnumMembers": "off",
+        "useSortedInterfaceMembers": "off",
         "useSortedProperties": "off",
-        "useSortedTypeFields": "off"
+        "useSortedTypeFields": "off",
+        "useSortedSelectionSet": "off",
+        "useGraphqlSortedDefinitions": "off",
+        "useGraphqlSortedVariables": "off",
+        "useGraphqlSortedArguments": "off",
+        "useSortedPackageJson": "off"
       }
     }
+  },
+  "files": {
+    "includes": [
+      "!!**/bun.lock",
+      "!!**/dist",
+      "!!**/node_modules",
+      "!!**/*.tsbuildinfo"
+    ]
   },
   "javascript": {
     "globals": ["chrome", "Translator", "LanguageDetector"]
@@ -46,6 +65,72 @@
     }
   },
   "overrides": [
+    // Keep discriminant narrowing after the preceding assertion.
+    {
+      "includes": ["src/content/hooks/translator-executor.test.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConditionalExpect": "off"
+          }
+        }
+      }
+    },
+    // Preserve ID lookup semantics without unsafe DOM rewrites.
+    {
+      "includes": [
+        "src/content/hooks/use-text-selection.ts",
+        "src/content/index.tsx",
+        "src/popup/index.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "useDomQuerySelector": "off"
+          }
+        }
+      }
+    },
+    // Chrome 150 supports the intended select and anchor features.
+    {
+      "includes": [
+        "src/content/styles/content.css",
+        "src/popup/styles/popup.css"
+      ],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "useBaseline": "off"
+          }
+        }
+      }
+    },
+    // Preserve lifecycle and manager instance contracts.
+    {
+      "includes": [
+        "src/shared/components/error-boundary.tsx",
+        "src/shared/utils/language-detector.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "useThisInClassMethods": "off"
+          }
+        }
+      }
+    },
+    // Preserve manager contracts and import placement under the sorting policy.
+    {
+      "includes": ["src/shared/utils/translator.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useThisInClassMethods": "off",
+            "useImportsFirst": "off"
+          }
+        }
+      }
+    },
     {
       "includes": ["public/icons/icon.svg"],
       // This standalone extension asset is not rendered as inline accessible SVG.

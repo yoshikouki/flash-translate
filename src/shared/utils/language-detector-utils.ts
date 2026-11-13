@@ -41,7 +41,7 @@ export const HIGH_DENSITY_MIN_TEXT_LENGTH = 1;
  * - Abugida: Devanagari, Thai, Myanmar, Tibetan, Bengali (syllabic)
  */
 export const HIGH_DENSITY_SCRIPT_REGEX =
-  /[\u3000-\u9fff\uac00-\ud7af\u3040-\u309f\u30a0-\u30ff\u0600-\u06ff\u0590-\u05ff\u0900-\u097f\u0e00-\u0e7f\u1000-\u109f\u0f00-\u0fff\u0980-\u09ff]/;
+  /[\u3000-\u9fff\uac00-\ud7af\u3040-\u309f\u30a0-\u30ff\u0600-\u06ff\u0590-\u05ff\u0900-\u097f\u0e00-\u0e7f\u1000-\u109f\u0f00-\u0fff\u0980-\u09ff]/u;
 
 /**
  * Check if text contains high information density scripts

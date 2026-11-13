@@ -63,7 +63,7 @@ export function ExclusionSettings() {
   return (
     <div className="px-3 py-2.5">
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-gray-700 text-sm">
+        <span className="text-sm text-gray-700">
           {getMessage("popup_exclusion_title")}
         </span>
       </div>
@@ -84,7 +84,7 @@ export function ExclusionSettings() {
           <span className="text-lg leading-none">+</span>
           <span className="flex-1 truncate">{formatUrl(currentTabUrl)}</span>
           {isCurrentSiteExcluded && (
-            <span className="shrink-0 text-gray-400 text-xs">
+            <span className="shrink-0 text-xs text-gray-400">
               {getMessage("popup_exclusion_excluded")}
             </span>
           )}
@@ -93,7 +93,7 @@ export function ExclusionSettings() {
 
       {/* Existing patterns */}
       {patterns.length === 0 ? (
-        <p className="py-2 text-left text-gray-400 text-xs">
+        <p className="py-2 text-left text-xs text-gray-400">
           {getMessage("popup_exclusion_noSites")}
         </p>
       ) : (

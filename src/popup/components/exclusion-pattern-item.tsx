@@ -50,7 +50,7 @@ export function ExclusionPatternItem({
       <div className="flex items-center gap-1.5">
         <input
           autoFocus
-          className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
           defaultValue={pattern.pattern}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -64,14 +64,14 @@ export function ExclusionPatternItem({
           type="text"
         />
         <button
-          className="px-1.5 text-blue-600 text-xs hover:text-blue-800"
+          className="px-1.5 text-xs text-blue-600 hover:text-blue-800"
           onClick={handleSaveEdit}
           type="button"
         >
           {getMessage("popup_exclusion_ok")}
         </button>
         <button
-          className="px-1.5 text-gray-500 text-xs hover:text-gray-700"
+          className="px-1.5 text-xs text-gray-500 hover:text-gray-700"
           onClick={handleCancelEdit}
           type="button"
         >

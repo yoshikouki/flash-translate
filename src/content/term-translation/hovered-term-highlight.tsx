@@ -18,7 +18,7 @@ export function HoveredTermHighlight({
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed rounded-sm border-2 border-blue-500 border-solid shadow-[0_0_0_2px_rgba(255,255,255,0.9)]"
+      className="pointer-events-none fixed rounded-sm border-2 border-solid border-blue-500 shadow-[0_0_0_2px_rgba(255,255,255,0.9)]"
       data-flash-translate-term-highlight=""
       style={{
         top: `${anchorRect.top - HIGHLIGHT_PADDING}px`,
