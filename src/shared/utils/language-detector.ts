@@ -14,6 +14,20 @@ import { createPrefixedLogger } from "./logger";
 
 const log = createPrefixedLogger("language-detector");
 
+export async function checkLanguageDetectionAvailability(): Promise<LanguageDetectionAvailability> {
+  if (typeof LanguageDetector === "undefined") {
+    return "unsupported";
+  }
+
+  try {
+    const result = await LanguageDetector.availability();
+    return mapDetectorAvailability(result);
+  } catch (error) {
+    log.error("Failed to check language detector availability:", error);
+    return "unsupported";
+  }
+}
+
 class LanguageDetectorManager {
   private instance: LanguageDetector | null = null;
   private isCreating = false;
@@ -21,23 +35,6 @@ class LanguageDetectorManager {
     resolve: (detector: LanguageDetector) => void;
     reject: (error: Error) => void;
   }> = [];
-
-  /**
-   * Check if the Language Detector API is available
-   */
-  async checkAvailability(): Promise<LanguageDetectionAvailability> {
-    if (typeof LanguageDetector === "undefined") {
-      return "unsupported";
-    }
-
-    try {
-      const result = await LanguageDetector.availability();
-      return mapDetectorAvailability(result);
-    } catch (error) {
-      log.error("Failed to check language detector availability:", error);
-      return "unsupported";
-    }
-  }
 
   /**
    * Get or create a LanguageDetector instance
@@ -64,7 +61,7 @@ class LanguageDetectorManager {
       }
 
       // Check availability
-      const availability = await this.checkAvailability();
+      const availability = await checkLanguageDetectionAvailability();
 
       if (availability === "unsupported") {
         throw createDetectorUnsupportedError();

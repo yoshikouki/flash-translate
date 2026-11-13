@@ -42,41 +42,47 @@
 }
 
 /* Customizable Select (Chrome 135+) */
-.language-select,
-.language-select::picker(select) {
-  appearance: base-select;
-}
+@supports (appearance: base-select) {
+  .language-select,
+  .language-select::picker(select) {
+    appearance: base-select;
+  }
 
-.language-select::picker-icon {
-  display: none;
-}
+  /* biome-ignore lint/suspicious/useBaseline: Chrome 150 supports picker-icon; Biome 2.6.7 does not honor @supports for selectors. */
+  .language-select::picker-icon {
+    display: none;
+  }
 
-.language-select::picker(select) {
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: white;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  padding: 4px;
+  .language-select::picker(select) {
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    padding: 4px;
 
-  /* Animation */
-  opacity: 0;
-  transform: translateY(-4px);
-  transition:
-    opacity 150ms ease-out,
-    transform 150ms ease-out,
-    display 150ms ease-out allow-discrete,
-    overlay 150ms ease-out allow-discrete;
-}
-
-.language-select::picker(select):popover-open {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-@starting-style {
-  .language-select::picker(select):popover-open {
+    /* Animation */
     opacity: 0;
     transform: translateY(-4px);
+    transition:
+      opacity 150ms ease-out,
+      transform 150ms ease-out,
+      display 150ms ease-out allow-discrete,
+      overlay 150ms ease-out allow-discrete;
+  }
+
+  /* biome-ignore lint/suspicious/useBaseline: Chrome 150 supports popover-open; Biome 2.6.7 does not honor @supports for selectors. */
+  .language-select::picker(select):popover-open {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* biome-ignore lint/suspicious/useBaseline: Chrome 150 supports starting-style; Biome 2.6.7 does not honor @supports for at-rules. */
+  @starting-style {
+    /* biome-ignore lint/suspicious/useBaseline: Chrome 150 supports popover-open; Biome 2.6.7 does not honor @supports for selectors. */
+    .language-select::picker(select):popover-open {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
   }
 }
 

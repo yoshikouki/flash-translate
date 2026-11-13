@@ -25,6 +25,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     return { hasError: true, error };
   }
 
+  // biome-ignore lint/style/useThisInClassMethods: React invokes this lifecycle method on the boundary instance.
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     log.error("Error caught:", error);
     log.error("Error info:", errorInfo);

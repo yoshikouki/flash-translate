@@ -112,10 +112,10 @@ describe("executeStreamingTranslation", () => {
       { onChunk }
     );
 
-    expect(result.type).toBe("error");
-    if (result.type === "error") {
-      expect(result.error.message).toBe("Translation failed");
-    }
+    expect(result).toMatchObject({
+      type: "error",
+      error: { message: "Translation failed" },
+    });
   });
 
   it("returns aborted when AbortError is thrown", async () => {

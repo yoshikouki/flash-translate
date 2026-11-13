@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   type LanguageDetectionAvailability,
   languageDetectorManager,
+  checkLanguageDetectionAvailability,
 } from "@/shared/utils/language-detector";
 import {
   computeEffectiveSourceLanguage,
@@ -55,7 +56,7 @@ export function useLanguageDetection({
   // Check availability on mount
   useEffect(() => {
     const checkAvailability = async () => {
-      const availability = await languageDetectorManager.checkAvailability();
+      const availability = await checkLanguageDetectionAvailability();
       setState((prev) => ({ ...prev, availability }));
     };
 

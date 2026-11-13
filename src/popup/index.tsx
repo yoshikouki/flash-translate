@@ -5,7 +5,7 @@ import { getMessage } from "@/shared/utils/i18n";
 import App from "./app";
 import "./styles/popup.css";
 
-const rootElement = document.getElementById("root");
+const rootElement = document.querySelector("#root");
 if (!rootElement) {
   throw new Error("Root element not found");
 }

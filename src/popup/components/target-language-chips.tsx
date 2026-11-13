@@ -5,6 +5,7 @@ import { createPrefixedLogger } from "@/shared/utils/logger";
 import {
   type TranslationAvailabilityStatus,
   translatorManager,
+  checkTranslationAvailability,
 } from "@/shared/utils/translator";
 import { useDownloadState } from "../hooks/use-download-state";
 import { LanguageChip } from "./language-chip";
@@ -55,7 +56,7 @@ export function TargetLanguageChips({
         SUPPORTED_LANGUAGES.map(async (lang) => {
           // Check if English → target is available (as a representative pair)
           const sourceToCheck = lang.code === "en" ? "ja" : "en";
-          const status = await translatorManager.checkAvailability(
+          const status = await checkTranslationAvailability(
             sourceToCheck,
             lang.code
           );
@@ -104,10 +105,7 @@ export function TargetLanguageChips({
       const results = await Promise.all(
         SUPPORTED_LANGUAGES.map(async (lang) => {
           const source = lang.code === "en" ? "ja" : "en";
-          const status = await translatorManager.checkAvailability(
-            source,
-            lang.code
-          );
+          const status = await checkTranslationAvailability(source, lang.code);
           return { code: lang.code, status };
         })
       );

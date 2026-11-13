@@ -12,8 +12,10 @@ body {
 }
 
 /* CSS Anchor Positioning for dropdown */
-.download-dropdown-anchor {
-  anchor-name: --download-dropdown;
+@supports (anchor-name: --download-dropdown) {
+  .download-dropdown-anchor {
+    anchor-name: --download-dropdown;
+  }
 }
 
 .download-dropdown-popover {
@@ -22,9 +24,11 @@ body {
   padding: 0;
 
   /* Anchor positioning */
-  position-anchor: --download-dropdown;
-  top: anchor(bottom);
-  left: anchor(left);
+  @supports (anchor-name: --download-dropdown) {
+    position-anchor: --download-dropdown;
+    top: anchor(bottom);
+    left: anchor(left);
+  }
   margin-top: 4px;
 
   /* Animation */
@@ -36,21 +40,28 @@ body {
     display 150ms ease-out allow-discrete,
     overlay 150ms ease-out allow-discrete;
 
-  &:popover-open {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Starting style for animation */
-  @starting-style {
+  /* biome-ignore lint/suspicious/useBaseline: This condition detects popover-open; Biome 2.6.7 also reports the selector in the feature query. */
+  @supports selector(:popover-open) {
+    /* biome-ignore lint/suspicious/useBaseline: Chrome 150 supports popover-open; Biome 2.6.7 does not honor @supports for selectors. */
     &:popover-open {
-      opacity: 0;
-      transform: translateY(-4px);
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Starting style for animation */
+    /* biome-ignore lint/suspicious/useBaseline: Chrome 150 supports starting-style; Biome 2.6.7 does not honor @supports for at-rules. */
+    @starting-style {
+      /* biome-ignore lint/suspicious/useBaseline: Chrome 150 supports popover-open; Biome 2.6.7 does not honor @supports for selectors. */
+      &:popover-open {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
     }
   }
 }
 
 /* Fallback for browsers without Anchor Positioning */
+/* biome-ignore lint/suspicious/useBaseline: The fallback must test the unsupported anchor-name property in its own condition. */
 @supports not (anchor-name: --test) {
   .download-dropdown-popover {
     position: absolute;
