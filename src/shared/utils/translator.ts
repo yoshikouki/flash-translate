@@ -5,9 +5,6 @@ import {
   readStreamAccumulated,
   streamMultipleParagraphs,
 } from "./translator-streaming";
-
-const log = createPrefixedLogger("translator");
-
 import {
   type ChromeAvailability,
   createNotAvailableError,
@@ -18,6 +15,8 @@ import {
   mapAvailabilityStatus,
   splitTextIntoParagraphs,
 } from "./translator-utils";
+
+const log = createPrefixedLogger("translator");
 
 interface CachedTranslator {
   translator: Translator;
@@ -32,6 +31,27 @@ export type TranslationAvailabilityStatus =
   | "unavailable"
   | "unsupported";
 
+export async function checkTranslationAvailability(
+  sourceLanguage: string,
+  targetLanguage: string
+): Promise<TranslationAvailabilityStatus> {
+  if (typeof Translator === "undefined") {
+    return "unsupported";
+  }
+
+  try {
+    const result = await Translator.availability({
+      sourceLanguage,
+      targetLanguage,
+    });
+
+    return mapAvailabilityStatus(result as ChromeAvailability);
+  } catch (error) {
+    log.error("Failed to check translator availability:", error);
+    return "unsupported";
+  }
+}
+
 class TranslatorManager {
   private instance: CachedTranslator | null = null;
   private isCreating = false;
@@ -39,27 +59,6 @@ class TranslatorManager {
     resolve: (translator: Translator) => void;
     reject: (error: Error) => void;
   }> = [];
-
-  async checkAvailability(
-    sourceLanguage: string,
-    targetLanguage: string
-  ): Promise<TranslationAvailabilityStatus> {
-    if (typeof Translator === "undefined") {
-      return "unsupported";
-    }
-
-    try {
-      const result = await Translator.availability({
-        sourceLanguage,
-        targetLanguage,
-      });
-
-      return mapAvailabilityStatus(result as ChromeAvailability);
-    } catch (error) {
-      log.error("Failed to check translator availability:", error);
-      return "unsupported";
-    }
-  }
 
   async getTranslator(
     sourceLanguage: string,
@@ -100,7 +99,7 @@ class TranslatorManager {
       }
 
       // Check availability
-      const availability = await this.checkAvailability(
+      const availability = await checkTranslationAvailability(
         sourceLanguage,
         targetLanguage
       );
@@ -225,7 +224,7 @@ export async function checkAllPairsToTarget(
   );
   const results = await Promise.all(
     filteredLanguages.map(async (sourceLanguage) => {
-      const status = await translatorManager.checkAvailability(
+      const status = await checkTranslationAvailability(
         sourceLanguage,
         targetLanguage
       );

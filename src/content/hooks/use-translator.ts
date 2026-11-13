@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   type TranslationAvailabilityStatus,
   translatorManager,
+  checkTranslationAvailability,
 } from "@/shared/utils/translator";
 import { isValidTranslationText } from "@/shared/utils/translator-utils";
 import { executeStreamingTranslation } from "./translator-executor";
@@ -34,7 +35,7 @@ export function useTranslator({
   // Check availability when language changes
   useEffect(() => {
     const checkAvailability = async () => {
-      const availability = await translatorManager.checkAvailability(
+      const availability = await checkTranslationAvailability(
         sourceLanguage,
         targetLanguage
       );
