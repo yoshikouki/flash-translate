@@ -26,7 +26,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.6.7",
     "@crxjs/vite-plugin": "^2.7.1",
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.5",
     "@types/chrome": "^0.2.2",
     "@types/dom-chromium-ai": "0.0.18",
     "@types/node": "^26.6.6",
