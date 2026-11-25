@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import type { SelectionInfo } from "./text-selection";
 import {
   cloneSelectionRanges,
   getSelectionRect,
   getValidSelectionText,
   isClickInsideShadowHost,
   isNodeInContentEditable,
-  type SelectionInfo,
   shouldShowCardForSelection,
 } from "./text-selection";
 

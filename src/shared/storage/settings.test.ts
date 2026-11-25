@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
+import type { ExclusionPattern } from "./settings";
 import {
-  type ExclusionPattern,
   enableExclusionPattern,
   isLanguageMatch,
   isUrlExcluded,

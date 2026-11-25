@@ -5,8 +5,8 @@ import {
   readStreamAccumulated,
   streamMultipleParagraphs,
 } from "./translator-streaming";
+import type { ChromeAvailability } from "./translator-utils";
 import {
-  type ChromeAvailability,
   createNotAvailableError,
   createUnavailabilityError,
   createUnsupportedError,

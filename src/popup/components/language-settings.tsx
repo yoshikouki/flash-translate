@@ -3,10 +3,8 @@ import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import { useSettings } from "@/shared/hooks/use-settings";
 import { saveSettings } from "@/shared/storage/settings";
 import { selectLanguageSettings } from "@/shared/storage/settings-selectors";
-import {
-  checkAllPairsToTarget,
-  type LanguagePairStatus,
-} from "@/shared/utils/translator";
+import type { LanguagePairStatus } from "@/shared/utils/translator";
+import { checkAllPairsToTarget } from "@/shared/utils/translator";
 import { SourceLanguageChips } from "./source-language-chips";
 import { TargetLanguageChips } from "./target-language-chips";
 

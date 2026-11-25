@@ -2,9 +2,9 @@ import { useEffect, useRef } from "react";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import { getMessage } from "@/shared/utils/i18n";
 import { createPrefixedLogger } from "@/shared/utils/logger";
+import type { LanguagePairStatus } from "@/shared/utils/translator";
 import {
   checkAllPairsToTarget,
-  type LanguagePairStatus,
   translatorManager,
 } from "@/shared/utils/translator";
 import { useDownloadState } from "../hooks/use-download-state";

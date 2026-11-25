@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { act } from "react";
-import { createRoot, type Root } from "react-dom/client";
+import type { Root } from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { HoveredTermTranslationState } from "../term-translation/use-hovered-term-translation";
 import { TranslationCardHeader } from "./translation-card-header";
