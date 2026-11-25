@@ -18,29 +18,29 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
-    "lucide-react": "^1.76.0",
+    "lucide-react": "^1.77.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "tailwind-merge": "^3.7.0"
+    "tailwind-merge": "^3.7.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.7",
+    "@biomejs/biome": "2.6.8",
     "@crxjs/vite-plugin": "^2.7.1",
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.5",
     "@types/chrome": "^0.3.7",
     "@types/dom-chromium-ai": "0.0.18",
     "@types/node": "^26.6.6",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.2.1",
+    "@vitejs/plugin-react": "^6.3.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
-    "tailwindcss": "^4.3.3",
+    "tailwindcss": "^4.3.5",
     "typescript": "~7.0.2",
     "ultracite": "8.3.1",
     "vite": "^8.3.8",
     "vite-plugin-babel": "^1.7.3",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.1"
   }
 }
