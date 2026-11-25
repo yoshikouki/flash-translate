@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import {
-  executeStreamingTranslation,
-  type TranslationFunctions,
-} from "./translator-executor";
+import type { TranslationFunctions } from "./translator-executor";
+import { executeStreamingTranslation } from "./translator-executor";
 
 function createMockTranslator(
   overrides: Partial<TranslationFunctions> = {}

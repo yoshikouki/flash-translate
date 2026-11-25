@@ -1,10 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import type { HoveredTerm } from "./hovered-term";
 import { TermTranslationCache } from "./term-translation-cache";
-import {
-  executeTermTranslation,
-  type TermTranslator,
-} from "./term-translation-executor";
+import type { TermTranslator } from "./term-translation-executor";
+import { executeTermTranslation } from "./term-translation-executor";
 
 const HOVERED_TERM: HoveredTerm = {
   sourceText: "translate",

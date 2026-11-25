@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import type { TranslationAvailabilityStatus } from "@/shared/utils/translator";
 import {
-  type TranslationAvailabilityStatus,
   translatorManager,
   checkTranslationAvailability,
 } from "@/shared/utils/translator";

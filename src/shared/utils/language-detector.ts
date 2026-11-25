@@ -1,12 +1,14 @@
 // Language Detector Manager - Singleton wrapper for Chrome Language Detector API
 // Follows the same pattern as TranslatorManager
 
+import type {
+  LanguageDetectionAvailability,
+  NormalizedLanguageDetectionResult,
+} from "./language-detector-utils";
 import {
   createDetectorUnavailableError,
   createDetectorUnsupportedError,
-  type LanguageDetectionAvailability,
   mapDetectorAvailability,
-  type NormalizedLanguageDetectionResult,
   normalizeDetectedLanguage,
   selectBestLanguage,
 } from "./language-detector-utils";

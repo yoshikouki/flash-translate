@@ -1,10 +1,9 @@
 import { useState } from "react";
 import type { LanguagePairStatus } from "@/shared/utils/translator";
+import type { DownloadState, DownloadStatus } from "./download-state";
 import {
   clearError,
   createPairKey,
-  type DownloadState,
-  type DownloadStatus,
   finishDownloading,
   getDownloadStatus,
   initialDownloadState,

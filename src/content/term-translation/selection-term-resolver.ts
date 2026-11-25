@@ -1,8 +1,6 @@
 import type { HoveredTerm, ViewportRect } from "./hovered-term";
-import {
-  intlWordSegmentationStrategy,
-  type TermSegmentationStrategy,
-} from "./term-segmentation";
+import type { TermSegmentationStrategy } from "./term-segmentation";
+import { intlWordSegmentationStrategy } from "./term-segmentation";
 
 interface CaretLocation {
   node: Node;

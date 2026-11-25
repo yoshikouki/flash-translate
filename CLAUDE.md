@@ -22,11 +22,13 @@ To test the extension: Load `dist/` folder as unpacked extension in `chrome://ex
 ## Architecture
 
 ### Entry Points (Manifest V3)
+
 - **Content Script** (`src/content/index.tsx`): Injected into all pages, renders React app in Shadow DOM for text selection → translation popup
 - **Popup** (`src/popup/index.tsx`): Extension popup UI for manual translation and language settings
 - **Background** (`src/background/index.ts`): Service Worker (minimal, mainly for extension lifecycle)
 
 ### Core Translation Flow
+
 1. `useTextSelection` hook detects text selection on page
 2. `TranslationPopup` component appears near selection
 3. `useTranslator` hook manages translation state with streaming support
@@ -36,22 +38,26 @@ To test the extension: Load `dist/` folder as unpacked extension in `chrome://ex
    - Streaming translation via async generator
 
 ### State Management
+
 - Language settings stored in `chrome.storage.sync` (synced across devices)
 - `subscribeToSettings()` provides real-time setting updates via storage change listeners
 - Content script and popup share settings through `src/shared/storage/settings.ts`
 
 ### Key Abstractions
+
 - **TranslatorManager**: Singleton managing Translator API lifecycle, handles model downloads and caching
 - **useTranslator**: React hook for translation with abort support, streaming, and availability states
 - **usePopupPosition**: Calculates popup position relative to text selection
 - **useResizable/useDraggable**: Hooks for popup resize (left/right handles) and drag interactions
 
 ### Site Exclusion
+
 - URL patterns stored in settings to disable translation on specific sites
 - `isUrlExcluded()` checks current URL against enabled patterns
 - Managed through popup's ExclusionSettings component
 
 ## Tech Stack
+
 - Vite + @crxjs/vite-plugin (HMR-enabled Chrome extension builds)
 - React 19 + TypeScript
 - **React Compiler** enabled via `babel-plugin-react-compiler` (automatic memoization - no manual `useMemo`/`useCallback`/`memo` needed)
@@ -70,6 +76,7 @@ This project follows a testing strategy that prioritizes **pure function extract
 ### Pattern
 
 **Before** (hard to test - requires DOM mocks):
+
 ```typescript
 // useTextSelection.ts
 const handleMouseUp = () => {
@@ -81,6 +88,7 @@ const handleMouseUp = () => {
 ```
 
 **After** (testable without mocks):
+
 ```typescript
 // textSelection.ts - Pure functions (validation + normalization)
 export function getValidSelectionText(text: string | null): string | null {

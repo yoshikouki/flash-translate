@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import { getMessage } from "@/shared/utils/i18n";
 import { createPrefixedLogger } from "@/shared/utils/logger";
+import type { TranslationAvailabilityStatus } from "@/shared/utils/translator";
 import {
-  type TranslationAvailabilityStatus,
   translatorManager,
   checkTranslationAvailability,
 } from "@/shared/utils/translator";

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { HeightResizeConstraints, ResizeConstraints } from "./resizable";
 import {
   calculateBottomResize,
   calculateLeftResize,
@@ -8,8 +9,6 @@ import {
   calculateRightResize,
   clampHeight,
   clampWidth,
-  type HeightResizeConstraints,
-  type ResizeConstraints,
 } from "./resizable";
 
 const defaultConstraints: ResizeConstraints = {

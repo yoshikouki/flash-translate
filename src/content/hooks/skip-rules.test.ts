@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  evaluateSkipRules,
-  type SkipContext,
-  type SkipResult,
-} from "./skip-rules";
+import type { SkipContext, SkipResult } from "./skip-rules";
+import { evaluateSkipRules } from "./skip-rules";
 
 function createContext(overrides: Partial<SkipContext> = {}): SkipContext {
   return {

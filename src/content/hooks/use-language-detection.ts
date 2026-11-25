@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import type { LanguageDetectionAvailability } from "@/shared/utils/language-detector";
 import {
-  type LanguageDetectionAvailability,
   languageDetectorManager,
   checkLanguageDetectionAvailability,
 } from "@/shared/utils/language-detector";

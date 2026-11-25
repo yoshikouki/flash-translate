@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  type LanguageDetectionAvailability,
-  checkLanguageDetectionAvailability,
-} from "@/shared/utils/language-detector";
+import type { LanguageDetectionAvailability } from "@/shared/utils/language-detector";
+import { checkLanguageDetectionAvailability } from "@/shared/utils/language-detector";
 
 interface UseLanguageDetectorAvailabilityOptions {
   enabled?: boolean;

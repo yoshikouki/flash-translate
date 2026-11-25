@@ -55,6 +55,7 @@ https://github.com/yoshikouki/flash-translate/issues
 ## Your Rights
 
 You can:
+
 - Stop using the extension at any time by disabling or uninstalling it
 - Clear your stored preferences by resetting the extension settings
 - Review the source code at https://github.com/yoshikouki/flash-translate
