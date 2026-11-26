@@ -1,6 +1,6 @@
 # Privacy Policy for Flash Translate
 
-**Last Updated: December 20, 2025**
+**Last Updated: November 26, 2026**
 
 ## Overview
 
@@ -10,12 +10,12 @@ Flash Translate is committed to protecting your privacy. This extension uses Chr
 
 ### Data We Access
 
-- **Selected Text**: When you select text on a webpage, the extension reads that text to provide translation. This text is processed locally on your device using Chrome's built-in Translator API.
-- **Active Tab**: The extension requires access to the current tab to detect text selection and display the translation popup.
+- **Selected Text**: When you select text on an HTTPS webpage, the extension reads that text to provide translation. This text is processed locally on your device using Chrome's built-in Translator and Language Detector APIs.
+- **Current Page Address**: When you open the extension popup, it reads the address of the page you are viewing so you can exclude that site. The address is stored only if you add it as an exclusion.
 
 ### Data We Store
 
-- **Language Preferences**: Your source and target language settings are stored in `chrome.storage.sync` to maintain your preferences across devices where you're signed into Chrome.
+- **Language Preferences**: Your source and target languages, and whether to auto-detect the source language and skip text already in the target language, are stored in `chrome.storage.sync` to maintain your preferences across devices where you're signed into Chrome.
 - **Site Exclusion Settings**: URL patterns for sites where you've disabled translation are stored in `chrome.storage.sync` and synced across devices where you're signed into Chrome.
 
 ### Data We DO NOT Collect
@@ -31,7 +31,8 @@ Flash Translate relies on Chrome's built-in Translator API, which is designed to
 
 ## Permissions Explained
 
-- **`activeTab`**: Required to read selected text on the current page and display the translation popup
+- **Content script on HTTPS sites**: Required to read the text you select and display the translation card on the page
+- **`activeTab`**: Grants temporary access to the current tab only when you open the extension popup
 - **`storage`**: Required to save your language preferences and sync them across your Chrome browsers
 
 ## Data Retention
@@ -56,5 +57,5 @@ https://github.com/yoshikouki/flash-translate/issues
 
 You can:
 - Stop using the extension at any time by disabling or uninstalling it
-- Clear your stored preferences by resetting the extension settings
+- Remove your stored settings by uninstalling the extension
 - Review the source code at https://github.com/yoshikouki/flash-translate

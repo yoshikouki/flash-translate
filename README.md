@@ -6,22 +6,17 @@ A Chrome extension for instant translation using the browser's built-in Translat
 
 ## Features
 
-- **Instant translation on text selection**: Select text to view translations immediately
+- **Instant translation on text selection**: Select text on HTTPS pages to view translations immediately
 - **Auto-detect source language**: Automatically detects the language of selected text using Chrome's Language Detection API
-- **Handles long text**: Translate large paragraphs without length limits
-- **Unlimited translations**: Translate long passages as often as you like
+- **Word lookup inside the selection**: Hover a word in the selected text to see its translation in the card
+- **Handles long text**: Translate large paragraphs as often as you like
 - **Site exclusion**: Disable translation on specific websites
 - **Settings sync**: Your preferences sync automatically across devices
 - **Privacy-focused**: All translation happens on-device using Chrome's built-in AI - no data sent to external servers
 
 ## Requirements
 
-- **Chrome 150+** (Translator API and element-scoped View Transition support)
-- **Enable Translator API**:
-  1. Open `chrome://flags`
-  2. Search for "Translator API"
-  3. Set to "Enabled"
-  4. Restart Chrome
+- Desktop Chrome 150 or later
 
 ## Installation
 
@@ -39,48 +34,8 @@ A Chrome extension for instant translation using the browser's built-in Translat
 
 ## Development
 
-```bash
-# Install dependencies
-bun install
-
-# Start development server (with HMR)
-bun run dev
-
-# Production build
-bun run build
-
-# Type checking
-bun run lint
-```
-
-## Tech Stack
-
-- **Vite** + **@crxjs/vite-plugin** - Chrome extension builds with HMR
-- **React 19** + **TypeScript** - UI components
-- **React Compiler** - Automatic memoization
-- **Tailwind CSS v4** - Styling
-- **Chrome Translator API** - On-device AI translation
-
-## Project Structure
-
-```
-src/
-├── manifest.ts              # Chrome extension manifest
-├── background/              # Service Worker
-├── content/                 # Content Script (text selection → translation popup)
-│   ├── components/          # TranslationPopup, etc.
-│   ├── hooks/               # useTextSelection, useTranslator, etc.
-│   └── styles/
-├── popup/                   # Popup UI (settings, manual translation)
-│   ├── components/
-│   └── styles/
-└── shared/                  # Shared code
-    ├── components/          # ErrorBoundary, etc.
-    ├── constants/           # Language list
-    ├── storage/             # chrome.storage operations
-    ├── types/               # Type definitions
-    └── utils/               # Translator API wrapper
-```
+Run `bun install`, then use the scripts in `package.json`. Development
+conventions are in [AGENTS.md](AGENTS.md).
 
 ## Privacy
 
