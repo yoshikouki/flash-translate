@@ -5,12 +5,9 @@ import { useLanguageDetectorAvailability } from "@/shared/hooks/use-language-det
 import { getSettings, saveSettings } from "@/shared/storage/settings";
 import { getMessage } from "@/shared/utils/i18n";
 
-const CHROME_FLAGS_URL = "chrome://flags/#language-detection-api";
-
 export function TranslationBehaviorSettings() {
   const [skipSameLanguage, setSkipSameLanguage] = useState(true);
   const [autoDetectLanguage, setAutoDetectLanguage] = useState(true);
-  const [isCopied, setIsCopied] = useState(false);
   const {
     availability: detectorAvailability,
     isChecking: isCheckingAvailability,
@@ -37,12 +34,6 @@ export function TranslationBehaviorSettings() {
     await saveSettings({ autoDetectLanguage: newValue });
   };
 
-  const handleCopyFlagsUrl = async () => {
-    await navigator.clipboard.writeText(CHROME_FLAGS_URL);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
-  };
-
   const isDetectorUnavailable =
     detectorAvailability === "unavailable" ||
     detectorAvailability === "unsupported";
@@ -62,10 +53,8 @@ export function TranslationBehaviorSettings() {
             {getMessage("popup_behavior_autoDetectLanguage")}
           </span>
           <AutoDetectDescription
-            isCopied={isCopied}
             isDetectorUnavailable={isDetectorUnavailable}
             isLoading={isCheckingAvailability}
-            onCopyFlagsUrl={handleCopyFlagsUrl}
           />
         </div>
         <ToggleSwitch
@@ -103,15 +92,11 @@ export function TranslationBehaviorSettings() {
 interface AutoDetectDescriptionProps {
   isLoading: boolean;
   isDetectorUnavailable: boolean;
-  isCopied: boolean;
-  onCopyFlagsUrl: () => void;
 }
 
 function AutoDetectDescription({
   isLoading,
   isDetectorUnavailable,
-  isCopied,
-  onCopyFlagsUrl,
 }: AutoDetectDescriptionProps) {
   if (isLoading) {
     return <p className="mt-0.5 text-xs text-gray-400">...</p>;
@@ -119,24 +104,9 @@ function AutoDetectDescription({
 
   if (isDetectorUnavailable) {
     return (
-      <div className="mt-1">
-        <p className="text-xs text-amber-600">
-          {getMessage("popup_behavior_autoDetectUnavailable")}
-        </p>
-        <button
-          className={cn(
-            "mt-1 text-xs underline",
-            isCopied ? "text-green-500" : "text-blue-500 hover:text-blue-600"
-          )}
-          onClick={onCopyFlagsUrl}
-          title={CHROME_FLAGS_URL}
-          type="button"
-        >
-          {isCopied
-            ? getMessage("popup_behavior_autoDetectCopied")
-            : getMessage("popup_behavior_autoDetectEnableFlag")}
-        </button>
-      </div>
+      <p className="mt-0.5 text-xs text-amber-600">
+        {getMessage("popup_behavior_autoDetectUnavailable")}
+      </p>
     );
   }
 
