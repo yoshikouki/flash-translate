@@ -2,7 +2,7 @@
 
 [![Demo Video](https://img.youtube.com/vi/KhFbv0te2Ck/maxresdefault.jpg)](https://www.youtube.com/watch?v=KhFbv0te2Ck)
 
-A Chrome extension for instant translation using the browser's built-in Translator API.
+A Chrome extension that translates selected text on the page using the browser's built-in Translator API.
 
 ## Features
 

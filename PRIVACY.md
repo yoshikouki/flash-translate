@@ -26,7 +26,9 @@ servers and receives no data from the extension.
 ### Page Address
 
 - On each HTTPS page, the extension compares the page's origin and path with
-  your exclusion rules on your device to decide whether to translate there.
+  your exclusion rules on your device to decide whether to show the
+  translation card there. On excluded pages the extension still reads your
+  selection, and may detect its language on your device, but shows no card.
 - When you open the extension popup, it receives the full address of the
   current tab and keeps only its origin (for example,
   `https://example.com`) to offer excluding that site.
@@ -38,8 +40,8 @@ The extension stores the following settings in `chrome.storage.sync`:
 - Source and target languages, and whether to auto-detect the source language
   and skip text already in the target language
 - Site exclusion rules. Rules added from the popup or the translation card
-  contain only the site origin. Rules you edit are saved exactly as you type
-  them.
+  contain only the site origin. Rules you edit are saved as you type them,
+  without surrounding spaces, including any query string you enter.
 
 When Chrome Sync is on, Chrome syncs these settings across your signed-in
 browsers according to your Chrome Sync settings. The extension does not send
@@ -56,8 +58,14 @@ them anywhere itself.
 
 ## Third-Party Services
 
-Flash Translate uses no analytics, tracking, or third-party services. All
-functionality is provided through Chrome's built-in APIs.
+Flash Translate uses no analytics, tracking, or third-party services for
+translation. All translation functionality is provided through Chrome's
+built-in APIs.
+
+The popup's support link opens a Google Form in your browser. Anything you
+submit there, including an optional reply email address, is sent to Google
+Forms and read by the developer to answer your request. The extension itself
+sends nothing to the form.
 
 ## Your Choices
 
