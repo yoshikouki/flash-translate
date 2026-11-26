@@ -53,6 +53,9 @@ export function TranslationCardHeader({
     await saveSettings({ targetLanguage: lang });
   };
 
+  // Transient states replace the whole header instead of overlaying it. An
+  // overlay left the normal controls mounted and reachable underneath, and a
+  // separate term-translation layer covered the page text being read.
   if (isConfirmingDisable) {
     return (
       <div className="sticky top-0 z-10 flex min-h-8 items-center rounded-t-xl px-3">

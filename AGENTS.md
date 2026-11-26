@@ -21,9 +21,7 @@ Scripts live in `package.json`; Ultracite and Biome configuration is the source
 of truth for mechanically checkable style rules. Do not duplicate either in
 agent instructions.
 
-To test the extension manually, run `bun run build` (or `bun run dev`) and load
-`dist/` as an unpacked extension from `chrome://extensions/` with Developer
-mode enabled.
+To test the extension manually, follow "Manual Installation" in `README.md`.
 
 ## Contracts
 
@@ -67,8 +65,9 @@ Prefer pure-function tests over mocks of React, the DOM, or Chrome APIs.
 ## Release
 
 1. Bump `version` in `package.json`; the manifest reads it.
-2. After the bump is on `main`, push the tag `v<version>`. The Release workflow
-   rejects a tag that differs from `package.json`, then lints, tests, builds,
-   and attaches the ZIP and checksum to a GitHub Release.
+2. After the bump is on `main`, push the tag `v<version>`.
+   `.github/workflows/release.yml` builds the ZIP and publishes a GitHub
+   Release. Only a tag push checks the tag against `package.json`; a manual
+   dispatch does not.
 3. This repository does not publish to the Chrome Web Store. Publishing the
    ZIP there is the owner's decision.

@@ -12,7 +12,7 @@ A Chrome extension for instant translation using the browser's built-in Translat
 - **Handles long text**: Translate large paragraphs as often as you like
 - **Site exclusion**: Disable translation on specific websites
 - **Settings sync**: Your preferences sync automatically across devices
-- **Privacy-focused**: All translation happens on-device using Chrome's built-in AI - no data sent to external servers
+- **Privacy-focused**: All translation happens on-device using Chrome's built-in AI - your text is never sent to external servers
 
 ## Requirements
 
@@ -39,7 +39,7 @@ conventions are in [AGENTS.md](AGENTS.md).
 
 ## Privacy
 
-Flash Translate respects your privacy. All translation is performed locally on your device using Chrome's built-in Translator API. No text or personal data is sent to external servers. See [PRIVACY.md](PRIVACY.md) for details.
+Flash Translate respects your privacy. All translation is performed locally on your device using Chrome's built-in Translator API. The text you translate is never sent to external servers. See [PRIVACY.md](PRIVACY.md) for details.
 
 ## License
 
