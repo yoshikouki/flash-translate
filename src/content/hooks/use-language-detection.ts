@@ -25,7 +25,7 @@ interface LanguageDetectionState {
   overriddenLanguage: string | null;
 }
 
-export interface UseLanguageDetectionResult {
+interface UseLanguageDetectionResult {
   detectedLanguage: string | null;
   confidence: number;
   effectiveSourceLanguage: string;

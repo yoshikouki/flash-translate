@@ -32,7 +32,7 @@ export function getValidSelectionText(
 /**
  * Validates if the selection rectangle has valid dimensions
  */
-export function isValidRect<T extends RectLike>(
+function isValidRect<T extends RectLike>(
   rect: T | undefined | null
 ): rect is T {
   if (!rect) {

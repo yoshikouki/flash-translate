@@ -6,7 +6,7 @@
 export const MIN_CARD_WIDTH = 280;
 export const MIN_CARD_HEIGHT = 60;
 export const INITIAL_CARD_HEIGHT = 180;
-export const CARD_EDGE_MARGIN = 32; // 16px margin on each side
+const CARD_EDGE_MARGIN = 32; // 16px margin on each side
 
 /**
  * Calculate card width based on selection width, clamped to min/max bounds

@@ -10,7 +10,7 @@ import {
   startDownloading,
 } from "./download-state";
 
-export interface UseDownloadStateReturn {
+interface UseDownloadStateReturn {
   getStatus: (
     sourceLanguage: string,
     targetLanguage: string,

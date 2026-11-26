@@ -17,7 +17,7 @@ const INTERNAL_URL_PREFIXES = [
  * Extract origin from a URL string
  * Returns null if URL is invalid
  */
-export function parseUrlToOrigin(url: string): string | null {
+function parseUrlToOrigin(url: string): string | null {
   if (!url) {
     return null;
   }

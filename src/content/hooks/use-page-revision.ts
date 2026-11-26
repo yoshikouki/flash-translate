@@ -10,9 +10,7 @@ export function getPageIdentity(location: PageLocation): string {
   return location.origin + location.pathname + location.search;
 }
 
-export function getNavigationEventTarget(
-  target: object
-): EventTarget | undefined {
+function getNavigationEventTarget(target: object): EventTarget | undefined {
   if (!("navigation" in target && target.navigation instanceof EventTarget)) {
     return;
   }

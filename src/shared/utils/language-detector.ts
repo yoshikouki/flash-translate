@@ -161,7 +161,4 @@ class LanguageDetectorManager {
 export const languageDetectorManager = new LanguageDetectorManager();
 
 // Re-export types for convenience
-export type {
-  LanguageDetectionAvailability,
-  NormalizedLanguageDetectionResult,
-} from "./language-detector-utils";
+export type { LanguageDetectionAvailability } from "./language-detector-utils";

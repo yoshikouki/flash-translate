@@ -4,7 +4,7 @@
 /**
  * Resize constraints for width
  */
-export interface ResizeConstraints {
+interface ResizeConstraints {
   minWidth: number;
   maxWidth: number;
   edgeMargin: number;
@@ -13,7 +13,7 @@ export interface ResizeConstraints {
 /**
  * Resize constraints for height
  */
-export interface HeightResizeConstraints {
+interface HeightResizeConstraints {
   minHeight: number;
   maxHeight: number;
   edgeMargin: number;
@@ -22,7 +22,7 @@ export interface HeightResizeConstraints {
 /**
  * Parameters for left handle resize calculation
  */
-export interface LeftResizeParams {
+interface LeftResizeParams {
   deltaX: number;
   startWidth: number;
   startOffsetX: number;
@@ -33,7 +33,7 @@ export interface LeftResizeParams {
 /**
  * Result of left handle resize calculation
  */
-export interface LeftResizeResult {
+interface LeftResizeResult {
   newWidth: number;
   newOffsetX: number;
 }
@@ -41,7 +41,7 @@ export interface LeftResizeResult {
 /**
  * Parameters for right handle resize calculation
  */
-export interface RightResizeParams {
+interface RightResizeParams {
   deltaX: number;
   startWidth: number;
   cardRight: number;
@@ -52,25 +52,21 @@ export interface RightResizeParams {
 /**
  * Result of right handle resize calculation
  */
-export interface RightResizeResult {
+interface RightResizeResult {
   newWidth: number;
 }
 
 /**
  * Clamp a width value to min/max bounds
  */
-export function clampWidth(
-  width: number,
-  minWidth: number,
-  maxWidth: number
-): number {
+function clampWidth(width: number, minWidth: number, maxWidth: number): number {
   return Math.min(maxWidth, Math.max(minWidth, width));
 }
 
 /**
  * Calculate maximum expansion possible for left handle
  */
-export function calculateMaxLeftExpansion(
+function calculateMaxLeftExpansion(
   cardLeft: number,
   edgeMargin: number
 ): number {
@@ -80,7 +76,7 @@ export function calculateMaxLeftExpansion(
 /**
  * Calculate maximum expansion possible for right handle
  */
-export function calculateMaxRightExpansion(
+function calculateMaxRightExpansion(
   cardRight: number,
   viewportWidth: number,
   edgeMargin: number
@@ -138,7 +134,7 @@ export function calculateRightResize(
 /**
  * Parameters for bottom handle resize calculation
  */
-export interface BottomResizeParams {
+interface BottomResizeParams {
   deltaY: number;
   startHeight: number;
   cardBottom: number;
@@ -149,14 +145,14 @@ export interface BottomResizeParams {
 /**
  * Result of bottom handle resize calculation
  */
-export interface BottomResizeResult {
+interface BottomResizeResult {
   newHeight: number;
 }
 
 /**
  * Clamp a height value to min/max bounds
  */
-export function clampHeight(
+function clampHeight(
   height: number,
   minHeight: number,
   maxHeight: number
@@ -167,7 +163,7 @@ export function clampHeight(
 /**
  * Calculate maximum expansion possible for bottom handle
  */
-export function calculateMaxBottomExpansion(
+function calculateMaxBottomExpansion(
   cardBottom: number,
   viewportHeight: number,
   edgeMargin: number

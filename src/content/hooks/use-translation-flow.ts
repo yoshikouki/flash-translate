@@ -20,7 +20,7 @@ function getCurrentUrl(): string {
   return window.location.origin + window.location.pathname;
 }
 
-export interface TranslationFlowState {
+interface TranslationFlowState {
   // Selection
   selection: SelectionInfo | null;
   isVisible: boolean;

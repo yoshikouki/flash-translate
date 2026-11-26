@@ -22,8 +22,6 @@ export interface HoveredTermTranslationState {
   isLoading: boolean;
 }
 
-export type HoveredTermTranslationController = HoveredTermTranslationState;
-
 const IDLE_STATE: HoveredTermTranslationState = {
   hoveredTerm: null,
   result: null,
@@ -113,7 +111,7 @@ export function useHoveredTermTranslation({
   sourceLanguage,
   targetLanguage,
   enabled,
-}: UseHoveredTermTranslationOptions): HoveredTermTranslationController {
+}: UseHoveredTermTranslationOptions): HoveredTermTranslationState {
   const [state, setState] = useState<HoveredTermTranslationState>(IDLE_STATE);
   const hoveredTermRef = useRef<HoveredTerm | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);

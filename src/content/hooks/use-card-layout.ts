@@ -14,11 +14,11 @@ import { useResizable } from "./use-resizable";
 const RESIZE_DEBOUNCE_MS = 100;
 const VIEWPORT_MARGIN = 8;
 
-export interface CardLayoutConfig {
+interface CardLayoutConfig {
   selectionRect: DOMRect;
 }
 
-export interface CardLayout {
+interface CardLayout {
   // Dimensions
   width: number;
   height: number;
