@@ -21,16 +21,8 @@ export const SUPPORTED_LANGUAGES: Language[] = [
   { code: "vi", name: "Vietnamese", nativeName: "Tiếng Việt" },
 ];
 
-export const DEFAULT_SOURCE_LANGUAGE = "en";
-export const DEFAULT_TARGET_LANGUAGE = "ja";
-
-export function getLanguageByCode(code: string): Language | undefined {
+function getLanguageByCode(code: string): Language | undefined {
   return SUPPORTED_LANGUAGES.find((lang) => lang.code === code);
-}
-
-export function getLanguageDisplayName(code: string): string {
-  const language = getLanguageByCode(code);
-  return language ? `${language.nativeName} (${language.name})` : code;
 }
 
 /**
@@ -46,14 +38,6 @@ export function getLanguageUpperCode(code: string): string {
  */
 export function getLanguageNativeName(code: string): string {
   return getLanguageByCode(code)?.nativeName ?? code;
-}
-
-/**
- * Returns English name for a language code
- * Falls back to the code itself if not found
- */
-export function getLanguageEnglishName(code: string): string {
-  return getLanguageByCode(code)?.name ?? code;
 }
 
 /**

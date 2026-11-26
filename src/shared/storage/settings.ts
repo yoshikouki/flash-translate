@@ -39,7 +39,7 @@ function isExclusionPattern(value: unknown): value is ExclusionPattern {
 }
 
 // Validate and normalize settings from storage
-function validateSettings(data: unknown): Partial<TranslationSettings> {
+export function validateSettings(data: unknown): Partial<TranslationSettings> {
   if (typeof data !== "object" || data === null) {
     return {};
   }
@@ -112,18 +112,6 @@ export function isLanguageMatch(
 export function getPageLanguage(): string | null {
   const lang = document.documentElement.lang;
   return lang || null;
-}
-
-// Pure function: Determine if translation should be skipped
-export function shouldSkipTranslation(
-  targetLanguage: string,
-  skipSameLanguage: boolean,
-  pageLanguage: string | null
-): boolean {
-  if (!skipSameLanguage) {
-    return false;
-  }
-  return isLanguageMatch(pageLanguage, targetLanguage);
 }
 
 // Generate a unique ID for exclusion patterns

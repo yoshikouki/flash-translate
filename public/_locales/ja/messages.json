@@ -23,13 +23,7 @@
     "message": "選択したテキストの言語を自動的に検出"
   },
   "popup_behavior_autoDetectUnavailable": {
-    "message": "言語検出 API が利用できません。Chrome のフラグで有効にしてください。"
-  },
-  "popup_behavior_autoDetectEnableFlag": {
-    "message": "Chrome フラグで有効化"
-  },
-  "popup_behavior_autoDetectCopied": {
-    "message": "URLをコピーしました"
+    "message": "現在、言語の自動検出を利用できません。"
   },
   "popup_behavior_skipSameLanguage": {
     "message": "同じ言語をスキップ"
@@ -187,7 +181,7 @@
   },
 
   "content_translatorUnsupported": {
-    "message": "Translator API はこのブラウザでサポートされていません。API を有効にした Chrome 150 以降をお使いください。"
+    "message": "このページでは翻訳を利用できません。"
   },
   "content_translationUnavailable": {
     "message": "$SOURCE$ から $TARGET$ への翻訳は利用できません。",

@@ -5,23 +5,6 @@ import type { ExclusionPattern, TranslationSettings } from "./settings";
  */
 export type SettingsSelector<T> = (settings: TranslationSettings) => T;
 
-// Individual field selectors
-export const selectTargetLanguage: SettingsSelector<string> = (s) =>
-  s.targetLanguage;
-
-export const selectSourceLanguage: SettingsSelector<string> = (s) =>
-  s.sourceLanguage;
-
-export const selectSkipSameLanguage: SettingsSelector<boolean> = (s) =>
-  s.skipSameLanguage;
-
-export const selectExclusionPatterns: SettingsSelector<ExclusionPattern[]> = (
-  s
-) => s.exclusionPatterns;
-
-export const selectAutoDetectLanguage: SettingsSelector<boolean> = (s) =>
-  s.autoDetectLanguage;
-
 // Composite selectors for specific use cases
 
 /**

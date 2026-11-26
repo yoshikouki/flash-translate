@@ -5,12 +5,12 @@ import { getMessage } from "@/shared/utils/i18n";
 import type { TranslationAvailabilityStatus } from "@/shared/utils/translator";
 import { StatusIndicator } from "./status-indicator";
 
-export interface DownloadableLanguage {
+interface DownloadableLanguage {
   code: string;
   status: TranslationAvailabilityStatus;
 }
 
-export interface LanguageDownloadDropdownProps {
+interface LanguageDownloadDropdownProps {
   downloadableLanguages: DownloadableLanguage[];
   onDownload: (languageCode: string) => void;
   tooltipAvailable?: string;

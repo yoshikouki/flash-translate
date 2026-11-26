@@ -7,9 +7,49 @@ import {
   getSelectionRect,
   getValidSelectionText,
   isNodeInContentEditable,
-  isValidRect,
-  shouldShowCardForSelection,
 } from "./text-selection";
+
+describe("getValidSelectionText", () => {
+  it("returns trimmed text", () => {
+    expect(getValidSelectionText("\n hello \t")).toBe("hello");
+  });
+
+  it.each([null, undefined, "", " \n\t "])("rejects %j", (text) => {
+    expect(getValidSelectionText(text)).toBeNull();
+  });
+});
+
+describe("getSelectionRect", () => {
+  const fallback = new DOMRect(0, 0, 100, 100);
+
+  function selectionWithRect(rect: DOMRect): Selection {
+    return {
+      getRangeAt: () => ({ getBoundingClientRect: () => rect }),
+    } as unknown as Selection;
+  }
+
+  it("returns the bounding rect of the first range", () => {
+    const rect = new DOMRect(10, 20, 30, 40);
+
+    expect(getSelectionRect(selectionWithRect(rect), fallback)).toBe(rect);
+  });
+
+  it("rejects a collapsed rect", () => {
+    expect(
+      getSelectionRect(selectionWithRect(new DOMRect(10, 20, 0, 40)), fallback)
+    ).toBeNull();
+  });
+
+  it("returns the fallback rect when the range cannot be read", () => {
+    const selection = {
+      getRangeAt: () => {
+        throw new Error("No range");
+      },
+    } as unknown as Selection;
+
+    expect(getSelectionRect(selection, fallback)).toBe(fallback);
+  });
+});
 
 describe("cloneSelectionRanges", () => {
   it("clones every current selection range", () => {
@@ -33,178 +73,21 @@ describe("cloneSelectionRanges", () => {
   });
 });
 
-describe("getValidSelectionText", () => {
-  it("returns null for null or undefined", () => {
-    expect(getValidSelectionText(null)).toBeNull();
-    expect(getValidSelectionText(undefined)).toBeNull();
-  });
-
-  it("returns null for empty string", () => {
-    expect(getValidSelectionText("")).toBeNull();
-  });
-
-  it("returns null for whitespace-only string", () => {
-    expect(getValidSelectionText("   ")).toBeNull();
-    expect(getValidSelectionText("\n\t")).toBeNull();
-  });
-
-  it("returns trimmed text for valid input", () => {
-    expect(getValidSelectionText("hello")).toBe("hello");
-    expect(getValidSelectionText("こんにちは")).toBe("こんにちは");
-  });
-
-  it("trims whitespace from valid text", () => {
-    expect(getValidSelectionText("  trimmed  ")).toBe("trimmed");
-    expect(getValidSelectionText("\n hello \t")).toBe("hello");
-  });
-
-  it("accepts long text without length limit", () => {
-    const longText = "a".repeat(100_000);
-    expect(getValidSelectionText(longText)).toBe(longText);
-  });
-});
-
-describe("isValidRect", () => {
-  it("returns false for null or undefined", () => {
-    expect(isValidRect(null)).toBe(false);
-    expect(isValidRect(undefined)).toBe(false);
-  });
-
-  it("returns false for zero-width rect", () => {
-    expect(isValidRect({ width: 0, height: 100 })).toBe(false);
-  });
-
-  it("returns false for zero-height rect", () => {
-    expect(isValidRect({ width: 100, height: 0 })).toBe(false);
-  });
-
-  it("returns true for valid rect", () => {
-    expect(isValidRect({ width: 100, height: 50 })).toBe(true);
-  });
-
-  it("returns true for rect with minimal dimensions", () => {
-    expect(isValidRect({ width: 1, height: 1 })).toBe(true);
-  });
-
-  it("returns false for negative dimensions", () => {
-    expect(isValidRect({ width: -10, height: 50 })).toBe(false);
-    expect(isValidRect({ width: 10, height: -50 })).toBe(false);
-  });
-});
-
-describe("shouldShowCardForSelection", () => {
-  it("returns true when lastText is null", () => {
-    expect(shouldShowCardForSelection("hello", null)).toBe(true);
-  });
-
-  it("returns true when text is different from lastText", () => {
-    expect(shouldShowCardForSelection("hello", "world")).toBe(true);
-    expect(shouldShowCardForSelection("new text", "old text")).toBe(true);
-  });
-
-  it("returns false when text is same as lastText", () => {
-    expect(shouldShowCardForSelection("hello", "hello")).toBe(false);
-    expect(shouldShowCardForSelection("same", "same")).toBe(false);
-  });
-
-  it("is case-sensitive", () => {
-    expect(shouldShowCardForSelection("Hello", "hello")).toBe(true);
-  });
-});
-
 describe("isNodeInContentEditable", () => {
-  it("returns false for null", () => {
-    expect(isNodeInContentEditable(null)).toBe(false);
-  });
+  it.each([
+    ["<p>hello</p>", false],
+    ['<div contenteditable="true"><p>hello</p></div>', true],
+    ["<div contenteditable><p>hello</p></div>", true],
+    [
+      '<div contenteditable="true"><p contenteditable="false">hello</p></div>',
+      false,
+    ],
+  ])("checks text inside %s: %s", (html, expected) => {
+    const container = document.createElement("div");
+    container.innerHTML = html;
 
-  it("returns false for regular element", () => {
-    const div = document.createElement("div");
-    const textNode = document.createTextNode("hello");
-    div.appendChild(textNode);
-    expect(isNodeInContentEditable(textNode)).toBe(false);
-  });
-
-  it("returns true for element with contenteditable=true", () => {
-    const div = document.createElement("div");
-    div.setAttribute("contenteditable", "true");
-    const textNode = document.createTextNode("hello");
-    div.appendChild(textNode);
-    expect(isNodeInContentEditable(textNode)).toBe(true);
-  });
-
-  it("returns true for element with contenteditable (empty string)", () => {
-    const div = document.createElement("div");
-    div.setAttribute("contenteditable", "");
-    const textNode = document.createTextNode("hello");
-    div.appendChild(textNode);
-    expect(isNodeInContentEditable(textNode)).toBe(true);
-  });
-
-  it("returns true for nested element inside contenteditable", () => {
-    const outer = document.createElement("div");
-    outer.setAttribute("contenteditable", "true");
-    const inner = document.createElement("span");
-    const textNode = document.createTextNode("hello");
-    inner.appendChild(textNode);
-    outer.appendChild(inner);
-    expect(isNodeInContentEditable(textNode)).toBe(true);
-  });
-
-  it("returns false when contenteditable=false explicitly set", () => {
-    const outer = document.createElement("div");
-    outer.setAttribute("contenteditable", "true");
-    const inner = document.createElement("span");
-    inner.setAttribute("contenteditable", "false");
-    const textNode = document.createTextNode("hello");
-    inner.appendChild(textNode);
-    outer.appendChild(inner);
-    expect(isNodeInContentEditable(textNode)).toBe(false);
-  });
-
-  it("returns true for direct contenteditable element", () => {
-    const div = document.createElement("div");
-    div.setAttribute("contenteditable", "true");
-    expect(isNodeInContentEditable(div)).toBe(true);
-  });
-});
-
-describe("getSelectionRect", () => {
-  const createFallbackRect = (): DOMRect => new DOMRect(0, 0, 100, 100);
-
-  it("returns null for null selection", () => {
-    const fallback = createFallbackRect();
-    expect(getSelectionRect(null, fallback)).toBeNull();
-  });
-
-  it("returns rect for valid selection", () => {
-    const div = document.createElement("div");
-    div.textContent = "Hello World";
-    document.body.appendChild(div);
-
-    const range = document.createRange();
-    range.selectNodeContents(div);
-    const selection = window.getSelection();
-    selection?.removeAllRanges();
-    selection?.addRange(range);
-
-    const fallback = createFallbackRect();
-    const result = getSelectionRect(selection, fallback);
-
-    expect(result).not.toBeNull();
-
-    document.body.removeChild(div);
-  });
-
-  it("returns fallback rect when getRangeAt throws", () => {
-    const mockSelection = {
-      getRangeAt: () => {
-        throw new Error("No range");
-      },
-    } as unknown as Selection;
-
-    const fallback = createFallbackRect();
-    const result = getSelectionRect(mockSelection, fallback);
-
-    expect(result).toBe(fallback);
+    expect(
+      isNodeInContentEditable(container.querySelector("p")?.firstChild ?? null)
+    ).toBe(expected);
   });
 });

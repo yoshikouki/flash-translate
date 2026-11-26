@@ -4,7 +4,7 @@
 /**
  * Options for translation execution
  */
-export interface TranslationExecutionOptions {
+interface TranslationExecutionOptions {
   text: string;
   sourceLanguage: string;
   targetLanguage: string;
@@ -14,7 +14,7 @@ export interface TranslationExecutionOptions {
 /**
  * Result of translation execution
  */
-export type TranslationExecutionResult =
+type TranslationExecutionResult =
   | { type: "success"; result: string }
   | { type: "aborted" }
   | { type: "error"; error: Error };
@@ -22,7 +22,7 @@ export type TranslationExecutionResult =
 /**
  * Callbacks for streaming translation progress
  */
-export interface StreamingCallbacks {
+interface StreamingCallbacks {
   onChunk: (result: string) => void;
 }
 
