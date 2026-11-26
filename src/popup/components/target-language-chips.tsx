@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { SUPPORTED_LANGUAGES } from "@/shared/constants/languages";
 import { getMessage } from "@/shared/utils/i18n";
 import { createPrefixedLogger } from "@/shared/utils/logger";
+import type { TranslationAvailabilityStatus } from "@/shared/utils/translator";
 import {
-  type TranslationAvailabilityStatus,
   translatorManager,
+  checkTranslationAvailability,
 } from "@/shared/utils/translator";
 import { useDownloadState } from "../hooks/use-download-state";
 import { LanguageChip } from "./language-chip";
@@ -55,7 +56,7 @@ export function TargetLanguageChips({
         SUPPORTED_LANGUAGES.map(async (lang) => {
           // Check if English → target is available (as a representative pair)
           const sourceToCheck = lang.code === "en" ? "ja" : "en";
-          const status = await translatorManager.checkAvailability(
+          const status = await checkTranslationAvailability(
             sourceToCheck,
             lang.code
           );
@@ -104,10 +105,7 @@ export function TargetLanguageChips({
       const results = await Promise.all(
         SUPPORTED_LANGUAGES.map(async (lang) => {
           const source = lang.code === "en" ? "ja" : "en";
-          const status = await translatorManager.checkAvailability(
-            source,
-            lang.code
-          );
+          const status = await checkTranslationAvailability(source, lang.code);
           return { code: lang.code, status };
         })
       );
@@ -130,12 +128,12 @@ export function TargetLanguageChips({
     return (
       <div className="px-3 py-2.5">
         <div className="flex items-center gap-2">
-          <span className="text-gray-500 text-xs">
+          <span className="text-xs text-gray-500">
             {getMessage("popup_target_label")}
           </span>
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 animate-spin rounded-full border-2 border-gray-200 border-t-blue-500" />
-            <span className="text-gray-400 text-xs">
+            <span className="text-xs text-gray-400">
               {getMessage("popup_target_loading")}
             </span>
           </div>
@@ -149,7 +147,7 @@ export function TargetLanguageChips({
   return (
     <div className="px-3 py-2.5">
       <div className="flex items-center gap-2">
-        <span className="shrink-0 text-gray-500 text-xs">
+        <span className="shrink-0 text-xs text-gray-500">
           {getMessage("popup_target_label")}
         </span>
         <div className="flex flex-1 flex-wrap gap-1.5">

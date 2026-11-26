@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import {
-  executeStreamingTranslation,
-  type TranslationFunctions,
-} from "./translator-executor";
+import type { TranslationFunctions } from "./translator-executor";
+import { executeStreamingTranslation } from "./translator-executor";
 
 function createMockTranslator(
   overrides: Partial<TranslationFunctions> = {}
@@ -112,10 +110,10 @@ describe("executeStreamingTranslation", () => {
       { onChunk }
     );
 
-    expect(result.type).toBe("error");
-    if (result.type === "error") {
-      expect(result.error.message).toBe("Translation failed");
-    }
+    expect(result).toMatchObject({
+      type: "error",
+      error: { message: "Translation failed" },
+    });
   });
 
   it("returns aborted when AbortError is thrown", async () => {

@@ -9,10 +9,12 @@ import {
   saveSettings,
 } from "@/shared/storage/settings";
 import { selectContentAppSettings } from "@/shared/storage/settings-selectors";
-import { evaluateSkipRules, type SkipResult } from "./skip-rules";
+import type { SkipResult } from "./skip-rules";
+import { evaluateSkipRules } from "./skip-rules";
 import { useLanguageDetection } from "./use-language-detection";
 import { usePageRevision } from "./use-page-revision";
-import { type SelectionInfo, useTextSelection } from "./use-text-selection";
+import type { SelectionInfo } from "./use-text-selection";
+import { useTextSelection } from "./use-text-selection";
 
 function getCurrentUrl(): string {
   return window.location.origin + window.location.pathname;

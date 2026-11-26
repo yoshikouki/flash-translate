@@ -15,7 +15,7 @@ export function TermTranslationStatus({ state }: TermTranslationStatusProps) {
     <output
       aria-label={getMessage("content_termTranslation")}
       aria-live="polite"
-      className="flex min-h-8 min-w-0 items-center gap-1.5 overflow-hidden text-gray-700 text-xs"
+      className="flex min-h-8 min-w-0 items-center gap-1.5 overflow-hidden text-xs text-gray-700"
       data-flash-translate-term-translation=""
     >
       <span className="min-w-0 truncate" dir="auto">

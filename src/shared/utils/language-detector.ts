@@ -1,18 +1,34 @@
 // Language Detector Manager - Singleton wrapper for Chrome Language Detector API
 // Follows the same pattern as TranslatorManager
 
+import type {
+  LanguageDetectionAvailability,
+  NormalizedLanguageDetectionResult,
+} from "./language-detector-utils";
 import {
   createDetectorUnavailableError,
   createDetectorUnsupportedError,
-  type LanguageDetectionAvailability,
   mapDetectorAvailability,
-  type NormalizedLanguageDetectionResult,
   normalizeDetectedLanguage,
   selectBestLanguage,
 } from "./language-detector-utils";
 import { createPrefixedLogger } from "./logger";
 
 const log = createPrefixedLogger("language-detector");
+
+export async function checkLanguageDetectionAvailability(): Promise<LanguageDetectionAvailability> {
+  if (typeof LanguageDetector === "undefined") {
+    return "unsupported";
+  }
+
+  try {
+    const result = await LanguageDetector.availability();
+    return mapDetectorAvailability(result);
+  } catch (error) {
+    log.error("Failed to check language detector availability:", error);
+    return "unsupported";
+  }
+}
 
 class LanguageDetectorManager {
   private instance: LanguageDetector | null = null;
@@ -21,23 +37,6 @@ class LanguageDetectorManager {
     resolve: (detector: LanguageDetector) => void;
     reject: (error: Error) => void;
   }> = [];
-
-  /**
-   * Check if the Language Detector API is available
-   */
-  async checkAvailability(): Promise<LanguageDetectionAvailability> {
-    if (typeof LanguageDetector === "undefined") {
-      return "unsupported";
-    }
-
-    try {
-      const result = await LanguageDetector.availability();
-      return mapDetectorAvailability(result);
-    } catch (error) {
-      log.error("Failed to check language detector availability:", error);
-      return "unsupported";
-    }
-  }
 
   /**
    * Get or create a LanguageDetector instance
@@ -64,7 +63,7 @@ class LanguageDetectorManager {
       }
 
       // Check availability
-      const availability = await this.checkAvailability();
+      const availability = await checkLanguageDetectionAvailability();
 
       if (availability === "unsupported") {
         throw createDetectorUnsupportedError();

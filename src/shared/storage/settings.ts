@@ -17,7 +17,7 @@ export interface TranslationSettings {
 }
 
 const STORAGE_KEY = "flash-translate-settings";
-const LANG_SEPARATOR_REGEX = /[-_]/;
+const LANG_SEPARATOR_REGEX = /[-_]/u;
 
 const DEFAULT_SETTINGS: TranslationSettings = {
   sourceLanguage: "en",

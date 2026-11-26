@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  type LanguageDetectionAvailability,
-  languageDetectorManager,
-} from "@/shared/utils/language-detector";
+import type { LanguageDetectionAvailability } from "@/shared/utils/language-detector";
+import { checkLanguageDetectionAvailability } from "@/shared/utils/language-detector";
 
 interface UseLanguageDetectorAvailabilityOptions {
   enabled?: boolean;
@@ -30,7 +28,7 @@ export function useLanguageDetectorAvailability(
 
     const checkAvailability = async () => {
       setIsChecking(true);
-      const result = await languageDetectorManager.checkAvailability();
+      const result = await checkLanguageDetectionAvailability();
       if (isMounted) {
         setAvailability(result);
         setIsChecking(false);

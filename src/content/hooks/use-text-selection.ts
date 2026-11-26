@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import type { SelectionInfo } from "./text-selection";
 import {
   cloneSelectionRanges,
   getSelectionRect,
   getValidSelectionText,
   isClickInsideShadowHost,
   isNodeInContentEditable,
-  type SelectionInfo,
   shouldShowCardForSelection,
 } from "./text-selection";
 
@@ -108,7 +108,7 @@ export function useTextSelection() {
 
   const handleMouseDown = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
-    const shadowHost = document.getElementById(HOST_ID);
+    const shadowHost = document.querySelector(`#${HOST_ID}`);
     const path = event.composedPath();
     const isInsideShadowHost =
       shadowHost?.contains(target) || isClickInsideShadowHost(path, HOST_ID);

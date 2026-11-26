@@ -53,7 +53,7 @@ export function TemporaryDisableAction({
 
   return (
     <Button
-      className="ml-auto shrink-0 animate-dialog-slide-in whitespace-nowrap px-2 text-xs"
+      className="animate-dialog-slide-in ml-auto shrink-0 px-2 text-xs whitespace-nowrap"
       data-flash-translate-temporary-disable-action=""
       onClick={onDisabled}
       ref={confirmButtonRef}

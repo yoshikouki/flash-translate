@@ -4,7 +4,7 @@
 import type { TranslationAvailabilityStatus } from "./translator";
 
 // Cross-platform paragraph separator: matches \n\n, \r\n\r\n, or mixed
-const PARAGRAPH_SEPARATOR_REGEX = /(?:\r?\n){2,}/;
+const PARAGRAPH_SEPARATOR_REGEX = /(?:\r?\n){2,}/u;
 
 /**
  * Chrome Translator API availability values

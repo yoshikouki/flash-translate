@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
 function initializeContentScript() {
   // Check if already initialized
-  if (document.getElementById(HOST_ID)) {
+  if (document.querySelector(`#${HOST_ID}`)) {
     return;
   }
 

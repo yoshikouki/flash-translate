@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
+import type { RectLike } from "./card-position";
 import {
   calculateCardPosition,
   calculateHorizontalPosition,
   calculateVerticalPosition,
   MIN_CARD_HEIGHT,
-  type RectLike,
 } from "./card-position";
 
 // Helper to create a selection rect for testing
