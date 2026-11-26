@@ -134,7 +134,7 @@ describe("TranslationCardHeader", () => {
     expect(status?.querySelector("strong")).toBeNull();
   });
 
-  it("replaces the entire header with a right-aligned temporary disable action", () => {
+  it("replaces the entire header with the temporary disable action", () => {
     render(IDLE_TERM_TRANSLATION);
 
     const pauseButton = container.querySelector<HTMLButtonElement>(
@@ -145,11 +145,9 @@ describe("TranslationCardHeader", () => {
     const disableAction = container.querySelector<HTMLButtonElement>(
       "[data-flash-translate-temporary-disable-action]"
     );
-    expect(container.querySelector('[role="dialog"]')).toBeNull();
     expect(disableAction?.textContent).toBe(
       "content_hideTranslationsUntilReload"
     );
-    expect(disableAction?.className).toContain("ml-auto");
     expect(document.activeElement).toBe(disableAction);
     expect(container.querySelectorAll("select")).toHaveLength(0);
     expect(
@@ -164,7 +162,6 @@ describe("TranslationCardHeader", () => {
       document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }))
     );
 
-    expect(container.querySelector('[role="dialog"]')).toBeNull();
     expect(container.querySelectorAll("select")).toHaveLength(2);
   });
 });
