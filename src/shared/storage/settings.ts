@@ -39,7 +39,7 @@ function isExclusionPattern(value: unknown): value is ExclusionPattern {
 }
 
 // Validate and normalize settings from storage
-function validateSettings(data: unknown): Partial<TranslationSettings> {
+export function validateSettings(data: unknown): Partial<TranslationSettings> {
   if (typeof data !== "object" || data === null) {
     return {};
   }
