@@ -11,58 +11,34 @@ with Chrome's built-in Translator and Language Detector APIs. It translates
 selected text in a page-injected card and provides language and exclusion
 settings through the extension popup.
 
-The extension requires Chrome 150 or later with the Translator API enabled in
-`chrome://flags`.
+The supported Chrome floor is `minimum_chrome_version` in `src/manifest.ts`.
+The Translator and Language Detector APIs exist only in desktop Chrome 138 and
+later, so that value cannot go lower.
 
-## Commands
+## Working in the Repository
 
-```bash
-bun install           # Install dependencies
-bun run dev           # Start the Vite development server with HMR
-bun run build         # Type-check and build into dist/
-bun run lint          # Check formatting and lint rules with Ultracite
-bun run format        # Apply safe Ultracite fixes
-bun run test          # Run the Vitest suite once
-bun run test:watch    # Run Vitest in watch mode
-```
+Scripts live in `package.json`; Ultracite and Biome configuration is the source
+of truth for mechanically checkable style rules. Do not duplicate either in
+agent instructions.
 
-To test the extension manually, load `dist/` as an unpacked extension from
-`chrome://extensions/` with Developer mode enabled.
+To test the extension manually, follow "Manual Installation" in `README.md`.
 
-Ultracite and Biome configuration is the source of truth for mechanically
-checkable style rules. Do not duplicate those rules in agent instructions.
+## Contracts
 
-## Architecture
-
-### Entry Points
-
-- `src/content/index.tsx` mounts the content application in a Shadow DOM on
-  HTTPS pages.
-- `src/popup/index.tsx` mounts the extension popup for language, download,
-  behavior, and site-exclusion settings.
-- `src/background/index.ts` is the Manifest V3 service worker.
-- `src/manifest.ts` defines the extension manifest through
-  `@crxjs/vite-plugin`.
-
-### Translation Flow
-
-1. `useTextSelection` detects and validates selected page text.
-2. `useTranslationFlow` combines selection state, persisted settings, language
-   detection, exclusion matching, and skip rules.
-3. `TranslationCard` renders the in-page translation interface and delegates
-   translation state to `useTranslator`.
-4. `TranslatorManager` in `src/shared/utils/translator.ts` owns Translator API
-   availability checks, model creation, language-pair reuse, and streaming.
-
-### Shared State
-
-- Settings are stored in `chrome.storage.sync` by
-  `src/shared/storage/settings.ts`.
-- `useSettings` subscribes to storage changes and accepts selectors from
-  `src/shared/storage/settings-selectors.ts`.
-- Site exclusions are origin-and-path prefixes evaluated by `isUrlExcluded`.
-- Content and popup code share language constants, Translator API utilities,
-  settings, and primitive UI components through `src/shared/`.
+- Settings persist in `chrome.storage.sync` under the key defined in
+  `src/shared/storage/settings.ts`. Users' synced data outlives any commit:
+  `validateSettings` silently drops fields it does not recognize, so renaming
+  the key or changing a field's shape resets those settings for existing users
+  unless the change migrates the stored value.
+- Validate values read from extension storage at that boundary before exposing
+  them to consumers.
+- `PRIVACY.md` is the published privacy policy. Changing manifest permissions,
+  content-script matches, or what data is stored or transmitted requires
+  updating it in the same change. The popup asks the content script for the
+  page URL so the extension does not need the `tabs` permission.
+- Translator and Language Detector lifecycles belong to their managers in
+  `src/shared/utils/`; components and hooks consume those abstractions rather
+  than creating browser API instances directly.
 
 ## Implementation Constraints
 
@@ -70,16 +46,9 @@ checkable style rules. Do not duplicate those rules in agent instructions.
   validation, transformation, and decision logic into adjacent pure modules.
 - Use small structural interfaces such as `RectLike` when a pure function does
   not need a concrete DOM type.
-- Preserve Translator and Language Detector lifecycle ownership in their
-  managers; components and hooks should consume those abstractions rather than
-  creating browser API instances directly.
-- Preserve the strict settings boundary: validate values read from extension
-  storage before exposing them to consumers.
 - React Compiler is enabled. Do not add `useMemo`, `useCallback`, or `memo`
   solely for routine memoization; use them only when a concrete semantic or
   measured performance requirement remains.
-- Keep concerns separated: hooks coordinate state and effects, while adjacent
-  modules hold pure rules that can be tested without browser mocks.
 
 ## Testing
 
@@ -87,10 +56,18 @@ Prefer pure-function tests over mocks of React, the DOM, or Chrome APIs.
 
 - Co-locate extracted logic and its test, for example `foo.ts` and
   `foo.test.ts`.
-- Cover boundary conditions in selection validation, positioning, language
-  matching, exclusion rules, and streaming behavior.
 - Add integration-style tests only when behavior cannot be expressed through a
   stable pure contract.
 - Run `bun run lint` and `bun run test` before committing code changes. Run
   `bun run build` when changing extension entry points, manifests, build
   configuration, or browser API integration.
+
+## Release
+
+1. Bump `version` in `package.json`; the manifest reads it.
+2. After the bump is on `main`, push the tag `v<version>`.
+   `.github/workflows/release.yml` builds the ZIP and publishes a GitHub
+   Release. Only a tag push checks the tag against `package.json`; a manual
+   dispatch does not.
+3. This repository does not publish to the Chrome Web Store. Publishing the
+   ZIP there is the owner's decision.
