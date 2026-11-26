@@ -18,7 +18,7 @@ export type ChromeAvailability =
 /**
  * Cached translator language pair info
  */
-export interface LanguagePair {
+interface LanguagePair {
   sourceLanguage: string;
   targetLanguage: string;
 }
@@ -48,13 +48,6 @@ export function mapAvailabilityStatus(
  */
 export function splitTextIntoParagraphs(text: string): string[] {
   return text.split(PARAGRAPH_SEPARATOR_REGEX);
-}
-
-/**
- * Join paragraphs with double newlines
- */
-export function joinParagraphs(paragraphs: string[]): string {
-  return paragraphs.join("\n\n");
 }
 
 /**
@@ -97,28 +90,6 @@ export function isEmptyParagraph(paragraph: string): boolean {
  */
 export function isValidTranslationText(text: string): boolean {
   return text.trim().length > 0;
-}
-
-/**
- * Check if an error is an AbortError (from AbortController)
- * These errors should be silently ignored as they indicate intentional cancellation
- */
-export function isAbortError(error: unknown): boolean {
-  return error instanceof Error && error.name === "AbortError";
-}
-
-/**
- * Convert an unknown error to an Error instance
- * Useful for consistent error handling
- */
-export function toError(error: unknown): Error {
-  if (error instanceof Error) {
-    return error;
-  }
-  if (error == null || error === "") {
-    return new Error("Unknown error");
-  }
-  return new Error(String(error));
 }
 
 /**

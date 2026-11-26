@@ -27,12 +27,12 @@ export interface NormalizedLanguageDetectionResult {
 /**
  * Default minimum text length for reliable detection (for Latin scripts)
  */
-export const DEFAULT_MIN_TEXT_LENGTH = 5;
+const DEFAULT_MIN_TEXT_LENGTH = 5;
 
 /**
  * Minimum text length for high-density scripts (CJK, Abjad, Abugida)
  */
-export const HIGH_DENSITY_MIN_TEXT_LENGTH = 1;
+const HIGH_DENSITY_MIN_TEXT_LENGTH = 1;
 
 /**
  * Regular expression to detect high information density scripts:
@@ -40,20 +40,20 @@ export const HIGH_DENSITY_MIN_TEXT_LENGTH = 1;
  * - Abjad: Arabic, Hebrew (consonant-based, vowels often omitted)
  * - Abugida: Devanagari, Thai, Myanmar, Tibetan, Bengali (syllabic)
  */
-export const HIGH_DENSITY_SCRIPT_REGEX =
+const HIGH_DENSITY_SCRIPT_REGEX =
   /[\u3000-\u9fff\uac00-\ud7af\u3040-\u309f\u30a0-\u30ff\u0600-\u06ff\u0590-\u05ff\u0900-\u097f\u0e00-\u0e7f\u1000-\u109f\u0f00-\u0fff\u0980-\u09ff]/u;
 
 /**
  * Check if text contains high information density scripts
  */
-export function containsHighDensityScript(text: string): boolean {
+function containsHighDensityScript(text: string): boolean {
   return HIGH_DENSITY_SCRIPT_REGEX.test(text);
 }
 
 /**
  * Get appropriate minimum text length based on script type
  */
-export function getMinTextLengthForDetection(text: string): number {
+function getMinTextLengthForDetection(text: string): number {
   return containsHighDensityScript(text)
     ? HIGH_DENSITY_MIN_TEXT_LENGTH
     : DEFAULT_MIN_TEXT_LENGTH;
@@ -123,7 +123,7 @@ export function normalizeDetectedLanguage(
 /**
  * Check if text is long enough for reliable language detection
  */
-export function isTextSufficientForDetection(
+function isTextSufficientForDetection(
   text: string,
   minLength: number = DEFAULT_MIN_TEXT_LENGTH
 ): boolean {

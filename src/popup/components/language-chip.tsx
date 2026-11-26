@@ -6,7 +6,7 @@ import {
 import type { DownloadStatus } from "../hooks/download-state";
 import { StatusIndicator } from "./status-indicator";
 
-export interface LanguageChipProps {
+interface LanguageChipProps {
   languageCode: string;
   isSelected: boolean;
   status: DownloadStatus;

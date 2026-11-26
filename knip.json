@@ -6,10 +6,5 @@
     "src/background/index.ts"
   ],
   "project": ["src/**/*.{ts,tsx}"],
-  "ignore": ["**/*.test.ts"],
-  "ignoreDependencies": [
-    "tailwindcss",
-    "babel-plugin-react-compiler",
-    "@biomejs/biome"
-  ]
+  "ignoreDependencies": ["tailwindcss"]
 }

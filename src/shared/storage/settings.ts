@@ -114,18 +114,6 @@ export function getPageLanguage(): string | null {
   return lang || null;
 }
 
-// Pure function: Determine if translation should be skipped
-export function shouldSkipTranslation(
-  targetLanguage: string,
-  skipSameLanguage: boolean,
-  pageLanguage: string | null
-): boolean {
-  if (!skipSameLanguage) {
-    return false;
-  }
-  return isLanguageMatch(pageLanguage, targetLanguage);
-}
-
 // Generate a unique ID for exclusion patterns
 export function generatePatternId(): string {
   return `pattern_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
