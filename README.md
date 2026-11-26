@@ -6,13 +6,13 @@ A Chrome extension for instant translation using the browser's built-in Translat
 
 ## Features
 
-- **Instant translation on text selection**: Select text on HTTPS pages to view translations immediately
+- **Translation on text selection**: Select text on HTTPS pages to see its translation in a card on the page
 - **Auto-detect source language**: Automatically detects the language of selected text using Chrome's Language Detection API
 - **Word lookup inside the selection**: Hover a word in the selected text to see its translation in the card
 - **Handles long text**: Translate large paragraphs as often as you like
 - **Site exclusion**: Disable translation on specific websites
-- **Settings sync**: Your preferences sync automatically across devices
-- **Privacy-focused**: All translation happens on-device using Chrome's built-in AI - your text is never sent to external servers
+- **Settings sync**: Your preferences sync across devices when Chrome Sync is on
+- **Privacy-focused**: Translation runs on-device using Chrome's built-in AI, and the extension sends your text to no server
 
 ## Requirements
 
@@ -39,7 +39,7 @@ conventions are in [AGENTS.md](AGENTS.md).
 
 ## Privacy
 
-Flash Translate respects your privacy. All translation is performed locally on your device using Chrome's built-in Translator API. The text you translate is never sent to external servers. See [PRIVACY.md](PRIVACY.md) for details.
+Flash Translate translates on your device using Chrome's built-in Translator API and sends your text to no server. See [PRIVACY.md](PRIVACY.md) for what the extension reads and stores.
 
 ## License
 

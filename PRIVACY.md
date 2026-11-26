@@ -4,62 +4,77 @@
 
 ## Overview
 
-Flash Translate is committed to protecting your privacy. This extension uses Chrome's built-in Translator and Language Detector APIs to translate on your device. The text you translate and its translations are never sent to external servers. Your settings are stored with Chrome's extension sync storage, described below.
+Flash Translate translates text on your device with Chrome's built-in
+Translator and Language Detector APIs. The developer of Flash Translate runs no
+servers and receives no data from the extension.
 
-## Data Collection and Usage
+## Data the Extension Handles
 
-### Data We Access
+### Text You Select
 
-- **Selected Text**: When you select text on an HTTPS webpage, the extension reads that text to provide translation. This text is processed locally on your device using Chrome's built-in Translator and Language Detector APIs.
-- **Current Page Address**: The extension compares the address of the page you are viewing with your exclusion rules on your device to decide whether to translate there. When you open the extension popup, it reads that page's site address so you can exclude the site. A site address is stored only when you add it as an exclusion, from the popup or from the translation card.
+- When you select text on an HTTPS webpage, the extension reads it and
+  translates it on your device. Flash Translate does not send the text or its
+  translation to any server.
+- The translation card is shown inside the page you are viewing. Like the rest
+  of that page, the card's contents can be read by the page's own scripts.
+- While a page is open, selected text, hovered words, and their translations
+  stay in memory so the card can show and reuse them. They are discarded when
+  the page is closed or reloaded. The extension keeps no translation history.
+- When you use the copy button, the translation is written to your system
+  clipboard and stays there as long as your clipboard keeps it.
 
-### Data We Store
+### Page Address
 
-- **Language Preferences**: Your source and target languages, and whether to auto-detect the source language and skip text already in the target language, are stored in `chrome.storage.sync` to maintain your preferences across devices where you're signed into Chrome.
-- **Site Exclusion Settings**: The exclusion rules you add or edit are stored in `chrome.storage.sync`.
+- On each HTTPS page, the extension compares the page's origin and path with
+  your exclusion rules on your device to decide whether to translate there.
+- When you open the extension popup, it receives the full address of the
+  current tab and keeps only its origin (for example,
+  `https://example.com`) to offer excluding that site.
 
-When Chrome Sync is on, Chrome syncs these settings across your signed-in browsers according to your Chrome Sync settings. Flash Translate itself does not send them anywhere.
+## Data the Extension Stores
 
-### Data We DO NOT Collect
+The extension stores the following settings in `chrome.storage.sync`:
 
-- We do NOT collect personal information
-- We do NOT use analytics or tracking services
-- We do NOT send your text or translations to external servers
-- We do NOT keep a translation history
-- We do NOT share any data with third parties
+- Source and target languages, and whether to auto-detect the source language
+  and skip text already in the target language
+- Site exclusion rules. Rules added from the popup or the translation card
+  contain only the site origin. Rules you edit are saved exactly as you type
+  them.
 
-## How Translation Works
-
-Flash Translate relies on Chrome's built-in Translator API, which is designed to perform translation on-device without transmitting user text to external servers.
+When Chrome Sync is on, Chrome syncs these settings across your signed-in
+browsers according to your Chrome Sync settings. The extension does not send
+them anywhere itself.
 
 ## Permissions Explained
 
-- **Content script on HTTPS sites**: Required to read the text you select and display the translation card on the page
-- **`activeTab`**: Chrome grants temporary access to the current tab when you click the extension's toolbar button. The access ends when you navigate to another site or close the tab.
-- **`storage`**: Required to save your language preferences and sync them across your Chrome browsers
-
-## Data Retention
-
-- Settings remain in Chrome's sync storage until you change them or uninstall the extension
-- While a page is open, selected text, hovered words, and their translations stay in memory so the card can show and reuse them. They are discarded when the page is closed or reloaded and are never written to storage
+- **Content script on HTTPS sites** (`https://*/*` in the manifest): Required
+  to read the text you select and display the translation card on the page
+- **`activeTab`**: Chrome grants temporary access to the current tab when you
+  click the extension's toolbar button. The access lasts while the tab stays
+  on the same origin and ends when the tab moves to another origin or closes.
+- **`storage`**: Required to save the settings listed above
 
 ## Third-Party Services
 
-This extension does NOT use any third-party services, APIs, or analytics tools. All functionality is provided through Chrome's built-in APIs.
+Flash Translate uses no analytics, tracking, or third-party services. All
+functionality is provided through Chrome's built-in APIs.
+
+## Your Choices
+
+- Stop using the extension at any time by disabling or uninstalling it
+- Delete individual site exclusion rules in the extension settings
+- Uninstalling the extension deletes its settings from that Chrome profile.
+  Whether the deletion reaches your other signed-in browsers depends on Chrome
+  Sync.
+- Review the source code at https://github.com/yoshikouki/flash-translate
 
 ## Changes to This Policy
 
-We may update this privacy policy from time to time. Any changes will be reflected in the "Last Updated" date above.
+We may update this privacy policy from time to time. Any changes will be
+reflected in the "Last Updated" date above.
 
 ## Contact
 
-If you have questions or concerns about this privacy policy, please open an issue on our GitHub repository:
+If you have questions or concerns about this privacy policy, please open an
+issue on our GitHub repository:
 https://github.com/yoshikouki/flash-translate/issues
-
-## Your Rights
-
-You can:
-- Stop using the extension at any time by disabling or uninstalling it
-- Delete individual site exclusion rules in the extension settings
-- Remove all stored settings by uninstalling the extension
-- Review the source code at https://github.com/yoshikouki/flash-translate
