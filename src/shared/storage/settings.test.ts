@@ -4,7 +4,62 @@ import {
   enableExclusionPattern,
   isLanguageMatch,
   isUrlExcluded,
+  validateSettings,
 } from "./settings";
+
+describe("validateSettings", () => {
+  // The shape existing users have in chrome.storage.sync. Keep it a literal:
+  // if this test fails, a change would reset those users' settings.
+  it("keeps every field of settings saved by the current version", () => {
+    const stored = {
+      sourceLanguage: "fr",
+      targetLanguage: "de",
+      exclusionPatterns: [
+        { id: "pattern_1", pattern: "https://example.com", enabled: false },
+      ],
+      skipSameLanguage: false,
+      autoDetectLanguage: false,
+    };
+
+    expect(validateSettings(stored)).toEqual(stored);
+  });
+
+  it("drops unknown fields and fields of the wrong type, keeping the rest", () => {
+    expect(
+      validateSettings({
+        sourceLanguage: 1,
+        targetLanguage: "fr",
+        skipSameLanguage: "yes",
+        autoDetectLanguage: false,
+        exclusionPatterns: "https://example.com",
+        theme: "dark",
+      })
+    ).toEqual({ targetLanguage: "fr", autoDetectLanguage: false });
+  });
+
+  it("keeps only well-formed exclusion patterns", () => {
+    const valid = { id: "1", pattern: "https://example.com", enabled: true };
+
+    expect(
+      validateSettings({
+        exclusionPatterns: [
+          valid,
+          { id: "2", pattern: "https://other.com" },
+          { id: 3, pattern: "https://third.com", enabled: true },
+          null,
+          "https://fourth.com",
+        ],
+      })
+    ).toEqual({ exclusionPatterns: [valid] });
+  });
+
+  it.each([undefined, null, "settings", 42])(
+    "returns nothing usable for %j",
+    (data) => {
+      expect(validateSettings(data)).toEqual({});
+    }
+  );
+});
 
 describe("enableExclusionPattern", () => {
   it("prepends a new enabled pattern", () => {
